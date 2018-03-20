@@ -1,0 +1,395 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C36CCDA1FFA925D003DB553 /* BMBiquadArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */; };
+		2CFBA73D1EB77B4D001A595E /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */; };
+		2CFBA73E1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA73B1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c */; };
+		2CFBA7AF1EB783E0001A595E /* BMMultiTapDelay.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7861EB783E0001A595E /* BMMultiTapDelay.c */; };
+		2CFBA7B01EB783E0001A595E /* Cuboid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7891EB783E0001A595E /* Cuboid.cpp */; };
+		2CFBA7B31EB783E0001A595E /* energyTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA78F1EB783E0001A595E /* energyTerm.cpp */; };
+		2CFBA7B51EB783E0001A595E /* FirstOrderFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7931EB783E0001A595E /* FirstOrderFilter.cpp */; };
+		2CFBA7B71EB783E0001A595E /* Gains.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7971EB783E0001A595E /* Gains.cpp */; };
+		2CFBA7B81EB783E0001A595E /* MonteCarlo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7991EB783E0001A595E /* MonteCarlo.cpp */; };
+		2CFBA7B91EB783E0001A595E /* MultiLevelBiQuadFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA79B1EB783E0001A595E /* MultiLevelBiQuadFilter.cpp */; };
+		2CFBA7BA1EB783E0001A595E /* Parameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA79D1EB783E0001A595E /* Parameter.cpp */; };
+		2CFBA7BB1EB783E0001A595E /* Plane3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA79F1EB783E0001A595E /* Plane3D.cpp */; };
+		2CFBA7BC1EB783E0001A595E /* Point2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7A11EB783E0001A595E /* Point2d.cpp */; };
+		2CFBA7BD1EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7A31EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp */; };
+		2CFBA7BF1EB783E0001A595E /* SecondOrderFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7A81EB783E0001A595E /* SecondOrderFilter.cpp */; };
+		2CFBA7C01EB783E0001A595E /* SingleTapDelay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7AA1EB783E0001A595E /* SingleTapDelay.cpp */; };
+		2CFBA7C11EB783E0001A595E /* Vector3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7AC1EB783E0001A595E /* Vector3D.cpp */; };
+		2CFBA7C41EB78435001A595E /* FDN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7C21EB78435001A595E /* FDN.cpp */; };
+		2CFBA7C91EB785BF001A595E /* BiQuadFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7C71EB785BF001A595E /* BiQuadFilter.cpp */; };
+		3AA66E581B0B1196007B75E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AA66E571B0B1196007B75E7 /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3AA66E521B0B1196007B75E7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BMBiquadArray.c; sourceTree = "<group>"; };
+		2C36CCD91FFA925D003DB553 /* BMBiquadArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMBiquadArray.h; sourceTree = "<group>"; };
+		2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TPCircularBuffer.c; path = Modules/TPCircularBuffer/TPCircularBuffer.c; sourceTree = "<group>"; };
+		2CFBA73A1EB77B4D001A595E /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TPCircularBuffer.h; path = Modules/TPCircularBuffer/TPCircularBuffer.h; sourceTree = "<group>"; };
+		2CFBA73B1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "TPCircularBuffer+AudioBufferList.c"; path = "Modules/TPCircularBuffer/TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
+		2CFBA73C1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TPCircularBuffer+AudioBufferList.h"; path = "Modules/TPCircularBuffer/TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
+		2CFBA7861EB783E0001A595E /* BMMultiTapDelay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = BMMultiTapDelay.c; path = TheEngineSample/BMMultiTapDelay.c; sourceTree = "<group>"; };
+		2CFBA7871EB783E0001A595E /* BMMultiTapDelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMMultiTapDelay.h; path = TheEngineSample/BMMultiTapDelay.h; sourceTree = "<group>"; };
+		2CFBA7881EB783E0001A595E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = TheEngineSample/Constants.h; sourceTree = "<group>"; };
+		2CFBA7891EB783E0001A595E /* Cuboid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cuboid.cpp; path = TheEngineSample/Cuboid.cpp; sourceTree = "<group>"; };
+		2CFBA78A1EB783E0001A595E /* Cuboid.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cuboid.hpp; path = TheEngineSample/Cuboid.hpp; sourceTree = "<group>"; };
+		2CFBA78F1EB783E0001A595E /* energyTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = energyTerm.cpp; path = TheEngineSample/energyTerm.cpp; sourceTree = "<group>"; };
+		2CFBA7901EB783E0001A595E /* energyTerm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = energyTerm.hpp; path = TheEngineSample/energyTerm.hpp; sourceTree = "<group>"; };
+		2CFBA7931EB783E0001A595E /* FirstOrderFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FirstOrderFilter.cpp; path = TheEngineSample/FirstOrderFilter.cpp; sourceTree = "<group>"; };
+		2CFBA7941EB783E0001A595E /* FirstOrderFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FirstOrderFilter.h; path = TheEngineSample/FirstOrderFilter.h; sourceTree = "<group>"; };
+		2CFBA7971EB783E0001A595E /* Gains.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gains.cpp; path = TheEngineSample/Gains.cpp; sourceTree = "<group>"; };
+		2CFBA7981EB783E0001A595E /* Gains.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Gains.hpp; path = TheEngineSample/Gains.hpp; sourceTree = "<group>"; };
+		2CFBA7991EB783E0001A595E /* MonteCarlo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MonteCarlo.cpp; path = TheEngineSample/MonteCarlo.cpp; sourceTree = "<group>"; };
+		2CFBA79A1EB783E0001A595E /* MonteCarlo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MonteCarlo.hpp; path = TheEngineSample/MonteCarlo.hpp; sourceTree = "<group>"; };
+		2CFBA79B1EB783E0001A595E /* MultiLevelBiQuadFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MultiLevelBiQuadFilter.cpp; path = TheEngineSample/MultiLevelBiQuadFilter.cpp; sourceTree = "<group>"; };
+		2CFBA79C1EB783E0001A595E /* MultiLevelBiQuadFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MultiLevelBiQuadFilter.h; path = TheEngineSample/MultiLevelBiQuadFilter.h; sourceTree = "<group>"; };
+		2CFBA79D1EB783E0001A595E /* Parameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Parameter.cpp; path = TheEngineSample/Parameter.cpp; sourceTree = "<group>"; };
+		2CFBA79E1EB783E0001A595E /* Parameter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Parameter.hpp; path = TheEngineSample/Parameter.hpp; sourceTree = "<group>"; };
+		2CFBA79F1EB783E0001A595E /* Plane3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Plane3D.cpp; path = TheEngineSample/Plane3D.cpp; sourceTree = "<group>"; };
+		2CFBA7A01EB783E0001A595E /* Plane3D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Plane3D.hpp; path = TheEngineSample/Plane3D.hpp; sourceTree = "<group>"; };
+		2CFBA7A11EB783E0001A595E /* Point2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Point2d.cpp; path = TheEngineSample/Point2d.cpp; sourceTree = "<group>"; };
+		2CFBA7A21EB783E0001A595E /* Point2d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Point2d.hpp; path = TheEngineSample/Point2d.hpp; sourceTree = "<group>"; };
+		2CFBA7A31EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuadraturePhaseEnvelopeFollower.cpp; path = TheEngineSample/QuadraturePhaseEnvelopeFollower.cpp; sourceTree = "<group>"; };
+		2CFBA7A41EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuadraturePhaseEnvelopeFollower.h; path = TheEngineSample/QuadraturePhaseEnvelopeFollower.h; sourceTree = "<group>"; };
+		2CFBA7A51EB783E0001A595E /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Resources; path = TheEngineSample/Resources; sourceTree = "<group>"; };
+		2CFBA7A81EB783E0001A595E /* SecondOrderFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SecondOrderFilter.cpp; path = TheEngineSample/SecondOrderFilter.cpp; sourceTree = "<group>"; };
+		2CFBA7A91EB783E0001A595E /* SecondOrderFilter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SecondOrderFilter.hpp; path = TheEngineSample/SecondOrderFilter.hpp; sourceTree = "<group>"; };
+		2CFBA7AA1EB783E0001A595E /* SingleTapDelay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleTapDelay.cpp; path = TheEngineSample/SingleTapDelay.cpp; sourceTree = "<group>"; };
+		2CFBA7AB1EB783E0001A595E /* SingleTapDelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleTapDelay.h; path = TheEngineSample/SingleTapDelay.h; sourceTree = "<group>"; };
+		2CFBA7AC1EB783E0001A595E /* Vector3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3D.cpp; path = TheEngineSample/Vector3D.cpp; sourceTree = "<group>"; };
+		2CFBA7AD1EB783E0001A595E /* Vector3D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Vector3D.hpp; path = TheEngineSample/Vector3D.hpp; sourceTree = "<group>"; };
+		2CFBA7C21EB78435001A595E /* FDN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FDN.cpp; path = TheEngineSample/FDN.cpp; sourceTree = "<group>"; };
+		2CFBA7C31EB78435001A595E /* FDN.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FDN.h; path = TheEngineSample/FDN.h; sourceTree = "<group>"; };
+		2CFBA7C71EB785BF001A595E /* BiQuadFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BiQuadFilter.cpp; path = TheEngineSample/BiQuadFilter.cpp; sourceTree = "<group>"; };
+		2CFBA7C81EB785BF001A595E /* BiQuadFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BiQuadFilter.h; path = TheEngineSample/BiQuadFilter.h; sourceTree = "<group>"; };
+		3AA66E541B0B1196007B75E7 /* offlineReverb */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = offlineReverb; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AA66E571B0B1196007B75E7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3AA66E511B0B1196007B75E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2CFBA7241EB77B1E001A595E /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */,
+				2CFBA73A1EB77B4D001A595E /* TPCircularBuffer.h */,
+				2CFBA73B1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c */,
+				2CFBA73C1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.h */,
+			);
+			name = Modules;
+			sourceTree = "<group>";
+		};
+		2CFBA7CA1EB78623001A595E /* FDN_Binaural */ = {
+			isa = PBXGroup;
+			children = (
+				2CFBA7991EB783E0001A595E /* MonteCarlo.cpp */,
+				2CFBA79A1EB783E0001A595E /* MonteCarlo.hpp */,
+				2CFBA79B1EB783E0001A595E /* MultiLevelBiQuadFilter.cpp */,
+				2CFBA79C1EB783E0001A595E /* MultiLevelBiQuadFilter.h */,
+				2CFBA79D1EB783E0001A595E /* Parameter.cpp */,
+				2CFBA79E1EB783E0001A595E /* Parameter.hpp */,
+				2CFBA79F1EB783E0001A595E /* Plane3D.cpp */,
+				2CFBA7A01EB783E0001A595E /* Plane3D.hpp */,
+				2CFBA7A11EB783E0001A595E /* Point2d.cpp */,
+				2CFBA7A21EB783E0001A595E /* Point2d.hpp */,
+				2CFBA7A31EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp */,
+				2CFBA7A41EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.h */,
+				2CFBA7A51EB783E0001A595E /* Resources */,
+				2CFBA7A81EB783E0001A595E /* SecondOrderFilter.cpp */,
+				2CFBA7A91EB783E0001A595E /* SecondOrderFilter.hpp */,
+				2CFBA7AA1EB783E0001A595E /* SingleTapDelay.cpp */,
+				2CFBA7AB1EB783E0001A595E /* SingleTapDelay.h */,
+				2CFBA7AC1EB783E0001A595E /* Vector3D.cpp */,
+				2CFBA7AD1EB783E0001A595E /* Vector3D.hpp */,
+				2CFBA7C71EB785BF001A595E /* BiQuadFilter.cpp */,
+				2CFBA7C81EB785BF001A595E /* BiQuadFilter.h */,
+				2CFBA7861EB783E0001A595E /* BMMultiTapDelay.c */,
+				2CFBA7871EB783E0001A595E /* BMMultiTapDelay.h */,
+				2CFBA7881EB783E0001A595E /* Constants.h */,
+				2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */,
+				2C36CCD91FFA925D003DB553 /* BMBiquadArray.h */,
+				2CFBA7891EB783E0001A595E /* Cuboid.cpp */,
+				2CFBA78A1EB783E0001A595E /* Cuboid.hpp */,
+				2CFBA78F1EB783E0001A595E /* energyTerm.cpp */,
+				2CFBA7901EB783E0001A595E /* energyTerm.hpp */,
+				2CFBA7C21EB78435001A595E /* FDN.cpp */,
+				2CFBA7C31EB78435001A595E /* FDN.h */,
+				2CFBA7931EB783E0001A595E /* FirstOrderFilter.cpp */,
+				2CFBA7941EB783E0001A595E /* FirstOrderFilter.h */,
+				2CFBA7971EB783E0001A595E /* Gains.cpp */,
+				2CFBA7981EB783E0001A595E /* Gains.hpp */,
+			);
+			name = FDN_Binaural;
+			sourceTree = "<group>";
+		};
+		3AA66E4B1B0B1196007B75E7 = {
+			isa = PBXGroup;
+			children = (
+				3AA66E561B0B1196007B75E7 /* offlineReverb */,
+				3AA66E551B0B1196007B75E7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3AA66E551B0B1196007B75E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3AA66E541B0B1196007B75E7 /* offlineReverb */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3AA66E561B0B1196007B75E7 /* offlineReverb */ = {
+			isa = PBXGroup;
+			children = (
+				3AA66E571B0B1196007B75E7 /* main.cpp */,
+				2CFBA7CA1EB78623001A595E /* FDN_Binaural */,
+				2CFBA7241EB77B1E001A595E /* Modules */,
+			);
+			path = offlineReverb;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3AA66E531B0B1196007B75E7 /* offlineReverb */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3AA66E5B1B0B1196007B75E7 /* Build configuration list for PBXNativeTarget "offlineReverb" */;
+			buildPhases = (
+				3AA66E501B0B1196007B75E7 /* Sources */,
+				3AA66E511B0B1196007B75E7 /* Frameworks */,
+				3AA66E521B0B1196007B75E7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = offlineReverb;
+			productName = offlineReverb;
+			productReference = 3AA66E541B0B1196007B75E7 /* offlineReverb */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3AA66E4C1B0B1196007B75E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = Hans;
+				TargetAttributes = {
+					3AA66E531B0B1196007B75E7 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 3AA66E4F1B0B1196007B75E7 /* Build configuration list for PBXProject "offlineReverb" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3AA66E4B1B0B1196007B75E7;
+			productRefGroup = 3AA66E551B0B1196007B75E7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3AA66E531B0B1196007B75E7 /* offlineReverb */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3AA66E501B0B1196007B75E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CFBA7B91EB783E0001A595E /* MultiLevelBiQuadFilter.cpp in Sources */,
+				2CFBA73D1EB77B4D001A595E /* TPCircularBuffer.c in Sources */,
+				2C36CCDA1FFA925D003DB553 /* BMBiquadArray.c in Sources */,
+				2CFBA7BC1EB783E0001A595E /* Point2d.cpp in Sources */,
+				2CFBA7C41EB78435001A595E /* FDN.cpp in Sources */,
+				2CFBA7B01EB783E0001A595E /* Cuboid.cpp in Sources */,
+				3AA66E581B0B1196007B75E7 /* main.cpp in Sources */,
+				2CFBA7BD1EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp in Sources */,
+				2CFBA73E1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c in Sources */,
+				2CFBA7B81EB783E0001A595E /* MonteCarlo.cpp in Sources */,
+				2CFBA7BB1EB783E0001A595E /* Plane3D.cpp in Sources */,
+				2CFBA7B31EB783E0001A595E /* energyTerm.cpp in Sources */,
+				2CFBA7C11EB783E0001A595E /* Vector3D.cpp in Sources */,
+				2CFBA7C91EB785BF001A595E /* BiQuadFilter.cpp in Sources */,
+				2CFBA7B71EB783E0001A595E /* Gains.cpp in Sources */,
+				2CFBA7AF1EB783E0001A595E /* BMMultiTapDelay.c in Sources */,
+				2CFBA7B51EB783E0001A595E /* FirstOrderFilter.cpp in Sources */,
+				2CFBA7BF1EB783E0001A595E /* SecondOrderFilter.cpp in Sources */,
+				2CFBA7BA1EB783E0001A595E /* Parameter.cpp in Sources */,
+				2CFBA7C01EB783E0001A595E /* SingleTapDelay.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3AA66E591B0B1196007B75E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3AA66E5A1B0B1196007B75E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3AA66E5C1B0B1196007B75E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_FAST_MATH = NO;
+				GCC_STRICT_ALIASING = YES;
+				GCC_UNROLL_LOOPS = NO;
+				LLVM_LTO = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3AA66E5D1B0B1196007B75E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_STRICT_ALIASING = YES;
+				GCC_UNROLL_LOOPS = YES;
+				LLVM_LTO = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3AA66E4F1B0B1196007B75E7 /* Build configuration list for PBXProject "offlineReverb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3AA66E591B0B1196007B75E7 /* Debug */,
+				3AA66E5A1B0B1196007B75E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3AA66E5B1B0B1196007B75E7 /* Build configuration list for PBXNativeTarget "offlineReverb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3AA66E5C1B0B1196007B75E7 /* Debug */,
+				3AA66E5D1B0B1196007B75E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3AA66E4C1B0B1196007B75E7 /* Project object */;
+}
