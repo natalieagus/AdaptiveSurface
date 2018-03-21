@@ -13,9 +13,9 @@ using namespace std;
 
 /*Emphasize patch decomposition on the lateral plane
  *
- *int tilesPerSide          = the number of even segmentation per side needed
- *int slices                = total number of patches required, typically 32, or 64, or 128 if Hadamard FDN is used
- *int channels              = azimuthal segmentation
+ *@param tilesPerSide          = the number of even segmentation per side needed
+ *@param slices                = total number of patches required, typically 32, or 64, or 128 if Hadamard FDN is used
+ *@param channels              = azimuthal segmentation
  */
 void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener){
     //Assert necessary condition about the tilesPerSide, slices, and channels
@@ -132,6 +132,13 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
 
 /*
  * Segment lateral walls based on listener's azimuth
+ *
+ *@param lateral_walls      = array containing 4 lateral walls in a rectangular rool
+ *@param listener           = listener's location
+ *@param segmented_lateral_walls    = output array containing segmented lateral walls based on listener's location
+ *@param channels           = listener's azimuthal channels (not to be confused with HRTF channels)
+ *
+ *@returns                  = number of elements in segmented_lateral_walls
  */
 int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener, Plane3D* segmented_lateral_walls, int channels)
 {
@@ -236,6 +243,9 @@ int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener
         assert( abs (s2_length - lateral_walls[i].S2.magnitude()) <= 0.00001f );
         
     }
+    
+    //free memory
+    delete[] temp_ray_points;
     
     return segmented_lateral_walls_counter;
     
@@ -751,7 +761,7 @@ float Cuboid::projAreaSubSec(Plane3D r, Vector3D L){
 
 
 
-/*!
+/*
  * Estimate the area of the rectangle r projected onto the unit sphere
  * centred at L.
  *
