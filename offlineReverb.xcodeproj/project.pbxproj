@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C362EF820624E170095A9B8 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C362EF620624E170095A9B8 /* Ray.cpp */; };
 		2C36CCDA1FFA925D003DB553 /* BMBiquadArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */; };
 		2CFBA73D1EB77B4D001A595E /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */; };
 		2CFBA73E1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA73B1EB77B4D001A595E /* TPCircularBuffer+AudioBufferList.c */; };
@@ -42,6 +43,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2C362EF620624E170095A9B8 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Ray.cpp; path = TheEngineSample/Ray.cpp; sourceTree = "<group>"; };
+		2C362EF720624E170095A9B8 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Ray.hpp; path = TheEngineSample/Ray.hpp; sourceTree = "<group>"; };
 		2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BMBiquadArray.c; sourceTree = "<group>"; };
 		2C36CCD91FFA925D003DB553 /* BMBiquadArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMBiquadArray.h; sourceTree = "<group>"; };
 		2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TPCircularBuffer.c; path = Modules/TPCircularBuffer/TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -171,6 +174,8 @@
 			isa = PBXGroup;
 			children = (
 				3AA66E571B0B1196007B75E7 /* main.cpp */,
+				2C362EF620624E170095A9B8 /* Ray.cpp */,
+				2C362EF720624E170095A9B8 /* Ray.hpp */,
 				2CFBA7CA1EB78623001A595E /* FDN_Binaural */,
 				2CFBA7241EB77B1E001A595E /* Modules */,
 			);
@@ -251,6 +256,7 @@
 				2CFBA7AF1EB783E0001A595E /* BMMultiTapDelay.c in Sources */,
 				2CFBA7B51EB783E0001A595E /* FirstOrderFilter.cpp in Sources */,
 				2CFBA7BF1EB783E0001A595E /* SecondOrderFilter.cpp in Sources */,
+				2C362EF820624E170095A9B8 /* Ray.cpp in Sources */,
 				2CFBA7BA1EB783E0001A595E /* Parameter.cpp in Sources */,
 				2CFBA7C01EB783E0001A595E /* SingleTapDelay.cpp in Sources */,
 			);

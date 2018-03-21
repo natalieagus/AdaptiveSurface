@@ -8,10 +8,16 @@
 
 #ifndef Cuboid_hpp
 #define Cuboid_hpp
+
 #include <math.h>
 #include <stdio.h>
-#include "Plane3D.hpp"
+#include <algorithm>    // std::sort
+#include <iostream>
 #include <cstdlib>
+#import <Accelerate/Accelerate.h>
+
+#include "Plane3D.hpp"
+#include "Ray.hpp"
 
 #define SOUNDSPEED 340.29f
 
@@ -73,39 +79,47 @@ typedef struct Cuboid{
         volume = this->xLength * this->yLength * this->zLength;
     }
     
-    //even slice, then slice the remainder randomly
+    //even segmentation, then slice the remainder randomly
     void sliceCube(int slices);
-    //even slice
+    //even segmentation, output will be 6 (1 by 6), or 24 (4 by 6), or 54 (9 by 6), etc
     int segmentCube(int tilesPerSide);
-    //slice remainders
+    //Subdivide some patches randomly until we have 'slices' number of patches in total
     void sliceRemainder(int slices, int remainder, Plane3D* newSegmentedSides);
     
+    //Adaptive lateral decomposition method for Paper 5
+    void sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener);
+    int splitWalls(Plane3D* walls_in, int walls_per_side, Plane3D* walls_out, int n, Plane3D* lateral_walls, Vector3D listener, float room_width, float room_length);
+    Ray getRayFromWallPatch(Vector3D L, Plane3D wall_patch);
+    int segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener, Plane3D* segmented_lateral_walls, int channels);
+    
+    //segment cube into 6 surfaces
     float segmentCubeOnce();
     
-    void getDelayValues(int* delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz);
+    //getting delay values in samples given a listener and source location in the room
+    void getDelayValues(int* delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Fs);
+    
+    /*
+     * Heuristic method (currently not used)
+     */
+    //segment 6-surface rectangular room based on some heuristic
     void segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L);
-
     float projectedAreaOfAPlane(Vector3D S, Vector3D L, Plane3D patch);
-    
     int dividePlane(Plane3D divide, int index, int sourceIndex, Vector3D L, Vector3D S);
-    int dividePlaneAlongS1(Plane3D divide, int index, int sourceIndex);
-    //Either S1 or S2
-    bool longestDimension(Plane3D patch);
-    
+//    int dividePlaneAlongS1(Plane3D divide, int index, int sourceIndex);
+//    bool longestDimension(Plane3D patch);
     float ProjectedArea_rectangleSubDiv(Plane3D r, Vector3D L, size_t divisions);
     float projAreaSubSec(Plane3D r, Vector3D L);
     
     //Variables
     Plane3D floor, ceiling, side1, side2, side3, side4;
-    Plane3D sides[6];
-    Plane3D* segmentedSides;
+    Plane3D sides[6]; //original 6 sides
+    Plane3D* segmentedSides; //after subdivision
     
-    float xLength, yLength, zLength;
+    float xLength, yLength, zLength; //rectangular room dimension
     
-    int elements;
-    float area;
-    int dimensions;
-    float volume;
+    int elements; //number of patches in the room
+    int dimensions; //number of patch dimension if there's even subdivision. It is set to 2 if 4 patches per wall side, 3 if 9 patches per wall side, etc
+    float volume, area;
     
     
     
