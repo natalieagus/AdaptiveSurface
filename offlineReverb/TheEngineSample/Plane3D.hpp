@@ -25,6 +25,9 @@ typedef struct Plane3D {
         
     };
     
+    //Destructor
+    ~Plane3D() = default;
+    
     //Constructor with arguments
     Plane3D(Vector3D corner, Vector3D S1, Vector3D S2){
         this->corner = corner;

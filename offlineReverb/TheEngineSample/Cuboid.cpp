@@ -33,21 +33,20 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
 
     
     //create temp array for walls_in, which is all surfaces without ceiling or floor
-    Plane3D walls_in[number_of_tiles_after_even_segmentation - number_of_ceiling_floor_surfaces];
+    Plane3D *walls_in = new Plane3D[number_of_non_ceiling_floor_surfaces];
+    Plane3D *walls_ceiling_and_floor = new Plane3D[number_of_ceiling_floor_surfaces];
     
-    int index = 0;
+    //copy ceiling and floor to walls_ceiling_and_floor array
+    std::memcpy(walls_ceiling_and_floor, this->segmentedSides, number_of_ceiling_floor_surfaces*sizeof(Plane3D));
     
     //copy every other wall side except ceilings and walls to walls_in
-    for (int i = number_of_ceiling_floor_surfaces; i< number_of_tiles_after_even_segmentation ; i++){
-        walls_in[index] = this->segmentedSides[i];
-        index ++;
-    }
-    
+    std::memcpy(walls_in, this->segmentedSides + number_of_ceiling_floor_surfaces, number_of_non_ceiling_floor_surfaces * sizeof(Plane3D));
+
     //create temp array for walls_out, which is all surfaces without ceiling or floor, or lateral walls
-    Plane3D walls_out[number_of_walls_out_array_size];
+    Plane3D *walls_out = new Plane3D[number_of_walls_out_array_size];
     std::cout << " Creating temp array walls_out with size : " <<slices - tilesPerSide * 2 << " \n";
     //create temp array for 4 lateral walls
-    Plane3D lateral_walls[4];
+    Plane3D *lateral_walls = new Plane3D[4];
     
     //split walls in walls_in into lateral walls and walls_out
     //store the number of walls in walls_out
@@ -69,7 +68,7 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     //create array to store segmented lateral walls
     // the maximum number of segmented walls is channels + 4, which means extra +1 at every corner
-    Plane3D* segmented_lateral_walls = new Plane3D[channels + 4];
+    Plane3D *segmented_lateral_walls = new Plane3D[channels + 4];
     
     //segment the lateral walls
      int number_of_lateral_walls = segmentWallsBasedOnAzimuth(lateral_walls, listener, segmented_lateral_walls, channels);
@@ -96,15 +95,35 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     int final_numbers_of_walls_out = sliceRemainder(number_of_walls_out, remainder_walls, walls_out);
     
-//    std::cout << "\nAll walls except lateral walls after further slicing: \n ";
-//    for (int i = 0; i < final_numbers_of_walls_out; i++){
-//        //        std::cout << i << "\n";
-//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
-//    }
+    //prepare copy of all surface arrays to the global Cuboid variable
+    this->segmentedSides = new Plane3D[slices];
+    
+    //copy ceiling and floor
+    memcpy(this->segmentedSides, walls_ceiling_and_floor, number_of_ceiling_floor_surfaces*sizeof(Plane3D));
+    
+    //copy the rest of the walls except lateral walls
+    memcpy(&this->segmentedSides[number_of_ceiling_floor_surfaces], walls_out, final_numbers_of_walls_out * sizeof(Plane3D));
+    
+    //copy the lateral walls
+    memcpy(&this->segmentedSides[number_of_ceiling_floor_surfaces + final_numbers_of_walls_out], segmented_lateral_walls, number_of_lateral_walls * sizeof(Plane3D));
+    
+    
+    assert((number_of_ceiling_floor_surfaces + final_numbers_of_walls_out + number_of_lateral_walls) == slices);
 
-    //TODO: store the new walls in this->segmented_sides
     
-    
+    //free memory
+    delete [] segmented_lateral_walls;
+    delete [] lateral_walls;
+    delete [] walls_out;
+    delete [] walls_ceiling_and_floor;
+    delete [] walls_in;
+
+    //printout all walls
+    std::cout << "\nAll walls : \n ";
+    for (int i = 0; i < slices; i++){
+        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
+    }
+
 }
 
 
