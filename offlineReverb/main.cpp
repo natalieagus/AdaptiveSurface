@@ -370,7 +370,7 @@ int main(int argc, char* argv[])
     int tilesPerSide = 9;
     Cuboid cube = Cuboid(1, 1, 1);
     
-    cube.sliceCubeLateral(9, 72, 16, listener);
+    cube.sliceCubeLateral(4, 50, 16, listener);
     
     cube.segmentCube(tilesPerSide);
 

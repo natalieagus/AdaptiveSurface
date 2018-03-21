@@ -13,40 +13,59 @@ using namespace std;
 
 /*Emphasize patch decomposition on the lateral plane
  *
+ *int tilesPerSide          = the number of even segmentation per side needed
  *int slices                = total number of patches required, typically 32, or 64, or 128 if Hadamard FDN is used
  *int channels              = azimuthal segmentation
  */
 void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener){
-    //need to assert some condition about the tilesPerSide, slices, and channels
-    //slices > ( channels + 4 ) + ( tilesPerSide * 6 )?
-    
+    //Assert necessary condition about the tilesPerSide, slices, and channels
+    assert(slices > ( channels + 4) + (tilesPerSide * 6));
     
     //set the tiles per side for the room, this number has to be able to be square-rooted
 //    int tilesPerSide = 9;
-    //this->segmentedSides will now have tilesPerSide*tilesPerSide*6 surfaces
     segmentCube(tilesPerSide);
     
+    //this->segmentedSides will now have tilesPerSide*tilesPerSide*6 surfaces
+    int number_of_tiles_after_even_segmentation = 6*tilesPerSide;
+    int number_of_ceiling_floor_surfaces = 2*tilesPerSide;
+    int number_of_walls_out_array_size = slices - number_of_ceiling_floor_surfaces;
+    int number_of_non_ceiling_floor_surfaces = number_of_tiles_after_even_segmentation - number_of_ceiling_floor_surfaces;
+
+    
     //create temp array for walls_in, which is all surfaces without ceiling or floor
-    Plane3D walls_in[6*tilesPerSide - 2*tilesPerSide];
+    Plane3D walls_in[number_of_tiles_after_even_segmentation - number_of_ceiling_floor_surfaces];
+    
     int index = 0;
     
     //copy every other wall side except ceilings and walls to walls_in
-    for (int i = tilesPerSide*2; i< 6*tilesPerSide ; i++){
+    for (int i = number_of_ceiling_floor_surfaces; i< number_of_tiles_after_even_segmentation ; i++){
         walls_in[index] = this->segmentedSides[i];
         index ++;
     }
     
     //create temp array for walls_out, which is all surfaces without ceiling or floor, or lateral walls
-    Plane3D walls_out[slices - tilesPerSide * 2];
+    Plane3D walls_out[number_of_walls_out_array_size];
     std::cout << " Creating temp array walls_out with size : " <<slices - tilesPerSide * 2 << " \n";
     //create temp array for 4 lateral walls
     Plane3D lateral_walls[4];
     
     //split walls in walls_in into lateral walls and walls_out
     //store the number of walls in walls_out
-    int number_of_walls_out = splitWalls(walls_in, tilesPerSide, walls_out, 4*tilesPerSide, lateral_walls, listener, 1, 1);
+    int number_of_walls_out = splitWalls(walls_in, tilesPerSide, walls_out, number_of_non_ceiling_floor_surfaces, lateral_walls, listener, 1, 1);
     
     std::cout << "\n Number of surfaces in walls_out: " << number_of_walls_out << " \n";
+    
+//    //printing the rest of the walls, except lateral walls
+//    std::cout << "\nAll walls except lateral walls: \n ";
+//    for (int i = 0; i < number_of_walls_out; i++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
+//    }
+    
+    //printing the lateral walls before segmentation
+//    std::cout << "\nLateral walls before segmentation: \n ";
+//        for (int i = 0; i < 4; i ++){
+//                   printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", lateral_walls[i].corner.x, lateral_walls[i].corner.y, lateral_walls[i].corner.z, lateral_walls[i].S1.x , lateral_walls[i].S1.y, lateral_walls[i].S1.z, lateral_walls[i].S2.x, lateral_walls[i].S2.y, lateral_walls[i].S2.z );
+//        }
     
     //create array to store segmented lateral walls
     // the maximum number of segmented walls is channels + 4, which means extra +1 at every corner
@@ -57,26 +76,33 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     std::cout << "\nNumber of lateral walls: " << number_of_lateral_walls << " \n";
     
-    std::cout << "\nTotal walls intended are, excluding ceiling and floor: " << slices - tilesPerSide * 2 << "\n";
+//    std::cout << "\nSegmented lateral walls: \n ";
+//    //printing the segmented lateral walls
+//    for (int i = 0; i < number_of_lateral_walls; i ++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmented_lateral_walls[i].corner.x, segmented_lateral_walls[i].corner.y, segmented_lateral_walls[i].corner.z, segmented_lateral_walls[i].S1.x , segmented_lateral_walls[i].S1.y, segmented_lateral_walls[i].S1.z, segmented_lateral_walls[i].S2.x, segmented_lateral_walls[i].S2.y, segmented_lateral_walls[i].S2.z );
+//    }
+    
+    std::cout << "\nTotal walls intended are (including lateral walls), excluding ceiling and floor: " << number_of_walls_out_array_size << "\n";
     
     std::cout << "\nTotal walls now that we have are, excluding ceiling and floor: " << number_of_lateral_walls + number_of_walls_out << "\n";
     
     //slice randomly walls in walls_out until we have the intended number of surfaces
-    int remainder_walls = slices - (tilesPerSide * 2) - number_of_walls_out;
+    int remainder_walls = number_of_walls_out_array_size - number_of_walls_out - number_of_lateral_walls;
+    
+    assert(remainder_walls >= 0);
     
     std::cout << "\nRemainder walls to make are: " << remainder_walls << "\n";
     
     
-    sliceRemainder(slices, remainder_walls, walls_out);
+    int final_numbers_of_walls_out = sliceRemainder(number_of_walls_out, remainder_walls, walls_out);
     
-    std::cout << "\nAll walls except lateral walls after further slicing: \n ";
-    for (int i = 0; i < tilesPerSide * (6+2); i++){
-        //        std::cout << i << "\n";
-        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
-    }
-    
-    
-    
+//    std::cout << "\nAll walls except lateral walls after further slicing: \n ";
+//    for (int i = 0; i < final_numbers_of_walls_out; i++){
+//        //        std::cout << i << "\n";
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
+//    }
+
+    //TODO: store the new walls in this->segmented_sides
     
     
 }
@@ -329,22 +355,22 @@ int Cuboid::splitWalls(Plane3D* walls_in, int walls_per_side, Plane3D* walls_out
 
 /*Slices random remaining planes until we have 'slices' in total
  *
- *int slices                    = the supposed number of surfaces
+ *int last_index                = the last index of surfaces in array walls_out
  *int remainder                 = the number of surfaces we need to make
  *Plane3D* newSegmentedSides    = the planes
  */
-void Cuboid::sliceRemainder(int slices, int remainder, Plane3D* newSegmentedSides){
+int Cuboid::sliceRemainder(int last_index, int remainder, Plane3D* newSegmentedSides){
 
-    printf("Supposed number of surfaces : %i, now have to make %i more. \n", slices, remainder);
+    printf("Supposed number of surfaces : %i, now have to make %i more. \n", last_index + remainder, remainder);
     
-    int cubicTiles = slices-remainder;
-    int index = slices - remainder; //last index
+    int original_wall_last_index = last_index;
+    int index = last_index; //last index, mutable
     
     std::cout << " last index : " << index << "\n" ;
     
     srand(11);
     //            srand(time(NULL));
-    int randNum = rand()%(cubicTiles-1);
+    int randNum = rand()%(original_wall_last_index-1);
     
     //divide some plane into two
     for (int i = 0; i<remainder; i++){
@@ -360,7 +386,7 @@ void Cuboid::sliceRemainder(int slices, int remainder, Plane3D* newSegmentedSide
             newSegmentedSides[index] = Plane3D(newCorner, newS1, refPlane.S2);
             
             index++;
-            randNum = rand()%(cubicTiles-1);
+            randNum = rand()%(original_wall_last_index-1);
         }
         
         else{
@@ -370,9 +396,11 @@ void Cuboid::sliceRemainder(int slices, int remainder, Plane3D* newSegmentedSide
             newSegmentedSides[index] = Plane3D(newCorner,refPlane.S1, newS2);
 
             index++;
-            randNum = rand()%(cubicTiles-1);
+            randNum = rand()%(original_wall_last_index-1);
         }
     }
+    
+    return index;
     
 }
 

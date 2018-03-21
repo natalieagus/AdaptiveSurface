@@ -83,8 +83,8 @@ typedef struct Cuboid{
     void sliceCube(int slices);
     //even segmentation, output will be 6 (1 by 6), or 24 (4 by 6), or 54 (9 by 6), etc
     int segmentCube(int tilesPerSide);
-    //Subdivide some patches randomly until we have 'slices' number of patches in total
-    void sliceRemainder(int slices, int remainder, Plane3D* newSegmentedSides);
+    //Subdivide some patches randomly until we have last_index+remainder number of patches in total
+    int sliceRemainder(int last_index, int remainder, Plane3D* newSegmentedSides);
     
     //Adaptive lateral decomposition method for Paper 5
     void sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener);
