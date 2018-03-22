@@ -286,14 +286,14 @@ void FDN::setParameterSafe(Parameter params)
     ///**************Set HSF Filters *****************////
     ///************************************************////
     
+    //Highshelf, for lesser decay time on higher frequencies
     BMBiquadArray_FDNHighShelfInit(&highShelfFilter, delayTimesSecond, parametersFDN.hsffreq, parametersFDN.RT60, parametersFDN.hsfRT60, TOTALDELAYS, SAMPLE_RATE_F);
     
-    //Lowshelf
-
+    //Lowshelf, for lesser decay time on lower frequencies
     BMBiquadArray_FDNLowShelfInit(&lowShelfFilter, delayTimesSecond, parametersFDN.lsffreq, parametersFDN.RT60, parametersFDN.lsfRT60, TOTALDELAYS, SAMPLE_RATE_F);
     
 
-    //Lowpass
+    //Lowpass, dampen high frequencies
     LowPassLeft = MultiLevelBiQuadFilter();
     LowPassLeft.setLowPass(parametersFDN.lowpass);
     
@@ -301,7 +301,7 @@ void FDN::setParameterSafe(Parameter params)
     LowPassRight.setLowPass(parametersFDN.lowpass);
     
     
-    //Bell
+    //Bell, boost between 2-7kHz, peak at 3.5khz to add more realistic effect on head shadowing
     BellLeft = MultiLevelBiQuadFilter();
     BellLeft.setBell(parametersFDN.bellPeak, parametersFDN.bellBW, parametersFDN.bellGain, 1);
     

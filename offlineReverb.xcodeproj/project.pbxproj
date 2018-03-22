@@ -43,8 +43,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2C362EF620624E170095A9B8 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Ray.cpp; path = TheEngineSample/Ray.cpp; sourceTree = "<group>"; };
-		2C362EF720624E170095A9B8 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Ray.hpp; path = TheEngineSample/Ray.hpp; sourceTree = "<group>"; };
+		2C362EF620624E170095A9B8 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
+		2C362EF720624E170095A9B8 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ray.hpp; sourceTree = "<group>"; };
 		2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BMBiquadArray.c; sourceTree = "<group>"; };
 		2C36CCD91FFA925D003DB553 /* BMBiquadArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMBiquadArray.h; sourceTree = "<group>"; };
 		2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TPCircularBuffer.c; path = Modules/TPCircularBuffer/TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		2CFBA7A21EB783E0001A595E /* Point2d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Point2d.hpp; path = TheEngineSample/Point2d.hpp; sourceTree = "<group>"; };
 		2CFBA7A31EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuadraturePhaseEnvelopeFollower.cpp; path = TheEngineSample/QuadraturePhaseEnvelopeFollower.cpp; sourceTree = "<group>"; };
 		2CFBA7A41EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuadraturePhaseEnvelopeFollower.h; path = TheEngineSample/QuadraturePhaseEnvelopeFollower.h; sourceTree = "<group>"; };
-		2CFBA7A51EB783E0001A595E /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Resources; path = TheEngineSample/Resources; sourceTree = "<group>"; };
+		2CFBA7A51EB783E0001A595E /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
 		2CFBA7A81EB783E0001A595E /* SecondOrderFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SecondOrderFilter.cpp; path = TheEngineSample/SecondOrderFilter.cpp; sourceTree = "<group>"; };
 		2CFBA7A91EB783E0001A595E /* SecondOrderFilter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SecondOrderFilter.hpp; path = TheEngineSample/SecondOrderFilter.hpp; sourceTree = "<group>"; };
 		2CFBA7AA1EB783E0001A595E /* SingleTapDelay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleTapDelay.cpp; path = TheEngineSample/SingleTapDelay.cpp; sourceTree = "<group>"; };
@@ -114,6 +114,8 @@
 		2CFBA7CA1EB78623001A595E /* FDN_Binaural */ = {
 			isa = PBXGroup;
 			children = (
+				2C362EF620624E170095A9B8 /* Ray.cpp */,
+				2C362EF720624E170095A9B8 /* Ray.hpp */,
 				2CFBA7991EB783E0001A595E /* MonteCarlo.cpp */,
 				2CFBA79A1EB783E0001A595E /* MonteCarlo.hpp */,
 				2CFBA79B1EB783E0001A595E /* MultiLevelBiQuadFilter.cpp */,
@@ -126,7 +128,6 @@
 				2CFBA7A21EB783E0001A595E /* Point2d.hpp */,
 				2CFBA7A31EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.cpp */,
 				2CFBA7A41EB783E0001A595E /* QuadraturePhaseEnvelopeFollower.h */,
-				2CFBA7A51EB783E0001A595E /* Resources */,
 				2CFBA7A81EB783E0001A595E /* SecondOrderFilter.cpp */,
 				2CFBA7A91EB783E0001A595E /* SecondOrderFilter.hpp */,
 				2CFBA7AA1EB783E0001A595E /* SingleTapDelay.cpp */,
@@ -174,8 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				3AA66E571B0B1196007B75E7 /* main.cpp */,
-				2C362EF620624E170095A9B8 /* Ray.cpp */,
-				2C362EF720624E170095A9B8 /* Ray.hpp */,
+				2CFBA7A51EB783E0001A595E /* Resources */,
 				2CFBA7CA1EB78623001A595E /* FDN_Binaural */,
 				2CFBA7241EB77B1E001A595E /* Modules */,
 			);
