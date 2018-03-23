@@ -530,7 +530,7 @@ int Cuboid::segmentCube(int tilesPerSide){
     
     //now divide each side into tiles per side
     dimensions = static_cast<int>(sqrtf(tilesPerSide));
-
+    this->tilesPerSide = tilesPerSide;
     
     int index = 0;
     for (int k = 0; k<6; k++){
@@ -808,42 +808,3 @@ float Cuboid::ProjectedArea_rectangleSubDiv(Plane3D r, Vector3D L, size_t divisi
 }
 
 
-/*
- * Bauer's method: create (approx) evenly distributed points on a unit sphere with centre (0,0,0)
- * @param       n: number of points to create on unit sphere
- * @return      n: unit vector out pointing to the points
- */
-void Cuboid::bauersMethod(int n, Vector3D* out){
-    
-    float L = sqrtf((float) n * M_PI);
-    
-    for (int i = 1; i < (n+1); i++){
-        float z = 1.f - (2.f * (float) i - 1.f) / (float) n;
-        out[i-1] = Vector3D(
-                            sinf(acosf(z)) * cosf(acosf(z) * L),
-                            sinf(acosf(z)) * sinf(acosf(z) * L),
-                            z
-                            ).normalize();
-    }
-    
-//    for (int i = 0; i < n; i++){
-//        //        out[i] = Vector3D(x[i], y[i], z[i]);
-//        printf("{%f, %f, %f},", out[i].x, out[i].y, out[i].z);
-//    }
-    
-}
-
-void Cuboid::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener){
-    
-    bauersMethod(n, out);
-    
-    // transform to shorter ray and shift origin to listener's location
-    for (int i = 0; i < n; i++){
-        out[i] = out[i].scalarMult(0.1).add(listener);
-    }
-    
-    for (int i = 0; i < n; i++){
-        printf("{%f, %f, %f},", out[i].x, out[i].y, out[i].z);
-    }
-
-}

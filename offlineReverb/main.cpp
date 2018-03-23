@@ -12,6 +12,7 @@
 #include <fstream>
 #include "Vector3D.hpp"
 #include "Ray.hpp"
+#include "CuboidGroup.hpp"
 
 
 #define FS 44100
@@ -56,40 +57,6 @@ void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* of
 }
 
 
-bool isWithinRectangularPlane2D(float ABX, float ABY, float ADX, float ADY, float AMX, float AMY){
-    
-    std::cout << ABX << " " << ABY << " " << ADX << " " << ADY << " " << AMX << " " << AMY << " \n ";
-    
-    float AB_dot_AB = ABX * ABX + ABY * ABY;
-    float AD_dot_AD = ADX * ADX + ADY * ADY;
-    float AM_dot_AB = AMX * ABX + AMY * ABY;
-    float AM_dot_AD = AMX * ADX + AMY * ADY;
-    
-    if ( AB_dot_AB > 0 && AD_dot_AD > 0){
-    
-        std::cout << AM_dot_AB << " " << AB_dot_AB << " " << AM_dot_AD << " " << AD_dot_AD;
-    
-        if ( 0 <= AM_dot_AB && AM_dot_AB <= AB_dot_AB && 0 <= AM_dot_AD && AM_dot_AD <= AD_dot_AD ){
-            printf("YES");
-            return true;
-        }
-        printf("NO");
-        return false;
-    }
-    
-    return false;
-//    else if ( AB_dot_AB > 0 ){
-//        //AB is a line
-//        dxc = AMX - ABX;
-//        dyc = AMY - ABY;
-//
-//        dxl = point2.x - point1.x;
-//        dyl = point2.y - point1.y;
-//
-//        cross = dxc * dyl - dyc * dxl;
-//    }
-    
-}
 
 /*Checks if point M is within bounded rectangle P
  *Condition:    M has to be on the same plane as P
@@ -105,7 +72,7 @@ bool isWithinRectangularPlane(Plane3D P, Vector3D M){
 //    printf("d prod %f \n", fabs(d_prod - 0));
     
     if (fabs(d_prod - 0) >= 0.00001){
-        printf("M is not on the plane P");
+        printf("M is not on the plane P \n");
         return false;
     }
     

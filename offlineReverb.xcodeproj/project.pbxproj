@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0CAA0320654F550047398A /* Plane3DGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAA0120654F550047398A /* Plane3DGroup.cpp */; };
+		2C0CAA06206559D70047398A /* CuboidGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0CAA04206559D70047398A /* CuboidGroup.cpp */; };
 		2C362EF820624E170095A9B8 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C362EF620624E170095A9B8 /* Ray.cpp */; };
 		2C36CCDA1FFA925D003DB553 /* BMBiquadArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */; };
 		2CFBA73D1EB77B4D001A595E /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CFBA7391EB77B4D001A595E /* TPCircularBuffer.c */; };
@@ -43,6 +45,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2C0CAA0120654F550047398A /* Plane3DGroup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Plane3DGroup.cpp; path = TheEngineSample/Plane3DGroup.cpp; sourceTree = "<group>"; };
+		2C0CAA0220654F550047398A /* Plane3DGroup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Plane3DGroup.hpp; path = TheEngineSample/Plane3DGroup.hpp; sourceTree = "<group>"; };
+		2C0CAA04206559D70047398A /* CuboidGroup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CuboidGroup.cpp; path = TheEngineSample/CuboidGroup.cpp; sourceTree = "<group>"; };
+		2C0CAA05206559D70047398A /* CuboidGroup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = CuboidGroup.hpp; path = TheEngineSample/CuboidGroup.hpp; sourceTree = "<group>"; };
 		2C362EF620624E170095A9B8 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
 		2C362EF720624E170095A9B8 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ray.hpp; sourceTree = "<group>"; };
 		2C36CCD81FFA925D003DB553 /* BMBiquadArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BMBiquadArray.c; sourceTree = "<group>"; };
@@ -151,6 +157,10 @@
 				2CFBA7941EB783E0001A595E /* FirstOrderFilter.h */,
 				2CFBA7971EB783E0001A595E /* Gains.cpp */,
 				2CFBA7981EB783E0001A595E /* Gains.hpp */,
+				2C0CAA0120654F550047398A /* Plane3DGroup.cpp */,
+				2C0CAA0220654F550047398A /* Plane3DGroup.hpp */,
+				2C0CAA04206559D70047398A /* CuboidGroup.cpp */,
+				2C0CAA05206559D70047398A /* CuboidGroup.hpp */,
 			);
 			name = FDN_Binaural;
 			sourceTree = "<group>";
@@ -253,6 +263,8 @@
 				2CFBA7C11EB783E0001A595E /* Vector3D.cpp in Sources */,
 				2CFBA7C91EB785BF001A595E /* BiQuadFilter.cpp in Sources */,
 				2CFBA7B71EB783E0001A595E /* Gains.cpp in Sources */,
+				2C0CAA0320654F550047398A /* Plane3DGroup.cpp in Sources */,
+				2C0CAA06206559D70047398A /* CuboidGroup.cpp in Sources */,
 				2CFBA7AF1EB783E0001A595E /* BMMultiTapDelay.c in Sources */,
 				2CFBA7B51EB783E0001A595E /* FirstOrderFilter.cpp in Sources */,
 				2CFBA7BF1EB783E0001A595E /* SecondOrderFilter.cpp in Sources */,

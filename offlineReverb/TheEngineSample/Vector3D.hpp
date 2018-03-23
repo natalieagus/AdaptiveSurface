@@ -40,7 +40,6 @@ typedef struct Vector3D {
     }
     
 
-    
     //Methods
     float dotProduct(Vector3D vec2);
     Vector3D crossProduct(Vector3D vec2);

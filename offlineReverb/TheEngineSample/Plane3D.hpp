@@ -21,58 +21,42 @@ typedef struct Plane3D {
         this->S1 = Vector3D();
         this->S2 = Vector3D();
         this->normal = this->S1.crossProduct(S2).normalize();
-        bouncePoint = corner.add(S1.scalarMult(S1.magnitude()/2)).add((S2.scalarMult(S2.magnitude()/2)));
-        
+        this->subdivided = 0;
+        this->width = S1.magnitude();
+        this->height = S2.magnitude();
+        this->area = getArea();
     };
     
     //Destructor
     ~Plane3D() = default;
     
-    //Constructor with arguments
+    /*Constructor with arguments
+     *@params   set direction vectors S1 and S2 such that S1 cross S2 is the surface's normal
+     */
     Plane3D(Vector3D corner, Vector3D S1, Vector3D S2){
         this->corner = corner;
         this->S1 = S1;
         this->S2 = S2;
         this->normal = this->S1.crossProduct(S2).normalize();
-        bouncePoint = corner.add(S1.scalarMult(S1.magnitude()/2)).add((S2.scalarMult(S2.magnitude()/2)));
+        this->subdivided = 0;
+        this->width = S1.magnitude();
+        this->height = S2.magnitude();
+        this->area = getArea();
     }
     
     
     //Methods
-    void setNormal(Vector3D normal){
-        this->normal = normal;
-    }
-    
-    void setLength(){
-        width = S1.magnitude();
-        height= S2.magnitude();
-    }
-    
-    Vector3D getMidpoint(){
-        Vector3D out = corner.add(S1.scalarMult(0.5f));
-        out = out.add(S2.scalarMult(0.5f));
-        return out;
-    }
-    
-    float getArea(){
-        return S1.magnitude() * S2.magnitude();
-    }
-    
-    void setBouncePoint(Vector3D bp){
-        bouncePoint = Vector3D(bp.x, bp.y, bp.z);
-    }
-    
-    Vector3D getNormal(){
-        return S1.crossProduct(S2);
-    }
+    Vector3D getMidpoint();
+    float getArea();
+    Vector3D getNormal();
 
     //Variables
     Vector3D corner, S1, S2;
     Vector3D normal;
-    Vector3D bouncePoint;
     
     float width; //length of S1
     float height; //length of S2
+    float area;
     
     int subdivided = 0;
     
