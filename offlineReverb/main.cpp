@@ -55,7 +55,22 @@ void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* of
 //    printf("Time elapsed: %f ms\n", elapsed_msecs);
 }
 
+/*Checks if point M is within bounded plane P
+ *@returns  true/false
+ */
+bool isWithinRectangularPlane(Plane3D P, Vector3D M){
 
+    if (
+         (0 <= M.subtract(P.corner).dotProduct(P.S1) && M.subtract(P.corner).dotProduct(P.S1) <= P.S1.dotProduct(P.S1)) &&
+         (0 <= M.subtract(P.corner).dotProduct(P.S2) && M.subtract(P.corner).dotProduct(P.S2) <= P.S2.dotProduct(P.S2))
+        ){
+        std::cout << " within ";
+        return true;
+    }
+    
+    std::cout << " not within ";
+    return false;
+}
 
 int main(int argc, char* argv[])
 {
@@ -74,15 +89,26 @@ int main(int argc, char* argv[])
     
     
     //testing lateral method
-    Vector3D listener = Vector3D(0.1,0.1,0.5);
-//    int tilesPerSide = 4;
-    Cuboid cube = Cuboid(1, 1, 1);
-//    cube.sliceCubeLateral(tilesPerSide, 50, 16, listener);
+    Vector3D listener = Vector3D(0,0.1,0.5);
     
-    //testing spiral method
-    int n = 30;
-    Vector3D* out = new Vector3D[n];
-    cube.bauersMethodOnListener(n, out, listener);
+    Vector3D c = Vector3D(0,0,0);
+    Vector3D s1 = Vector3D(0,0,1);
+    Vector3D s2 = Vector3D(1,0,0);
+    
+    Plane3D P = Plane3D(c, s1, s2);
+    
+    bool within_plane = isWithinRectangularPlane(P, listener);
+    
+    std::cout << " Is listener within plane? Ans: " << within_plane  << "\n";
+    
+////    int tilesPerSide = 4;
+//    Cuboid cube = Cuboid(1, 1, 1);
+////    cube.sliceCubeLateral(tilesPerSide, 50, 16, listener);
+//
+//    //testing spiral method
+//    int n = 30;
+//    Vector3D* out = new Vector3D[n];
+//    cube.bauersMethodOnListener(n, out, listener);
     
   
     return 0;
