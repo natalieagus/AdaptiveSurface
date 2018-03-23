@@ -28,6 +28,11 @@ typedef struct Vector3D {
         this->z = z;
     }
     
+    //Destructor
+    ~Vector3D(){
+        
+    }
+    
     Vector3D(float x, float y){
         this->x = x;
         this->y = y;

@@ -39,6 +39,12 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     //copy ceiling and floor to walls_ceiling_and_floor array
     std::memcpy(walls_ceiling_and_floor, this->segmentedSides, number_of_ceiling_floor_surfaces*sizeof(Plane3D));
     
+    //printing ceiling and floor
+//    std::cout << "\nCeiling and floor walls: \n ";
+//    for (int i = 0; i < number_of_ceiling_floor_surfaces; i++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_ceiling_and_floor[i].corner.x, walls_ceiling_and_floor[i].corner.y, walls_ceiling_and_floor[i].corner.z, walls_ceiling_and_floor[i].S1.x , walls_ceiling_and_floor[i].S1.y, walls_ceiling_and_floor[i].S1.z, walls_ceiling_and_floor[i].S2.x, walls_ceiling_and_floor[i].S2.y, walls_ceiling_and_floor[i].S2.z );
+//    }
+    
     //copy every other wall side except ceilings and walls to walls_in
     std::memcpy(walls_in, this->segmentedSides + number_of_ceiling_floor_surfaces, number_of_non_ceiling_floor_surfaces * sizeof(Plane3D));
 
@@ -54,7 +60,7 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     std::cout << "\n Number of surfaces in walls_out: " << number_of_walls_out << " \n";
     
-//    //printing the rest of the walls, except lateral walls
+    //printing the rest of the walls, except lateral walls
 //    std::cout << "\nAll walls except lateral walls: \n ";
 //    for (int i = 0; i < number_of_walls_out; i++){
 //        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
@@ -118,11 +124,11 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     delete [] walls_ceiling_and_floor;
     delete [] walls_in;
 
-    //printout all walls
-    std::cout << "\nAll walls : \n ";
-    for (int i = 0; i < slices; i++){
-        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
-    }
+//    //printout all walls
+//    std::cout << "\nAll walls : \n ";
+//    for (int i = 0; i < slices; i++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
+//    }
 
 }
 
@@ -802,3 +808,42 @@ float Cuboid::ProjectedArea_rectangleSubDiv(Plane3D r, Vector3D L, size_t divisi
 }
 
 
+/*
+ * Bauer's method: create (approx) evenly distributed points on a unit sphere with centre (0,0,0)
+ * @param       n: number of points to create on unit sphere
+ * @return      n: unit vector out pointing to the points
+ */
+void Cuboid::bauersMethod(int n, Vector3D* out){
+    
+    float L = sqrtf((float) n * M_PI);
+    
+    for (int i = 1; i < (n+1); i++){
+        float z = 1.f - (2.f * (float) i - 1.f) / (float) n;
+        out[i-1] = Vector3D(
+                            sinf(acosf(z)) * cosf(acosf(z) * L),
+                            sinf(acosf(z)) * sinf(acosf(z) * L),
+                            z
+                            ).normalize();
+    }
+    
+//    for (int i = 0; i < n; i++){
+//        //        out[i] = Vector3D(x[i], y[i], z[i]);
+//        printf("{%f, %f, %f},", out[i].x, out[i].y, out[i].z);
+//    }
+    
+}
+
+void Cuboid::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener){
+    
+    bauersMethod(n, out);
+    
+    // transform to shorter ray and shift origin to listener's location
+    for (int i = 0; i < n; i++){
+        out[i] = out[i].scalarMult(0.1).add(listener);
+    }
+    
+    for (int i = 0; i < n; i++){
+        printf("{%f, %f, %f},", out[i].x, out[i].y, out[i].z);
+    }
+
+}

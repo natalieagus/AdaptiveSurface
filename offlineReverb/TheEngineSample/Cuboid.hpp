@@ -92,6 +92,10 @@ typedef struct Cuboid{
     Ray getRayFromWallPatch(Vector3D L, Plane3D wall_patch);
     int segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener, Plane3D* segmented_lateral_walls, int channels);
     
+    //Adaptive lateral decomposition method using Bauer's method for Paper 5B
+    void bauersMethod(int n, Vector3D* out);
+    void bauersMethodOnListener(int n, Vector3D* out, Vector3D listener);
+    
     //segment cube into 6 surfaces
     float segmentCubeOnce();
     
@@ -105,8 +109,6 @@ typedef struct Cuboid{
     void segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L);
     float projectedAreaOfAPlane(Vector3D S, Vector3D L, Plane3D patch);
     int dividePlane(Plane3D divide, int index, int sourceIndex, Vector3D L, Vector3D S);
-//    int dividePlaneAlongS1(Plane3D divide, int index, int sourceIndex);
-//    bool longestDimension(Plane3D patch);
     float ProjectedArea_rectangleSubDiv(Plane3D r, Vector3D L, size_t divisions);
     float projAreaSubSec(Plane3D r, Vector3D L);
     

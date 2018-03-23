@@ -27,14 +27,14 @@ public:
     Ray(Vector3D point, Vector3D direction)
     {
         this-> p = point;
-        this-> d = direction.normalize();
+        this-> d = direction;
         this-> u = 0;
     };
     
     Ray(Vector3D point, Vector3D direction, float wall_length)
     {
         this-> p = point;
-        this-> d = direction.normalize();
+        this-> d = direction;
         this-> u = 0;
         this-> wall_length = wall_length;
     };
@@ -49,7 +49,7 @@ public:
         theta_azimuth = theta_azimuth / 180.f * M_PI;
         
         this->d = Vector3D(sin(theta_azimuth), cos(theta_azimuth), d.z);
-        this->d = d.normalize();
+        this->d = d;
         this->u = 0.f;
     };
     
