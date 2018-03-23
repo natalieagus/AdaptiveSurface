@@ -61,6 +61,10 @@ typedef struct Plane3D {
     void setBouncePoint(Vector3D bp){
         bouncePoint = Vector3D(bp.x, bp.y, bp.z);
     }
+    
+    Vector3D getNormal(){
+        return S1.crossProduct(S2);
+    }
 
     //Variables
     Vector3D corner, S1, S2;
