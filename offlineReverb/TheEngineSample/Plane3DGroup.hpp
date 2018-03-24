@@ -36,16 +36,23 @@ public:
             area += planeGroup[i].getArea();
         }
         
+        this->divisor = 1;
+        
+        this->area = this->area / (float) this->divisor;
     }
     
     ~Plane3DGroup(){
         //destructor
     }
     
+    //methods
+    void updateDivisor(int newDivisor);
     
+    //variables
     Plane3D *planeGroup; //list of surfaces in the same group
     int numberOfPlanes; //number of members in the group
     int rayNumber; //the ray associated with this group
+    int divisor;
     float area; //area of this group
     Vector3D midPoint;
     

@@ -58,6 +58,7 @@ typedef struct Plane3D {
     float height; //length of S2
     float area;
     
+    //State used for heuristics method when necessary
     int subdivided = 0;
     
 } Plane3D;
