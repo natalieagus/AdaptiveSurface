@@ -38,7 +38,7 @@ public:
     
     
     //Adaptive lateral decomposition methods for Paper 5B
-    void groupSurfacesBasedOnNearestPoint(Plane3D *surfaces, Vector3D* points);
+    void groupSurfacesBasedOnNearestPoint(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints);
     int findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints);
     void bauersMethod(int n, Vector3D* out);
     void bauersMethodOnListener(int n, Vector3D* out, Vector3D listener);

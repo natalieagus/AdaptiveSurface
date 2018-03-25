@@ -56,13 +56,39 @@ void CuboidGroup::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener
     
 }
 
+
 /*Given a set of *surfaces on the same plane, and a set of *points on that same plane, assign
  *each surface to the nearest point. Store the output at surfaceGroups.
  *
- *Precondition: points are far apart enough such that no points land on the same surface patch
- *
  */
-void CuboidGroup::groupSurfacesBasedOnNearestPoint(Plane3D *surfaces, Vector3D* points){
+void CuboidGroup::groupSurfacesBasedOnNearestPoint(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints){
+    
+    int *surfaceRayIndex = new int[numOfSurfaces];
+    
+    //naive brute-force method of assigning nearest neighbour
+    for (int i = 0; i < numOfSurfaces; i++){
+        
+        float nearest = INFINITY;
+        int surface_ray_index = -1;
+        
+        for (int j = 0; j < numOfPoints; j++){
+            float distance = surfaces[i].getMidpoint().distance(points[j]);
+            if (distance < nearest){
+                nearest = distance;
+                surface_ray_index = j;
+            }
+        }
+        
+        assert(nearest != INFINITY && surface_ray_index > -1);
+        
+        surfaceRayIndex[i] = surface_ray_index;
+
+    }
+    
+    //check if all numbers from 0 to numOfPoints are accounted for in surfaceRayIndex
+    //if not assign the rays into the tiles it is within
+    //brute force method, assuming the "stray rays" are small
+    
     
 }
 
