@@ -13,6 +13,8 @@
 #include "Vector3D.hpp"
 #include "Ray.hpp"
 #include "CuboidGroup.hpp"
+#include <set>
+#include <map>
 
 
 #define FS 44100
@@ -142,49 +144,36 @@ int main(int argc, char* argv[])
     
     
     
-    //testing lateral method
-    Vector3D listener = Vector3D(0.5, 0.5, 0.5);
-    
-    Ray r = Ray(listener, Vector3D(0, -1, 0));
-    
-    Vector3D c = Vector3D(0,0,0);
-    Vector3D s1 = Vector3D(0,0,1);
-    Vector3D s2 = Vector3D(1,0,0);
-    
-    Plane3D P = Plane3D(c, s1, s2);
-    
-//    bool within_plane = isWithinRectangularPlane(P, listener);
-    
-    float u = 0.f;
-    bool intersects_plane = rayPlaneIntersection(P, r, &u);
-    std::cout << " Is ray intersecting plane? Ans: " << intersects_plane  << "\n";
-
-
-
-
-//    Vector3D p_normal = P.getNormal();
-//
-//    printf("Plane's normal is : %f %f %f \n", p_normal.x, p_normal.y, p_normal.z);
-
-    if (intersects_plane) {
-
-        Vector3D intersection = r.get_vector(u);
-        printf("Intersects at coordinate: {%f, %f, %f} \n", intersection.x, intersection.y, intersection.z);
-        bool within_plane = isWithinRectangularPlane(P, r.get_vector(u));
-
-        std::cout << " Is intersection within plane? Ans: " << within_plane  << "\n";
+    //random workspace for tests
+    //getting unique elements from set
+    int *a = new int[10];
+    for (int i = 0; i<10;i++){
+        a[i] = i;
     }
     
-////    int tilesPerSide = 4;
-//    Cuboid cube = Cuboid(1, 1, 1);
-////    cube.sliceCubeLateral(tilesPerSide, 50, 16, listener);
-//
-//    //testing spiral method
-//    int n = 30;
-//    Vector3D* out = new Vector3D[n];
-//    cube.bauersMethodOnListener(n, out, listener);
+    a[1] = 0;
+    a[2] = 0;
+    a[3] = 0;
     
-  
+    
+    std::set<std::pair<int, int>> items;
+    
+    for (int i = 0; i<5;i++){
+        items.insert(make_pair(2, i));
+    }
+    
+    for (int i = 5; i<10;i++){
+        items.insert(make_pair(3, i));
+    }
+    
+    
+    for (std::set<std::pair<int, int>>::iterator it=items.begin(); it!=items.end(); ++it)
+    {
+        std::cout << it->first << " " << it->second <<std::endl;
+    }
+    
+
+    
     return 0;
     
     
