@@ -331,19 +331,33 @@ bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
 }
 
 
+/*Given a list of bauer Vectors, create each a ray at listener, with direction vector corresponding to element at bauerVector
+ *
+ *@param    bauerVector     Vector3D from bauersMethodOnListener
+ *@param    n               number of elements in bauerVector
+ *@param    listener        Vector3D listener location
+ *@param    out             rays containing bauerRays (modified by this method)
+ */
+void CuboidGroup::createBauersRayOnListener(int n, Vector3D bauerVector, Ray* out, Vector3D listener){
+    
+}
+
+
 
 /*Given a set of Bauer rays, find the intersection points on that wall (if any)
  *This is a ray-plane intersection problem
  *
  *@param    wall (each rectangular room's dimension plane i.e: cube.sides[k])
  *@param    bauerRays (rays originating from listener)
- *@param    intersectionPoints (Vector3D points that lie on this wall)
+ *@param    intersectionPoints (Vector3D points that lie on this wall, modified by this method)
  *returns   number of elements in intersectionPoints
  */
 int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints){
-    //TODO: move Ray-plane intersection methods from main.cpp
+    //TODO access rayPlaneIntersection method, and then isWithinRectangularPlane
     return 0;
 }
+
+
 
 
 /*Given an evenly subdivided rube (Cuboid object), do:
