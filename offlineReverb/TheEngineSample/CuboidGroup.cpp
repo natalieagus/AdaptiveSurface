@@ -269,9 +269,9 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
 
 
 /*Checks if point M is within bounded rectangle P
- *Condition:    M has to already be on the same plane as P
- *              Only Use this after rayPlaneIntersection returns true
- *@returns      bool true if point M is within P, false otherwise
+ *Precondition:     M has to already be on the same plane as P
+ *                  Only Use this after rayPlaneIntersection returns true
+ *@returns          bool true if point M is within P, false otherwise
  */
 bool CuboidGroup::isWithinRectangularPlane(Plane3D P, Vector3D M){
     
