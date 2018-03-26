@@ -32,7 +32,7 @@ public:
 //        this-> p = point;
 //        this-> d = direction;
 //
-        //memcpy
+        //use memcpy for shallow copy
         memcpy(&this->p, &point, sizeof(Vector3D));
         memcpy(&this->d, &direction, sizeof(Vector3D));
         
