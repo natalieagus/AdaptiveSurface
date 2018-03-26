@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <set>
 #include <map>
+#include <string>
 using namespace std;
 
 #ifndef CuboidGroup_hpp
@@ -34,6 +35,8 @@ public:
         cube.segmentCube(tilesPerWall);
         //store number of default surface patches
         this->numberOfDefaultSurfacePatches = tilesPerWall * 6;
+        //double pointer, first pointer for walls 1-6, and second pointer is for groups of surfaces in that wall
+        this->surfaceGroups = new Plane3DGroup*[6];
     }
     
     //Destructor
@@ -43,8 +46,8 @@ public:
     
     //Adaptive lateral decomposition methods for Paper 5B
     void assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex);
-    void groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex);
-    void assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints);
+    void groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex, int wallIndex, int numberOfDistinctRays);
+    void assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int wallIndex);
     void assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int bauerRays);
     
     bool isWithinRectangularPlane(Plane3D P, Vector3D M);
@@ -56,7 +59,7 @@ public:
     
     //variables
     Cuboid cube;
-    Plane3DGroup *surfaceGroups; //groups of surfaces that make a room
+    Plane3DGroup **surfaceGroups;
     int numberOfSurfaceGroups;
     int numberOfDefaultSurfacePatches;
     

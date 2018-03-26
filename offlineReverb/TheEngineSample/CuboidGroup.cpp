@@ -102,12 +102,18 @@ void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int n
  *@param points             a set of Vecto3D points
  *@param numOfPoints        number of elements in points
  *@param surfaceRayIndex    the index of ray in points of which surface[i] is closest to, found using Nearest Neighbor algorithm in groupSurfacesBasedOnNearestNeighbour. Total number of elements in surfaceRayIndex == numOfSurfaces
+ *@param wallIndex          walls 1-6 (ceiling, floor, side 1-4)
+ *@param numberOfDistinctRays the number of distinct rays that are going to form groups. If each rays are accounted for, this number shall be equal to numOfPoints
  *
  *@modifies                 surfaceGroups
  */
-void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex){
+void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex, int wallIndex, int numberOfDistinctRays){
     
-    //want to sort based on RayIndex to create groups
+    //init class variable for this wall's surface group
+    this->surfaceGroups[wallIndex] = new Plane3DGroup[numberOfDistinctRays];
+    
+    //want to sort based on RayIndex to create groups, because each surface groups represent one ray
+    //format: rayIndex_surfaceIndex = {ray_index, surface_index}
     std::set<std::pair<int, int>> rayIndex_surfaceIndex;
     
     for (int i = 0; i < numOfSurfaces; i++){
@@ -125,11 +131,12 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     {
         //first: rayIndex, second: surfaceIndex
         std::cout << it->first << " " << it->second <<std::endl;
+        
         if (it->first == prev_iter){
             //there's no change in ray
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
-            surfaces_temp_index ++;
+            surfaces_temp_index++;
             //update prev_iter
             prev_iter = it->first;
         }
@@ -138,7 +145,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
             //only goes here if the first ray isn't 0
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
-            surfaces_temp_index ++;
+            surfaces_temp_index++;
             //update prev_iter
             prev_iter = it->first;
         }
@@ -146,14 +153,14 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         else if (it->first != prev_iter && surfaces_temp_index > 0){
             //ray has changed
             //create Plane3D group
-            this->surfaceGroups[numberOfSurfaceGroups] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
+            this->surfaceGroups[wallIndex][numberOfSurfaceGroups] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
             //update number of groups of surfaceGroup in this class
-            this->numberOfSurfaceGroups ++;
+            this->numberOfSurfaceGroups++;
             //reset the surfaces_temp_index
             surfaces_temp_index = 0;
             //add new planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
-            surfaces_temp_index ++;
+            surfaces_temp_index++;
             //update prev_iter
             prev_iter = it->first;
         }
@@ -166,7 +173,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     }
     
     //free memory
-    
+    delete [] surfaces_temp;
     
 }
 
@@ -176,8 +183,9 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
  *@param numOfSurfaces  number of elements in surfaces
  *@param points         a set of Vecto3D points
  *@param numOfPoints    number of elements in points
+ *@param wallIndex      walls 1-6 (ceiling, floor, side 1-4)
  */
-void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints){
+void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints, int wallIndex){
     
     int *surfaceRayIndex = new int[numOfSurfaces];
     
@@ -196,16 +204,17 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
     //it returns unique elements from surfaceRayIndex, stored in ascending order from begin() to end()
     std::set<int> set_surfaceRayIndex(surfaceRayIndex, surfaceRayIndex + numOfSurfaces);
     
-    
     //STEP 3: if all rays are accounted for,
     if (set_surfaceRayIndex.size() == numOfPoints){
         // setup this->surfaceGroups
-        this->surfaceGroups = new Plane3DGroup[set_surfaceRayIndex.size()];
+
         groupSurfacesBasedOnNearestNeighbour(surfaces,
                                              numOfSurfaces,
                                              points,
                                              numOfPoints,
-                                             surfaceRayIndex);
+                                             surfaceRayIndex,
+                                             wallIndex,
+                                             (int) set_surfaceRayIndex.size());
         return;
     }
     else{
@@ -226,7 +235,7 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
             //same value
             if (idx==idx_true) continue;
             //increment by 1, update idx_true
-            else if ( (idx - idx_true) == 1) idx_true ++;
+            else if ( (idx - idx_true) == 1) idx_true++;
             //there is a jump here
             else if ( (idx - idx_true) > 1 ){
                 
@@ -236,7 +245,7 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                 std::cout << "There's a jump of " << jump << " and  set element idx is " << idx << " idx_true is " << idx_true << std::endl;
                 while ( jump > 1 ){
                     //attach that ray to a patch
-                    idx_true ++; //this is the ray index that doesn't have a patch
+                    idx_true++; //this is the ray index that doesn't have a patch
                     jump = idx - idx_true;
                     
                     std::cout << "Left jump of " << jump << " and set element idx is " << idx << " idx_true is " << idx_true << std::endl;
@@ -246,11 +255,14 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                 }
                 
                 //at this point jump == 1, continue as per normal
-                idx_true ++;
+                idx_true++;
                 
             }
         }
     }
+    
+    //free memory
+    delete [] surfaceRayIndex;
     
     
 }
@@ -377,7 +389,7 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
             if (isWithinPlane){
                 uArray[numberOfBauerPointsOnWall] = u;
                 indexArray[numberOfBauerPointsOnWall] = i;
-                numberOfBauerPointsOnWall ++;
+                numberOfBauerPointsOnWall++;
             }
             
         }
