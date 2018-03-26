@@ -165,6 +165,8 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         
     }
     
+    //free memory
+    
     
 }
 
@@ -357,8 +359,40 @@ void CuboidGroup::createBauersRayOnListener(int n, Vector3D *bauerVectors, Vecto
  *@param    intersectionPoints (Vector3D points that lie on this wall, modified by this method)
  *returns   number of elements in intersectionPoints
  */
-int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints){
-    //TODO access rayPlaneIntersection method, and then isWithinRectangularPlane
+int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int numberOfRays, Vector3D* intersectionPoints){
+    
+    //create a temp placehoder to get the Ray's u value and index value if it intersects wall
+    float *uArray = new float[numberOfRays];
+    int *indexArray = new int[numberOfRays];
+    
+    int numberOfBauerPointsOnWall = 0;
+    
+    //Access rayPlaneIntersection method, and then isWithinRectangularPlane
+    for (int i = 0; i<numberOfRays; i++){
+        float u = 0.f;
+        bool intersect = rayPlaneIntersection(wall, bauerRays[i], &u);
+        if (intersect){
+            
+            bool isWithinPlane = isWithinRectangularPlane(wall, bauerRays[i].get_vector(u));
+            if (isWithinPlane){
+                uArray[numberOfBauerPointsOnWall] = u;
+                indexArray[numberOfBauerPointsOnWall] = i;
+                numberOfBauerPointsOnWall ++;
+            }
+            
+        }
+    }
+    
+    //store bauer points on wall in intersectionPoints
+    intersectionPoints = new Vector3D[numberOfBauerPointsOnWall];
+    for (int i = 0; i<numberOfBauerPointsOnWall; i++){
+        intersectionPoints[i] = bauerRays[indexArray[i]].get_vector(uArray[i]);
+    }
+    
+    //clear memory
+    delete [] uArray;
+    delete [] indexArray;
+    
     return 0;
 }
 

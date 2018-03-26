@@ -49,7 +49,7 @@ public:
     
     bool isWithinRectangularPlane(Plane3D P, Vector3D M);
     bool rayPlaneIntersection(Plane3D p, Ray r, float* u);
-    int findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints);
+    int findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int numberOfRays, Vector3D* intersectionPoints);
     void bauersMethod(int n, Vector3D* out);
     void bauersMethodOnListener(int n, Vector3D* out, Vector3D listener);
     void createBauersRayOnListener(int n, Vector3D *bauerVectors,  Vector3D listener, Ray* out);
