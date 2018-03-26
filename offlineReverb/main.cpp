@@ -60,73 +60,6 @@ void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* of
 
 
 
-/*Checks if point M is within bounded rectangle P
- *Condition:    M has to be on the same plane as P
- *              Only Use this after rayPlaneIntersection returns true
- *@returns  true/false
- */
-bool isWithinRectangularPlane(Plane3D P, Vector3D M){
-
-    //check if M is on plane P
-    Vector3D MP = P.corner.subtract(M);
-    float d_prod = MP.dotProduct(P.getNormal());
-    
-//    printf("d prod %f \n", fabs(d_prod - 0));
-    
-    if (fabs(d_prod - 0) >= 0.00001){
-        printf("M is not on the plane P \n");
-        return false;
-    }
-    
-    
-    Vector3D P1 = P.corner.add(P.S1);
-    Vector3D P2 = P1.add(P.S2);
-    Vector3D P3 = P.corner.add(P.S2);
-    Vector3D P4 = P.corner;
-    
-    Vector3D V3 = P4.subtract(P3);
-    Vector3D V1 = P2.subtract(P1);
-    Vector3D V4 = M.subtract(P1);
-    Vector3D V5 = M.subtract(P3);
-    
-    float V1_dot_V4 = V1.dotProduct(V4);
-    float V3_dot_V5 = V3.dotProduct(V5);
-    
-    if ( V1_dot_V4 >= 0 && V3_dot_V5 >= 0){
-        std::cout << " \n within \n ";
-        return true;
-    }
-    
-    std::cout << " \n is not within \n ";
-    return false;
-}
-
-bool rayPlaneIntersection(Plane3D p, Ray r, float* u){
-    
-    //Check if ray origins is at plane's corner
-    if (fabs(r.p.subtract(p.corner).magnitude()) < 0.00001){
-        *u = 0;
-        std::cout << "\nt : " << *u << " \n";
-        std::cout << " intersects at origin = plane corner";
-        return true;
-    }
-    
-    float denominator = p.getNormal().dotProduct(r.d);
-    
-    std::cout << "\ndenominator : " << denominator << " \n";
-    if (fabs(denominator) > 0.000001){
-        *u = p.corner.subtract(r.p).dotProduct(p.getNormal()) / denominator;
-        std::cout << "\nu : " << *u << " \n";
-        if (*u >= 0){
-            std::cout << " intersects ";
-            return true;
-        }
-    }
-    
-    std::cout << " does not intersect ";
-    return false;
-}
-
 
 int main(int argc, char* argv[])
 {
@@ -141,37 +74,46 @@ int main(int argc, char* argv[])
 //    saveImpulse(16, FS*impulseLength, &impulseLeft, &impulseRight);
 //
 //    std::cout << "\ndone.\n";
+//
+//    Cuboid cube = Cuboid();
+//    cube.segmentCube(9);
+    
+    
+    //init CuboidGroup
+    CuboidGroup CG = CuboidGroup(1, 1, 1, 4);
+    
+    // testing ray-plane intersection
+    Vector3D listener = Vector3D(2, 0.5, 0.5);
+    
+    Ray r = Ray(listener, Vector3D(0, -1, 0));
+    
+    Vector3D c = Vector3D(0,0,0);
+    Vector3D s1 = Vector3D(0,0,1);
+    Vector3D s2 = Vector3D(1,0,0);
+    
+    Plane3D P = Plane3D(c, s1, s2);
+    
+    //    bool within_plane = isWithinRectangularPlane(P, listener);
+    
+    float u = 0.f;
+    bool intersects_plane = CG.rayPlaneIntersection(P, r, &u);
+    std::cout << " Is ray intersecting plane? Ans: " << intersects_plane  << "\n";
     
     
     
-    //random workspace for tests
-    //getting unique elements from set
-    int *a = new int[10];
-    for (int i = 0; i<10;i++){
-        a[i] = i;
+    
+    //    Vector3D p_normal = P.getNormal();
+    //
+    //    printf("Plane's normal is : %f %f %f \n", p_normal.x, p_normal.y, p_normal.z);
+    
+    if (intersects_plane) {
+        
+        Vector3D intersection = r.get_vector(u);
+        printf("Intersects at coordinate: {%f, %f, %f} \n", intersection.x, intersection.y, intersection.z);
+        bool within_plane = CG.isWithinRectangularPlane(P, r.get_vector(u));
+        
+        std::cout << " Is intersection within plane? Ans: " << within_plane  << "\n";
     }
-    
-    a[1] = 0;
-    a[2] = 0;
-    a[3] = 0;
-    
-    
-    std::set<std::pair<int, int>> items;
-    
-    for (int i = 0; i<5;i++){
-        items.insert(make_pair(2, i));
-    }
-    
-    for (int i = 5; i<10;i++){
-        items.insert(make_pair(3, i));
-    }
-    
-    
-    for (std::set<std::pair<int, int>>::iterator it=items.begin(); it!=items.end(); ++it)
-    {
-        std::cout << it->first << " " << it->second <<std::endl;
-    }
-    
 
     
     return 0;

@@ -21,7 +21,7 @@ public:
     //constructor
     Ray(){
         this-> p = Vector3D();
-        this-> d = Vector3D();
+        this-> d = Vector3D(0,1,0);
         this-> u = 0;
     }
     
@@ -40,7 +40,7 @@ public:
         this-> wall_length = wall_length;
     };
     
-    //descrutor
+    //destructor
     ~Ray(){
         
     }

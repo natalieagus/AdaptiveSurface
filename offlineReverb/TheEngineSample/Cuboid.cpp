@@ -123,6 +123,8 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     delete [] walls_out;
     delete [] walls_ceiling_and_floor;
     delete [] walls_in;
+    
+    this->elements = slices;
 
 //    //printout all walls
 //    std::cout << "\nAll walls : \n ";
@@ -465,7 +467,7 @@ void Cuboid::sliceCube(int slices){
         newSegmentedSides[i] = Plane3D(segmentedSides[i].corner, segmentedSides[i].S1, segmentedSides[i].S2);
     }
     
-    elements = slices;
+    this->elements = slices;
     int remainder = slices - cubicTiles;
     int index = cubicTiles;
     
@@ -554,14 +556,15 @@ int Cuboid::segmentCube(int tilesPerSide){
         }
     }
     
-    return index;
-//    elements = 6*tilesPerSide;
+
+    elements = 6*tilesPerSide;
 //    return index;
     
-    //Printing the result
+//    Printing the result
 //    for (int i = 0; i< 6*tilesPerSide ; i++){
-//        printf("c : {%f %f %f}, s1: {%f %f %f}, s2: {%f %f %f}, n: {%f %f %f} \n", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x, segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z, segmentedSides[i].normal.x, segmentedSides[i].normal.y, segmentedSides[i].normal.z);
+//        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x, segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z);
 //    }
+    return index;
     
 }
 

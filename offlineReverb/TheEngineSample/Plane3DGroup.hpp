@@ -22,6 +22,16 @@ class Plane3DGroup{
     
 public:
     
+    //constructor without argument
+    Plane3DGroup(){
+        this->rayNumber = 0;
+        this->numberOfPlanes = 0;
+        this->midPoint = Vector3D();
+        this->planeGroup = new Plane3D();
+        this->area = 0.f;
+        this->divisor = 0.f;
+    }
+    
     //constructor
     Plane3DGroup(Plane3D* planes, int numberOfPlanes, Vector3D midPoint, int rayNumber = -1){
         this->rayNumber = rayNumber;

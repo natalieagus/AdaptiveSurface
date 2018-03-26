@@ -114,28 +114,68 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         rayIndex_surfaceIndex.insert(make_pair(surfaceRayIndex[i], i));
     }
     
+    //create temp array
+    Plane3D *surfaces_temp = new Plane3D[numOfSurfaces];
+    int surfaces_temp_index = 0;
+    int prev_iter = 0;
+    this->numberOfSurfaceGroups = 0;
+    
     //Iterate through rayIndex_surfaceIndex, sorted by rayIndex
     for (std::set<std::pair<int, int>>::iterator it=rayIndex_surfaceIndex.begin(); it!= rayIndex_surfaceIndex.end(); ++it)
     {
         //first: rayIndex, second: surfaceIndex
         std::cout << it->first << " " << it->second <<std::endl;
-        //TODO, create Plane3Dgroups
-         // ...
+        if (it->first == prev_iter){
+            //there's no change in ray
+            //add planes to surfaces_temp
+            surfaces_temp[surfaces_temp_index] = surfaces[it->second];
+            surfaces_temp_index ++;
+            //update prev_iter
+            prev_iter = it->first;
+        }
+        
+        else if (it->first != prev_iter && surfaces_temp_index == 0){
+            //only goes here if the first ray isn't 0
+            //add planes to surfaces_temp
+            surfaces_temp[surfaces_temp_index] = surfaces[it->second];
+            surfaces_temp_index ++;
+            //update prev_iter
+            prev_iter = it->first;
+        }
+        
+        else if (it->first != prev_iter && surfaces_temp_index > 0){
+            //ray has changed
+            //create Plane3D group
+            this->surfaceGroups[numberOfSurfaceGroups] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
+            //update number of groups of surfaceGroup in this class
+            this->numberOfSurfaceGroups ++;
+            //reset the surfaces_temp_index
+            surfaces_temp_index = 0;
+            //add new planes to surfaces_temp
+            surfaces_temp[surfaces_temp_index] = surfaces[it->second];
+            surfaces_temp_index ++;
+            //update prev_iter
+            prev_iter = it->first;
+        }
+        else{
+            std::cout << " This code shall never be executed " << std::endl;
+        }
+        
+        
         
     }
     
     
 }
 
-/*Given a set of *surfaces on the same plane, and a set of *points on that same plane, assign
- *each surface to the nearest point (nearest neighbour problem).
+/*Given a set of *surfaces on the same plane, and a set of *points on that same plane, assigneach surface to the nearest point (nearest neighbour problem).
  *
  *@param surfaces       a set of Plane3D surfaces
  *@param numOfSurfaces  number of elements in surfaces
  *@param points         a set of Vecto3D points
  *@param numOfPoints    number of elements in points
  */
-void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints){
+void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints){
     
     int *surfaceRayIndex = new int[numOfSurfaces];
     
@@ -157,10 +197,18 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour(Plane3D *surf
     
     //STEP 3: if all rays are accounted for,
     if (set_surfaceRayIndex.size() == numOfPoints){
-        //TODO: assign to Plane3D group using groupSurfacesBasedOnNearestNeighbour
-        /// ...
+        // setup this->surfaceGroups
+        this->surfaceGroups = new Plane3DGroup[set_surfaceRayIndex.size()];
+        groupSurfacesBasedOnNearestNeighbour(surfaces,
+                                             numOfSurfaces,
+                                             points,
+                                             numOfPoints,
+                                             surfaceRayIndex);
+        return;
     }
     else{
+        //handling the case where not all rays are accounted for (rarer case, esp when number of rays << number of patches)
+        
         //TODO: assign attached rays to Plane3D group using groupSurfacesBasedOnNearestNeighbour
         /// ...
         
@@ -206,12 +254,109 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour(Plane3D *surf
 }
 
 
+/*Checks if point M is within bounded rectangle P
+ *Condition:    M has to already be on the same plane as P
+ *              Only Use this after rayPlaneIntersection returns true
+ *@returns      bool true if point M is within P, false otherwise
+ */
+bool CuboidGroup::isWithinRectangularPlane(Plane3D P, Vector3D M){
+    
+    //check if M is on plane P
+    Vector3D MP = P.corner.subtract(M);
+    float d_prod = MP.dotProduct(P.getNormal());
+    
+    //    printf("d prod %f \n", fabs(d_prod - 0));
+    
+    if (fabs(d_prod - 0) >= 0.00001){
+        printf("M is not on the plane P \n");
+        return false;
+    }
+    
+    
+    Vector3D P1 = P.corner.add(P.S1);
+    Vector3D P2 = P1.add(P.S2);
+    Vector3D P3 = P.corner.add(P.S2);
+    Vector3D P4 = P.corner;
+    
+    Vector3D V3 = P4.subtract(P3);
+    Vector3D V1 = P2.subtract(P1);
+    Vector3D V4 = M.subtract(P1);
+    Vector3D V5 = M.subtract(P3);
+    
+    float V1_dot_V4 = V1.dotProduct(V4);
+    float V3_dot_V5 = V3.dotProduct(V5);
+    
+    if ( V1_dot_V4 >= 0 && V3_dot_V5 >= 0){
+        std::cout << " \n within \n ";
+        return true;
+    }
+    
+    std::cout << " \n is not within \n ";
+    return false;
+}
+
+
+/*Checks if a ray r intersects an unbounded plane p
+ *
+ *@param p      (unbounded) Plane3D p
+ *@param r      Ray at interest
+ *
+ *@modifies u   the scalar part of Ray r if r and p intersects
+ *@returns      bool true if intersects, false otherwise
+ */
+bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
+    
+    //Check if ray origins is at plane's corner
+    if (fabs(r.p.subtract(p.corner).magnitude()) < 0.00001){
+        *u = 0;
+        std::cout << "\nt : " << *u << " \n";
+        std::cout << " intersects at origin = plane corner";
+        return true;
+    }
+    
+    float denominator = p.getNormal().dotProduct(r.d);
+    
+    std::cout << "\ndenominator : " << denominator << " \n";
+    if (fabs(denominator) > 0.000001){
+        *u = p.corner.subtract(r.p).dotProduct(p.getNormal()) / denominator;
+        std::cout << "\nu : " << *u << " \n";
+        if (*u >= 0){
+            std::cout << " intersects ";
+            return true;
+        }
+    }
+    
+    std::cout << " does not intersect ";
+    return false;
+}
+
+
+
 /*Given a set of Bauer rays, find the intersection points on that wall (if any)
+ *This is a ray-plane intersection problem
+ *
  *@param    wall (each rectangular room's dimension plane i.e: cube.sides[k])
  *@param    bauerRays (rays originating from listener)
  *@param    intersectionPoints (Vector3D points that lie on this wall)
  *returns   number of elements in intersectionPoints
  */
 int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints){
+    //TODO: move Ray-plane intersection methods from main.cpp
     return 0;
 }
+
+
+/*Given an evenly subdivided rube (Cuboid object), do:
+    1. Create a total of 'bauerRays' Vector3D objects emanating from listener
+    2. Create a total of 'bauerRays' Rays emanating from listener
+    3. Iterate through each of the 6 original wall sides: cube.sides[0-5] and findBauerPointsOnWall
+    4. For each wall, assign_and_groupSurfacesBasedOnNearestNeighbour_onWall, such that this->surfaceGroups are properly filled (1 group for each Ray)
+ *
+ *@param bauerRays      number of Rays emanated from listener
+ *@param listener       listener's location (Vector3D object)
+ */
+void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int bauerRays){
+    //TODO ...
+    
+}
+
