@@ -338,7 +338,12 @@ bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
  *@param    listener        Vector3D listener location
  *@param    out             rays containing bauerRays (modified by this method)
  */
-void CuboidGroup::createBauersRayOnListener(int n, Vector3D bauerVector, Ray* out, Vector3D listener){
+void CuboidGroup::createBauersRayOnListener(int n, Vector3D *bauerVectors, Ray *out, Vector3D listener){
+    
+    for (int i = 0; i < n; i++){
+        //create rays
+        out[i] = Ray(listener, bauerVectors[i]);
+    }
     
 }
 

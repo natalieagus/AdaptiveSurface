@@ -11,7 +11,9 @@
 
 #include <stdio.h>
 #include "Vector3D.hpp"
+#include <string>
 
+using namespace std;
 
 
 class Ray{
@@ -27,17 +29,28 @@ public:
     
     Ray(Vector3D point, Vector3D direction)
     {
-        this-> p = point;
-        this-> d = direction;
+//        this-> p = point;
+//        this-> d = direction;
+//
+        //memcpy
+        memcpy(&this->p, &point, sizeof(Vector3D));
+        memcpy(&this->d, &direction, sizeof(Vector3D));
+        
         this-> u = 0;
     };
     
     Ray(Vector3D point, Vector3D direction, float wall_length)
     {
-        this-> p = point;
-        this-> d = direction;
+//        this-> p = point;
+//        this-> d = direction;
+
+        //memcpy
+        memcpy(&this->p, &point, sizeof(Vector3D));
+        memcpy(&this->d, &direction, sizeof(Vector3D));
+        
         this-> u = 0;
         this-> wall_length = wall_length;
+        
     };
     
     //destructor

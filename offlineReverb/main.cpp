@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     CuboidGroup CG = CuboidGroup(1, 1, 1, 4);
     
     // testing ray-plane intersection
-    Vector3D listener = Vector3D(2, 0.5, 0.5);
+    Vector3D listener = Vector3D(1, 0.5, 0.5);
     
     Ray r = Ray(listener, Vector3D(0, -1, 0));
     
