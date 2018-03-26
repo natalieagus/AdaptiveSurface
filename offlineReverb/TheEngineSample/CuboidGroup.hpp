@@ -52,7 +52,7 @@ public:
     int findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, Vector3D* intersectionPoints);
     void bauersMethod(int n, Vector3D* out);
     void bauersMethodOnListener(int n, Vector3D* out, Vector3D listener);
-    void createBauersRayOnListener(int n, Vector3D *bauerVectors, Ray* out, Vector3D listener);
+    void createBauersRayOnListener(int n, Vector3D *bauerVectors,  Vector3D listener, Ray* out);
     
     //variables
     Cuboid cube;
