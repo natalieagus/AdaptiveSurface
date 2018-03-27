@@ -132,7 +132,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     for (std::set<std::pair<int, int>>::iterator it=rayIndex_surfaceIndex.begin(); it!= rayIndex_surfaceIndex.end(); ++it)
     {
         //first: rayIndex, second: surfaceIndex
-        std::cout << it->first << " " << it->second <<std::endl;
+        std::cout << "ray index: " << it->first << " " << "surface index: " << it->second <<std::endl;
         
         if (it->first == prev_iter){
             //there's no change in ray
@@ -176,6 +176,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     
     //update the total number of surfaceGroups
     this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
+    printf("\n this is wall %i, number of surface groups here is: %i \n", wallIndex, numberOfSurfaceGroupsOnThisWall);
     
     //free memory
     delete [] surfaces_temp;
@@ -224,32 +225,32 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                                              (int) set_surfaceRayIndex.size());
         return;
     }
-    
+
     else{
         std::cout << " \n This means 2 rays fall on the same segmentedSides, this case hasn't been handled yet! " << std::endl;
-        
+
         //handling the case where not all rays are accounted for (rarer case, esp when number of rays << number of patches)
-        
+
         //TODO: assign attached rays to Plane3D group using groupSurfacesBasedOnNearestNeighbour
         /// ...
-        
+
         //Attach rays without surface to the nearest surface
         //We first iterate through the set
         int idx_true = 0; //this has to be from 1 to numOfPoints
         for (std::set<int>::iterator it=set_surfaceRayIndex.begin(); it!=set_surfaceRayIndex.end(); ++it)
         {
             int idx = *it;
-            
+
             std::cout << " Element of set idx : " << idx << std::endl;
-            
+
             //same value
             if (idx==idx_true) continue;
             //increment by 1, update idx_true
             else if ( (idx - idx_true) == 1) idx_true++;
             //there is a jump here
             else if ( (idx - idx_true) > 1 ){
-                
-                
+
+
                 //check how much is the jump
                 int jump = idx - idx_true;
                 std::cout << "There's a jump of " << jump << " and  set element idx is " << idx << " idx_true is " << idx_true << std::endl;
@@ -257,20 +258,20 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                     //attach that ray to a patch
                     idx_true++; //this is the ray index that doesn't have a patch
                     jump = idx - idx_true;
-                    
+
                     std::cout << "Left jump of " << jump << " and set element idx is " << idx << " idx_true is " << idx_true << std::endl;
-                    
+
                     //TODO: attach ray to nearest patch
-                    
+
                 }
-                
+
                 //at this point jump == 1, continue as per normal
                 idx_true++;
-                
+
             }
         }
     }
-    
+
     //free memory
     delete [] surfaceRayIndex;
     
@@ -487,9 +488,9 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
 //        print intersection points on this wall
-        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
-            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
-        }
+//        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
+//            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
+//        }
         
         //store the intersection points in global variable
         this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
