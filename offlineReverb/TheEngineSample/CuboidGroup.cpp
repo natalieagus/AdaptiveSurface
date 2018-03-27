@@ -220,7 +220,10 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                                              (int) set_surfaceRayIndex.size());
         return;
     }
+    
     else{
+        std::cout << " \n This means 2 rays fall on the same segmentedSides, this case hasn't been handled yet! " << std::endl;
+        
         //handling the case where not all rays are accounted for (rarer case, esp when number of rays << number of patches)
         
         //TODO: assign attached rays to Plane3D group using groupSurfacesBasedOnNearestNeighbour
@@ -470,6 +473,7 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
     //**surfaceGroups = Plane3D group, correspond to a group of patches that has 1 ray
     return;
 }
+
 
 /*Get delay times in samples for each surface groups
  *
