@@ -71,6 +71,7 @@ void CuboidGroup::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener
 bool compare_function (int i,int j) { return (i<j); }
 void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex){
     
+
     //set all to -1
     memset(surfaceRayIndex, -1, sizeof(int)*numOfSurfaces);
     
@@ -90,6 +91,7 @@ void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int n
         assert(nearest != INFINITY && surface_ray_index > -1);
         
         surfaceRayIndex[i] = surface_ray_index;
+//        printf("Surface %i is assigned to Ray %i \n", i, surface_ray_index);
 
     }
 }
@@ -206,6 +208,8 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
     //create a set from surfaceRayIndex
     //it returns unique elements from surfaceRayIndex, stored in ascending order from begin() to end()
     std::set<int> set_surfaceRayIndex(surfaceRayIndex, surfaceRayIndex + numOfSurfaces);
+    
+//    printf("\n The number of rays assigned to patches is %i ,  total rays that we require on this patch is %i \n", (int) set_surfaceRayIndex.size(), numOfPoints);
     
     //STEP 3: if all rays are accounted for,
     if (set_surfaceRayIndex.size() == numOfPoints){
@@ -482,10 +486,10 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
     
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
-        //print intersection points on this wall
-//        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
-//            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
-//        }
+//        print intersection points on this wall
+        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
+            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
+        }
         
         //store the intersection points in global variable
         this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
@@ -501,11 +505,11 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
         
        //Solve nearest neighbour problem for this wall
         //the method below assigns patches to each ray, and create Plane3DGroups
-//        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
-//                                                                tilesPerWall,
-//                                                                intersectionPoints,
-//                                                                numberOfIntersectionPointsOnAWall,
-//                                                                i);
+        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
+                                                                tilesPerWall,
+                                                                intersectionPoints,
+                                                                numberOfIntersectionPointsOnAWall,
+                                                                i);
     }
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall

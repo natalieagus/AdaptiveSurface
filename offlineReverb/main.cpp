@@ -90,12 +90,12 @@ int main(int argc, char* argv[])
     int *delayValues = new int[numRays];
     CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, numRays);
     
-    CG.getDelayValues(delayValues, listener, listener, S, 44100);
-    
-    for (int i = 0; i<numRays; i++){
-        printf("Delay %i : %i\n", i, delayValues[i]);
-    }
-    
+//    CG.getDelayValues(delayValues, listener, listener, S, 44100);
+//    
+//    for (int i = 0; i<numRays; i++){
+//        printf("Delay %i : %i\n", i, delayValues[i]);
+//    }
+//    
     
     
     return 0;
