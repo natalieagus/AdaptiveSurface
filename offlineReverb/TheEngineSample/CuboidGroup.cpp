@@ -420,8 +420,28 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
  *@param bauerRays      number of Rays emanated from listener
  *@param listener       listener's location (Vector3D object)
  */
-void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int bauerRays){
-    //TODO ...
+void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int numOfBauerRays){
+    
+    //STEP 1: create vectors emanating from listener using Bauer's method
+    Vector3D *bauerVectors = new Vector3D[numOfBauerRays];
+    bauersMethodOnListener(numOfBauerRays, bauerVectors, listener);
+    
+    //STEP 2: convert these vectors into rays
+    Ray *bauerRays = new Ray[numOfBauerRays];
+    createBauersRayOnListener(numOfBauerRays, bauerVectors, listener, bauerRays);
+    
+    //STEP 3: get points on each wall where these bauerRays intersects
+    for (int i = 0; i<6; i++){
+        Plane3D wall = cube.sides[i];
+        
+        //create pointer to get back the intersection points on this wall
+        Vector3D *intersectionPoints = NULL;
+        int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
+        
+        //TODO...
+//        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall], tilesPerWall, intersectionPoints, numberOfIntersectionPointsOnAWall, i);
+    }
+    
     
 }
 

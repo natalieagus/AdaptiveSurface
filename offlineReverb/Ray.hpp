@@ -87,7 +87,7 @@ public:
     
     Vector3D p;
     Vector3D d;
-    float u;
+    float u = 0;
     float wall_length = -1;
     
     

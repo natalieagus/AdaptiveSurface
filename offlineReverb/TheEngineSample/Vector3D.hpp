@@ -52,6 +52,8 @@ typedef struct Vector3D {
     
     //Variables
     float x,y,z;
+    
+    //Helper variable for finding "temp points" on HRTF filters
     bool mark = true;
 
 } Vector3D;
