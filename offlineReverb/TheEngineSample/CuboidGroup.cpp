@@ -124,7 +124,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     Plane3D *surfaces_temp = new Plane3D[numOfSurfaces];
     int surfaces_temp_index = 0;
     int prev_iter = 0;
-    this->numberOfSurfaceGroups = 0;
+    int numberOfSurfaceGroupsOnThisWall = 0;
     
     //Iterate through rayIndex_surfaceIndex, sorted by rayIndex
     for (std::set<std::pair<int, int>>::iterator it=rayIndex_surfaceIndex.begin(); it!= rayIndex_surfaceIndex.end(); ++it)
@@ -153,9 +153,9 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         else if (it->first != prev_iter && surfaces_temp_index > 0){
             //ray has changed
             //create Plane3D group
-            this->surfaceGroups[wallIndex][numberOfSurfaceGroups] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
+            this->surfaceGroups[wallIndex][numberOfSurfaceGroupsOnThisWall] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
             //update number of groups of surfaceGroup in this class
-            this->numberOfSurfaceGroups++;
+            numberOfSurfaceGroupsOnThisWall++;
             //reset the surfaces_temp_index
             surfaces_temp_index = 0;
             //add new planes to surfaces_temp
@@ -171,6 +171,9 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         
         
     }
+    
+    //update the total number of surfaceGroups
+    this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
     
     //free memory
     delete [] surfaces_temp;
@@ -422,6 +425,9 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
  */
 void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int numOfBauerRays){
     
+    //store the number of rays, this is the number of delay lines in FDN
+    this->numOfBauerRays = numOfBauerRays;
+    
     //STEP 1: create vectors emanating from listener using Bauer's method
     Vector3D *bauerVectors = new Vector3D[numOfBauerRays];
     bauersMethodOnListener(numOfBauerRays, bauerVectors, listener);
@@ -431,6 +437,9 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
     createBauersRayOnListener(numOfBauerRays, bauerVectors, listener, bauerRays);
     
     //STEP 3: get points on each wall where these bauerRays intersects
+    //to store total number of numOfIntersectionPointsPerWall
+    int total_numOfIntersectionPointPerWall = 0;
+    
     for (int i = 0; i<6; i++){
         Plane3D wall = cube.sides[i];
         
@@ -438,10 +447,53 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
         Vector3D *intersectionPoints = NULL;
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
-        //TODO...
-//        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall], tilesPerWall, intersectionPoints, numberOfIntersectionPointsOnAWall, i);
+        //store the intersection points in global variable
+        this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
+        this->numOfIntersectionPointsPerWall[i] = numberOfIntersectionPointsOnAWall;
+        memcpy(intersectionPointsInRoom[i], intersectionPoints, numberOfIntersectionPointsOnAWall * sizeof(Vector3D));
+        total_numOfIntersectionPointPerWall += numberOfIntersectionPointsOnAWall;
+        
+       //Solve nearest neighbour problem for this wall
+        //the method below assigns patches to each ray, and create Plane3DGroups
+        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
+                                                                tilesPerWall,
+                                                                intersectionPoints,
+                                                                numberOfIntersectionPointsOnAWall,
+                                                                i);
     }
     
+    //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall
+    assert(total_numOfIntersectionPointPerWall == numOfBauerRays);
     
+    //now this class's variable **surfaceGroups can be accessed
+    //surfaceGroups : 6 of i arrays, where i is numOfSurfaceGroupsInEachWall[1-6];
+    //**surfaceGroups = Plane3D group, correspond to a group of patches that has 1 ray
+    return;
 }
 
+/*Get delay times in samples for each surface groups
+ *
+ *@param    delayValues: the delay array in samples
+ *@param    LLE & LRE : listener's right and left ear location
+ *@param    S : source location
+ *@param    Hz : sampling rate
+ */
+void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
+    
+    //TODO, get delay length from intersectionPointsInRoom **Vector3D and its index from numOfIntersectionPointsPerWall *int
+    for (int i =0; i< numOfBauerRays; i++){
+//
+//        Vector3D p = segmentedSides[i].getMidpoint();
+//
+//        float d1 = S.subtract(p).magnitude();
+//        float d2 = LLE.subtract(p).magnitude();
+//        float d2R = LRE.subtract(p).magnitude();
+//
+//        //set delay times to the nearest ear
+//        if (d2R < d2){
+//            d2 = d2R;
+//        }
+//
+//        delayValues[i] = static_cast<int>((d1+d2)/SOUNDSPEED*Hz);
+    }
+}
