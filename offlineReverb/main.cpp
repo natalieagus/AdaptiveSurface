@@ -80,41 +80,13 @@ int main(int argc, char* argv[])
     
     
     //init CuboidGroup
-    CuboidGroup CG = CuboidGroup(1, 1, 1, 4);
+    CuboidGroup CG = CuboidGroup(1, 1, 1, 25);
     
     // testing ray-plane intersection
-    Vector3D listener = Vector3D(1, 0.5, 0.5);
+    Vector3D listener = Vector3D(0.5, 0.5, 0.5);
     
-    Ray r = Ray(listener, Vector3D(0, -1, 0));
+    CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, 16);
     
-    Vector3D c = Vector3D(0,0,0);
-    Vector3D s1 = Vector3D(0,0,1);
-    Vector3D s2 = Vector3D(1,0,0);
-    
-    Plane3D P = Plane3D(c, s1, s2);
-    
-    //    bool within_plane = isWithinRectangularPlane(P, listener);
-    
-    float u = 0.f;
-    bool intersects_plane = CG.rayPlaneIntersection(P, r, &u);
-    std::cout << " Is ray intersecting plane? Ans: " << intersects_plane  << "\n";
-    
-    
-    
-    
-    //    Vector3D p_normal = P.getNormal();
-    //
-    //    printf("Plane's normal is : %f %f %f \n", p_normal.x, p_normal.y, p_normal.z);
-    
-    if (intersects_plane) {
-        
-        Vector3D intersection = r.get_vector(u);
-        printf("Intersects at coordinate: {%f, %f, %f} \n", intersection.x, intersection.y, intersection.z);
-        bool within_plane = CG.isWithinRectangularPlane(P, r.get_vector(u));
-        
-        std::cout << " Is intersection within plane? Ans: " << within_plane  << "\n";
-    }
-
     
     return 0;
     
