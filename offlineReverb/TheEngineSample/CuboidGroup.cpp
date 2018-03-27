@@ -480,20 +480,26 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
  */
 void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
     
-    //TODO, get delay length from intersectionPointsInRoom **Vector3D and its index from numOfIntersectionPointsPerWall *int
-    for (int i =0; i< numOfBauerRays; i++){
-//
-//        Vector3D p = segmentedSides[i].getMidpoint();
-//
-//        float d1 = S.subtract(p).magnitude();
-//        float d2 = LLE.subtract(p).magnitude();
-//        float d2R = LRE.subtract(p).magnitude();
-//
-//        //set delay times to the nearest ear
-//        if (d2R < d2){
-//            d2 = d2R;
-//        }
-//
-//        delayValues[i] = static_cast<int>((d1+d2)/SOUNDSPEED*Hz);
+    int delayLineIndex = 0;
+    for (int i = 0; i<6; i++){
+        for (int j = 0; j< numOfIntersectionPointsPerWall[i]; j++){
+            Vector3D p = intersectionPointsInRoom[i][j];
+            
+            float d1 = S.subtract(p).magnitude();
+            float d2 = LLE.subtract(p).magnitude();
+            float d2R = LRE.subtract(p).magnitude();
+            
+            //set delay times to the nearest ear
+            if (d2R < d2){
+                d2 = d2R;
+            }
+            
+            delayValues[delayLineIndex] = static_cast<int>((d1+d2)/SOUNDSPEED*Hz);
+            delayLineIndex ++;
+        }
     }
+    
+    //ensure that the number of total delay lines is the same as the number of rays
+    assert(delayLineIndex == numOfBauerRays);
+    
 }
