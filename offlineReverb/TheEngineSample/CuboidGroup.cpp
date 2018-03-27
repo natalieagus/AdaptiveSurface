@@ -514,7 +514,7 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
     //free memory
     delete [] intersectionPoints;
     
-    //ensure the storage for ray-wall intersection is proper, print and check
+    //ensure the storage for ray-wall intersection is proper after memory deletion of temp arrays, hence print and check
     //iterate through walls
     for (int i = 0; i < 6; i++){
         //get the number of intersection points per wall

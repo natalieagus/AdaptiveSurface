@@ -83,9 +83,19 @@ int main(int argc, char* argv[])
     CuboidGroup CG = CuboidGroup(1, 1, 1, 25);
     
     // testing ray-plane intersection
-    Vector3D listener = Vector3D(0.1, 0.1, 0.1);
+    Vector3D listener = Vector3D(0.5, 0.5, 0.5);
+    Vector3D S = Vector3D(0.8, 0.5, 0.5);
     
-    CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, 12);
+    int numRays = 12;
+    int *delayValues = new int[numRays];
+    CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, numRays);
+    
+    CG.getDelayValues(delayValues, listener, listener, S, 44100);
+    
+    for (int i = 0; i<numRays; i++){
+        printf("Delay %i : %i\n", i, delayValues[i]);
+    }
+    
     
     
     return 0;
