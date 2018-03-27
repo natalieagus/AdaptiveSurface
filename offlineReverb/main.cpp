@@ -83,9 +83,9 @@ int main(int argc, char* argv[])
     CuboidGroup CG = CuboidGroup(1, 1, 1, 25);
     
     // testing ray-plane intersection
-    Vector3D listener = Vector3D(0.5, 0.5, 0.5);
+    Vector3D listener = Vector3D(0.1, 0.1, 0.1);
     
-    CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, 16);
+    CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, 12);
     
     
     return 0;

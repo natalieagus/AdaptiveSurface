@@ -420,9 +420,9 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
         
     }
     
-//    //clear memory
-//    delete [] uArray;
-//    delete [] indexArray;
+    //clear memory
+    delete [] uArray;
+    delete [] indexArray;
     
     return numberOfBauerPointsOnWall;
 }
@@ -491,13 +491,13 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
         this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
         this->numOfIntersectionPointsPerWall[i] = numberOfIntersectionPointsOnAWall;
         memcpy(intersectionPointsInRoom[i], intersectionPoints, numberOfIntersectionPointsOnAWall * sizeof(Vector3D));
-        total_numOfIntersectionPointPerWall += numberOfIntersectionPointsOnAWall;
+        total_numOfIntersectionPointPerWall += this->numOfIntersectionPointsPerWall[i];
         
-        //ensure the storage is proper, print and check
-        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
-            printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
-        }
-        
+//        //ensure the storage is proper, print and check
+//        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
+//            printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
+//        }
+//
         
        //Solve nearest neighbour problem for this wall
         //the method below assigns patches to each ray, and create Plane3DGroups
@@ -510,6 +510,18 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall
     assert(total_numOfIntersectionPointPerWall == numOfBauerRays);
+    
+    //free memory
+    delete [] intersectionPoints;
+    
+    //ensure the storage for ray-wall intersection is proper, print and check
+    //iterate through walls
+    for (int i = 0; i < 6; i++){
+        //get the number of intersection points per wall
+        for (int j = 0; j < numOfIntersectionPointsPerWall[i]; j ++){
+        printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
+        }
+    }
     
     //now this class's variable **surfaceGroups can be accessed
     //surfaceGroups : 6 of i arrays, where i is numOfSurfaceGroupsInEachWall[1-6];
