@@ -33,6 +33,8 @@ public:
         this->cube = Cuboid(xLength, yLength, zLength);
         //Even segmentation
         cube.segmentCube(tilesPerWall);
+        //store the tilesPerWall
+        this->tilesPerWall = tilesPerWall;
         //store number of default surface patches
         this->numberOfDefaultSurfacePatches = tilesPerWall * 6;
         //double pointer, first pointer for walls 1-6, and second pointer is for groups of surfaces in that wall
@@ -62,6 +64,7 @@ public:
     Plane3DGroup **surfaceGroups;
     int numberOfSurfaceGroups;
     int numberOfDefaultSurfacePatches;
+    int tilesPerWall;
     
     
 };
