@@ -218,7 +218,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
  *@param numOfPoints    number of elements in points
  *@param wallIndex      walls 1-6 (ceiling, floor, side 1-4)
  */
-void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints, int wallIndex){
+int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D *points, int numOfPoints, int wallIndex){
     
     int *surfaceRayIndex = new int[numOfSurfaces];
     
@@ -250,57 +250,78 @@ void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3
                                              surfaceRayIndex,
                                              wallIndex,
                                              (int) set_surfaceRayIndex.size());
-        return;
+        
+        
+        //free memory
+        delete [] surfaceRayIndex;
+        
+        return 0;
     }
 
+    else if (set_surfaceRayIndex.size() < numOfPoints){
+        std::cout << " \n This means 2 rays fall on the same segmentedSides! we are going to discard some rays " << std::endl;
+        
+        groupSurfacesBasedOnNearestNeighbour(surfaces,
+                                             numOfSurfaces,
+                                             points,
+                                             numOfPoints,
+                                             surfaceRayIndex,
+                                             wallIndex,
+                                             (int) set_surfaceRayIndex.size());
+        
+        
+        //free memory
+        delete [] surfaceRayIndex;
+        
+        return (int) (numOfPoints - set_surfaceRayIndex.size());
+    
+    
+//
+//        //Alternative idea: assign attached rays to Plane3D group using groupSurfacesBasedOnNearestNeighbour
+//        /// TODO...
+//
+//        //Attach rays without surface to the nearest surface
+//        //We first iterate through the set
+//        int idx_true = 0; //this has to be from 1 to numOfPoints
+//        for (std::set<int>::iterator it=set_surfaceRayIndex.begin(); it!=set_surfaceRayIndex.end(); ++it)
+//        {
+//            int idx = *it;
+//
+//            std::cout << " Element of set idx : " << idx << std::endl;
+//
+//            //same value
+//            if (idx==idx_true) continue;
+//            //increment by 1, update idx_true
+//            else if ( (idx - idx_true) == 1) idx_true++;
+//            //there is a jump here
+//            else if ( (idx - idx_true) > 1 ){
+//
+//
+//                //check how much is the jump
+//                int jump = idx - idx_true;
+//                std::cout << "There's a jump of " << jump << " and  set element idx is " << idx << " idx_true is " << idx_true << std::endl;
+//                while ( jump > 1 ){
+//                    //attach that ray to a patch
+//                    idx_true++; //this is the ray index that doesn't have a patch
+//                    jump = idx - idx_true;
+//
+//                    std::cout << "Left jump of " << jump << " and set element idx is " << idx << " idx_true is " << idx_true << std::endl;
+//
+//                    //TODO: attach ray to nearest patch
+//
+//                }
+//
+//                //at this point jump == 1, continue as per normal
+//                idx_true++;
+//
+//            }
+//        }
+    
+    }
     else{
-        std::cout << " \n This means 2 rays fall on the same segmentedSides, this case hasn't been handled yet! " << std::endl;
-
-        //handling the case where not all rays are accounted for (rarer case, esp when number of rays << number of patches)
-
-        //TODO: assign attached rays to Plane3D group using groupSurfacesBasedOnNearestNeighbour
-        /// ...
-
-        //Attach rays without surface to the nearest surface
-        //We first iterate through the set
-        int idx_true = 0; //this has to be from 1 to numOfPoints
-        for (std::set<int>::iterator it=set_surfaceRayIndex.begin(); it!=set_surfaceRayIndex.end(); ++it)
-        {
-            int idx = *it;
-
-            std::cout << " Element of set idx : " << idx << std::endl;
-
-            //same value
-            if (idx==idx_true) continue;
-            //increment by 1, update idx_true
-            else if ( (idx - idx_true) == 1) idx_true++;
-            //there is a jump here
-            else if ( (idx - idx_true) > 1 ){
-
-
-                //check how much is the jump
-                int jump = idx - idx_true;
-                std::cout << "There's a jump of " << jump << " and  set element idx is " << idx << " idx_true is " << idx_true << std::endl;
-                while ( jump > 1 ){
-                    //attach that ray to a patch
-                    idx_true++; //this is the ray index that doesn't have a patch
-                    jump = idx - idx_true;
-
-                    std::cout << "Left jump of " << jump << " and set element idx is " << idx << " idx_true is " << idx_true << std::endl;
-
-                    //TODO: attach ray to nearest patch
-
-                }
-
-                //at this point jump == 1, continue as per normal
-                idx_true++;
-
-            }
-        }
+        std::cout << "\n This code should never be reached. " << std::endl;
+        return -1;
     }
-
-    //free memory
-    delete [] surfaceRayIndex;
     
     
 }
@@ -471,7 +492,7 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
  *@param bauerRays      number of Rays emanated from listener
  *@param listener       listener's location (Vector3D object)
  */
-void CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int numOfBauerRays){
+int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int numOfBauerRays){
     
     //store the number of rays, this is the number of delay lines in FDN
     this->numOfBauerRays = numOfBauerRays;
