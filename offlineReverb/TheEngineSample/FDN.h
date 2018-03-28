@@ -35,7 +35,7 @@ FDN: a feedback delay network reverberator
 #define SOUNDSPEED 340.29f
 #define D_PER_SIDE 2
 #define NUMDELAYSSTD TOTALDELAYS
-#define SMOOTHDELAY 1
+#define SMOOTHDELAY 0
 
 #define RADIALTRACE (TOTALDELAYS - 2*D_PER_SIDE*D_PER_SIDE)
 

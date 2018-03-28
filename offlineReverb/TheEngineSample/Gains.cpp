@@ -76,6 +76,159 @@ void Gains::monteCarloBeta(Vector3D *points, Vector3D L, Vector3D S, Vector3D N,
     
 }
 
+/*Computes squared of upsilon before normalization by NUM_MONTECARLO and surface area, and
+ *(float) numberDelays / (M_PI * Room->cube.area) term that adjust the energy based on delay length
+ *
+ *@param    points      the monte-carlo points in a surface patch
+ *@param    L, S, N     listener, source, and normal vector of this patch
+ */
+float Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N){
+    
+    //Integrate h over the surface patch
+    float hInt = 0.0f;
+    for (int i = 0; i<NUM_MONTECARLO; i++){
+        hInt += (pointCollectionFunction(points[i], L, N, 1.0f, 0.0f));
+    }
+
+    return hInt;
+    
+}
+
+/*Computes squared of beta before normalization by NUM_MONTECARLO and surface area,
+ *
+ *@param    points      the monte-carlo points in a surface patch
+ *@param    L, S, N     listener, source, and normal vector of this patch
+ */
+float Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N){
+    
+    //Integrate h * R over the surface patch
+    float hRInt = 0.0f;
+    for (int i = 0; i<NUM_MONTECARLO; i++){
+        //        printf("points  %f %f %f \n", points[i].x, points[i].y, points[i].z);
+        float h = pointCollectionFunction(points[i], L, N, 1.0f, ALPHA);
+        float R = reflectionKernel(points[i], L, S, N, 1.0f);
+        hRInt += (h * R)/ this->energyReceived;
+    }
+    
+    return dmin*dmin*hRInt;
+    
+}
+
+
+
+/*Fill upsilon and beta values from CuboidGroup
+ *
+ *@param Room   the room segmented into groups of Plane3D
+ *@param L      the listener's location
+ *@param S      the source location
+ */
+
+float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
+    
+    //init all the coefficients memory
+    mu = new float[numberDelays];
+    upsilon = new float[numberDelays];
+    beta = new float[numberDelays];
+    
+    //set them all to zero
+    memset(mu, 0, numberDelays*sizeof(float));
+    memset(upsilon, 0, numberDelays*sizeof(float));
+    memset(beta, 0, numberDelays*sizeof(float));
+    
+    //get temp points for montecarlo method
+    Vector3D *points = new Vector3D[NUM_MONTECARLO];
+    
+    //iterate through each ray associated with surface groups
+    printf("Number delays with gain (rays associated with patch group) is : %d \n", numberDelays);
+    int number_of_rays_with_patch = Room->numOfBauerRays - Room->rays_without_patches;
+    assert(numberDelays == number_of_rays_with_patch);
+    int gain_index = 0;
+    
+    //print the total number of surface groups
+    int patch_group = 0;
+    for (int i = 0; i<6; i++){
+        patch_group += Room->numOfSurfaceGroupsInEachWall[i];
+    }
+    
+    printf("print the total number of surface groups %i \n", patch_group);
+    
+    //iterate through the walls
+    for (int i = 0; i < 6; i++){
+        
+        int number_of_groups_in_wall = Room->numOfSurfaceGroupsInEachWall[i];
+        //iterate through each group in each wall
+        for (int j = 0; j < number_of_groups_in_wall; j++){
+            
+            Plane3DGroup groupsOfSurfaces = Room->surfaceGroups[i][j];
+            int number_of_patches_in_group = groupsOfSurfaces.numberOfPlanes;
+            
+            float patch_beta = 0;
+            float patch_hInt_upsilon = 0;
+            //iterate through each patch in each group
+            for (int k = 0; k<number_of_patches_in_group; k++){
+                Vector3D c = groupsOfSurfaces.planeGroup[k].corner;
+                Vector3D s1 = groupsOfSurfaces.planeGroup[k].S1;
+                Vector3D s2 = groupsOfSurfaces.planeGroup[k].S2;
+                Vector3D normal = groupsOfSurfaces.planeGroup[k].normal;
+                float patch_area = groupsOfSurfaces.planeGroup[k].getArea();
+                
+                randomPointsOnRectangle(c, s1, s2, points, NUM_MONTECARLO);
+                
+                monteCarloUpsilon(points, L, S, normal, NUM_MONTECARLO, &upsilon[i], patch_area);
+                monteCarloBeta(points, L, S, normal, NUM_MONTECARLO, &beta[i], patch_area);
+                
+                patch_beta += monteCarloBeta_Squared_Group(points, L, S, normal);
+                patch_hInt_upsilon += monteCarloUpsilon_Squared_Group(points, L, S, normal);
+            }
+            
+            
+            //store beta and upsilon
+            beta[gain_index] = sqrtf((patch_beta * (float) groupsOfSurfaces.area)  / ((float) (NUM_MONTECARLO * groupsOfSurfaces.numberOfPlanes)));
+            
+            upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) groupsOfSurfaces.area) / ((float) NUM_MONTECARLO * groupsOfSurfaces.numberOfPlanes));
+            
+            gain_index ++;
+    
+
+        }
+        
+    }
+    
+    printf("The number of elements filled in beta and upsilon is %i, and the number of rays with patch (numberDelays) is %i \n", gain_index, numberDelays);
+    assert(gain_index == numberDelays);
+    
+    vDSP_vdiv(upsilon, 1, beta, 1, mu, 1, numberDelays);
+    vDSP_vdiv(feedbackTapGains, 1, mu, 1, mu, 1, numberDelays);
+    
+    
+    //computing correct input energy and total energy
+    float sumbeta = 0.0;
+    float sumup = 0.0;
+    for (int i = 0; i<numberDelays; i++){
+        //print beta and upsilon
+//        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
+        sumbeta += beta[i];
+        sumup += upsilon[i];
+    }
+    
+    printf("Sumbeta: %f sumUp: %f \n", sumbeta, sumup);
+    
+    for (int i = 0; i< numberDelays; i++){
+        //        if want to randomise sign of mu and upsilon
+        //        mu[i] *= powf(-1, rand()%2);
+        //        upsilon[i] *=powf(-1, rand()%2);
+        totalInputEnergy += mu[i] * mu[i];
+    }
+    
+    printf("Total Input Energy: %f \n", totalInputEnergy);
+    printf("Input energy should be : %f \n", correctInputEnergy);
+    printf("We feed too much input energy by a factor of : %f (if < 1 then we put too little, if > 1 then we put too much)\n", totalInputEnergy/correctInputEnergy);
+    
+    
+    return correctInputEnergy - totalInputEnergy;
+}
+
+
 float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     
     printf("SourceLoc : %f %f %f lLoc %f %f %f \n", S.x, S.y, S.z, L.x, L.y, L.z);
@@ -91,7 +244,7 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
         mu[i] = 0.0f;
     }
     
-    Vector3D points [NUM_MONTECARLO];
+    Vector3D points[NUM_MONTECARLO];
     
     printf("Number delays : %d \n", numberDelays);
     for (int i = 0; i < numberDelays; i++){
@@ -129,6 +282,7 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     for (int i = 0; i< numberDelays; i++){
 //        mu[i] *= powf(-1, rand()%2);
 //        upsilon[i] *=powf(-1, rand()%2);
+//        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
         totalInputEnergy += mu[i] * mu[i];
     }
     

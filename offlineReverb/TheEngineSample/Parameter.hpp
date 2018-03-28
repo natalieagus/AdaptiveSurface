@@ -16,7 +16,7 @@
 
 
 #define RADIUSOFHEAD 0.084f //8cm radius of head
-#define DMIN 0.2f
+#define DMIN 0.1f
 
 // If select this then change the smoothdelay into 1 at FDN.h
 //#define ENERGY_BALANCE
@@ -55,17 +55,17 @@ typedef struct Parameter {
         
 //WATCH DMIN AND ENERGY DETECTED BY LISTENER
         
-        this->RT60 = 2.11f;
-        this->roomWidth = 1.95f; //x
-        this->roomHeight = 5.52f; //y
-        this->roomCeiling = 2.9f; //z
+        this->RT60 = 0.5f;
+        this->roomWidth = 1.f; //x
+        this->roomHeight = 1.f; //y
+        this->roomCeiling = 1.f; //z
         
-        this->soundSourceLoc = Vector3D(0.975f,3.6f,0.52f);
-        this->listenerLoc = Vector3D(0.975f, 1.91f, 0.64f);
+        this->soundSourceLoc = Vector3D(0.8, 0.5, 0.5);
+        this->listenerLoc = Vector3D(0.2, 0.1, 0.1);
         
         this->hsffreq = 4000.f;
         this->hsfRT60 = 1.6f;
-        this->energyReceived = 0.9f;
+        this->energyReceived = 1.0f;
         
         
         this->lsffreq = 200.f;

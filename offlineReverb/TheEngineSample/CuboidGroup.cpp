@@ -70,7 +70,6 @@ void CuboidGroup::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener
  */
 bool compare_function (int i,int j) { return (i<j); }
 void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex){
-    
 
     //set all to -1
     memset(surfaceRayIndex, -1, sizeof(int)*numOfSurfaces);
@@ -79,14 +78,18 @@ void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int n
         
         float nearest = INFINITY;
         int surface_ray_index = -1;
+//        printf(" i %i \n", i);
         
         for (int j = 0; j < numOfPoints; j++){
             float distance = surfaces[i].getMidpoint().distance(points[j]);
+//            std::cout << distance << std::endl;
             if (distance < nearest){
                 nearest = distance;
                 surface_ray_index = j;
             }
         }
+        
+        if (!(surface_ray_index > -1)) printf("ERROR This wall doesnt have ray!\n");
         
         assert(nearest != INFINITY && surface_ray_index > -1);
         
@@ -101,7 +104,7 @@ void CuboidGroup::assignSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int n
  *
  *@param surfaces           a set of Plane3D surfaces
  *@param numOfSurfaces      number of elements in surfaces
- *@param points             a set of Vecto3D points
+ *@param points             a set of Vecto3D intersection points of bauerRay in the room
  *@param numOfPoints        number of elements in points
  *@param surfaceRayIndex    the index of ray in points of which surface[i] is closest to, found using Nearest Neighbor algorithm in groupSurfacesBasedOnNearestNeighbour. Total number of elements in surfaceRayIndex == numOfSurfaces
  *@param wallIndex          walls 1-6 (ceiling, floor, side 1-4)
@@ -134,9 +137,10 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     for (std::set<std::pair<int, int>>::iterator it=rayIndex_surfaceIndex.begin(); it!= rayIndex_surfaceIndex.end(); ++it)
     {
         //first: rayIndex, second: surfaceIndex
-        std::cout << "ray index: " << it->first << " " << "surface index: " << it->second <<std::endl;
+//        std::cout << "ray index: " << it->first << " " << "surface index: " << it->second <<std::endl;
         
         if (it->first == prev_iter){
+//            std::cout << " case 1" << std::endl;
             //there's no change in ray
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
@@ -147,6 +151,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         }
         
         else if (it->first != prev_iter && surfaces_temp_index == 0){
+//            std::cout << " case 2" << std::endl;
             //only goes here if the first ray isn't 0
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
@@ -157,6 +162,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         }
         
         else if (it->first != prev_iter && surfaces_temp_index > 0){
+//            std::cout << " case 3" << std::endl;
             //ray has changed
             //create Plane3D group
             this->surfaceGroups[wallIndex][numberOfSurfaceGroupsOnThisWall] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
@@ -170,6 +176,8 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
             surfaces_temp_index++;
             //update prev_iter
             prev_iter = it->first;
+            //update the write state
+            not_write_state = 1;
         }
         else{
             std::cout << " This code shall never be executed " << std::endl;
@@ -185,36 +193,20 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         numberOfSurfaceGroupsOnThisWall++;
     }
     
-    
+//    printf("number of surface groups on this wall : %i \n", numberOfSurfaceGroupsOnThisWall);
     //update the total number of surfaceGroups
     this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
     
     //free memory
     delete [] surfaces_temp;
-    
-//    //print the surfaces
-//    int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
-//    std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
-//
-//    for (int i = 0; i<totalNumberOfSurfaceGroups; i++){
-//        Plane3DGroup surfaces_group = this->surfaceGroups[wallIndex][i];
-//        for (int j = 0; j<surfaces_group.numberOfPlanes; j++){
-//            printf("{ {%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f} },", surfaces_group.planeGroup[j].corner.x, surfaces_group.planeGroup[j].corner.y, surfaces_group.planeGroup[j].corner.z, surfaces_group.planeGroup[j].S1.x, surfaces_group.planeGroup[j].S1.y, surfaces_group.planeGroup[j].S1.z, surfaces_group.planeGroup[j].S2.x, surfaces_group.planeGroup[j].S2.y, surfaces_group.planeGroup[j].S2.z);
-//        }
-//
-//        std::cout << " " << std::endl;
-//        std::cout << " " << std::endl;
-//    }
-    
-    
-    
+
 }
 
 /*Given a set of *surfaces on the same plane, and a set of *points on that same plane, assigneach surface to the nearest point (nearest neighbour problem).
  *
  *@param surfaces       a set of Plane3D surfaces
  *@param numOfSurfaces  number of elements in surfaces
- *@param points         a set of Vecto3D points
+ *@param points         a set of Vector3D bauerRay intersection points with the room
  *@param numOfPoints    number of elements in points
  *@param wallIndex      walls 1-6 (ceiling, floor, side 1-4)
  */
@@ -259,7 +251,8 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D
     }
 
     else if (set_surfaceRayIndex.size() < numOfPoints){
-        std::cout << " \n This means 2 rays fall on the same segmentedSides! we are going to discard some rays " << std::endl;
+//        std::cout << " \n This means 2 rays fall on the same segmentedSides! we are going to discard some rays " << std::endl;
+//        printf("Number of rays with patch: %i, num of rays on this wall %i \n", (int) set_surfaceRayIndex.size(), numOfPoints);
         
         groupSurfacesBasedOnNearestNeighbour(surfaces,
                                              numOfSurfaces,
@@ -338,8 +331,16 @@ bool CuboidGroup::isWithinRectangularPlane(Plane3D P, Vector3D M){
     Vector3D MP = P.corner.subtract(M);
     float d_prod = MP.dotProduct(P.getNormal());
     
-    //assert that M is on P
-    assert(fabs(d_prod - 0) < 0.00001);
+//    printf("M %f %f %f, plane p {{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}} \n", M.x, M.y, M.z, P.corner.x, P.corner.y, P.corner.z, P.S1.x, P.S1.y, P.S1.z, P.S2.x, P.S2.y, P.S2.z);
+    
+    if (fabs(d_prod) > 0.001){
+        printf("FLOATING POINT ERROR!, ray-plane intersection M isn't on plane. \n");
+    }
+    
+//    printf("d_prod %f \n", d_prod);
+    
+    //assert that M is on P, if not it will be floating point error
+    assert(fabs(d_prod) < 0.001);
     
     //for debugging purposes, print out if M is still not on P, that means rayPlaneIntersection does not work as intended
 //    //    printf("d prod %f \n", fabs(d_prod - 0));
@@ -384,6 +385,12 @@ bool CuboidGroup::isWithinRectangularPlane(Plane3D P, Vector3D M){
  *@returns      bool true if intersects, false otherwise
  */
 bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
+//    //print the ray
+//    Vector3D r_1 = r.get_vector(1);
+//    Vector3D r_2 = r.get_vector(10);
+//
+//    printf("{%f, %f, %f}, ", r_1.x, r_1.y, r_1.z);
+//    printf("{%f, %f, %f}, ", r_2.x, r_2.y, r_2.z);
     
     //Check if ray origins is at plane's corner
     if (fabs(r.p.subtract(p.corner).magnitude()) < 0.00001){
@@ -393,11 +400,11 @@ bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
         return true;
     }
     
-    float denominator = p.getNormal().dotProduct(r.d);
+    float denominator = p.getNormal().normalize().dotProduct(r.d);
     
 //    std::cout << "\ndenominator : " << denominator << " \n";
     if (fabs(denominator) > 0.000001){
-        *u = p.corner.subtract(r.p).dotProduct(p.getNormal()) / denominator;
+        *u = p.getMidpoint().subtract(r.p).dotProduct(p.getNormal().normalize()) / denominator;
 //        std::cout << "\nu : " << *u << " \n";
         if (*u >= 0){
 //            std::cout << " intersects ";
@@ -554,11 +561,16 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
         
        //Solve nearest neighbour problem for this wall
         //the method below assigns patches to each ray, and create Plane3DGroups
-        assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
+        int rays_without_patches_on_this_wall = assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
                                                                 tilesPerWall,
                                                                 intersectionPoints,
                                                                 numberOfIntersectionPointsOnAWall,
                                                                 i);
+        
+        this->rays_without_patches += rays_without_patches_on_this_wall;
+        this->total_number_of_surface_groups_in_the_room += this->numOfSurfaceGroupsInEachWall[i];
+        
+//        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
     }
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall
@@ -567,19 +579,50 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     //free memory
     delete [] intersectionPoints;
     
-    //ensure the storage for ray-wall intersection is proper after memory deletion of temp arrays, hence print and check
-    //iterate through walls
-    for (int i = 0; i < 6; i++){
-        //get the number of intersection points per wall
-        for (int j = 0; j < numOfIntersectionPointsPerWall[i]; j ++){
-        printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
-        }
-    }
     
+    //Final checking before returning
+    
+    //ensure the storage for ray-wall intersection is proper after memory deletion of temp arrays, hence print and check
+    //iterate through walls, printing intersection points
+//    for (int i = 0; i < 6; i++){
+//        //get the number of intersection points per wall
+//        for (int j = 0; j < numOfIntersectionPointsPerWall[i]; j ++){
+//        printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
+//        }
+//    }
+
+    
+    printf("Number of surface groups in the room : %i \n", this->total_number_of_surface_groups_in_the_room);
+//
     //now this class's variable **surfaceGroups can be accessed
     //surfaceGroups : 6 of i arrays, where i is numOfSurfaceGroupsInEachWall[1-6];
     //**surfaceGroups = Plane3D group, correspond to a group of patches that has 1 ray
-    return;
+    //checking and print the surfaces
+    
+//    for (int wallIndex = 0; wallIndex < 6; wallIndex ++){
+//        int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
+//        std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
+//
+//        for (int i = 0; i<totalNumberOfSurfaceGroups; i++){
+//            Plane3DGroup surfaces_group = this->surfaceGroups[wallIndex][i];
+//            for (int j = 0; j<surfaces_group.numberOfPlanes; j++){
+//                printf("{ {%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f} },", surfaces_group.planeGroup[j].corner.x, surfaces_group.planeGroup[j].corner.y, surfaces_group.planeGroup[j].corner.z, surfaces_group.planeGroup[j].S1.x, surfaces_group.planeGroup[j].S1.y, surfaces_group.planeGroup[j].S1.z, surfaces_group.planeGroup[j].S2.x, surfaces_group.planeGroup[j].S2.y, surfaces_group.planeGroup[j].S2.z);
+//            }
+//
+//            std::cout << " " << std::endl;
+//            std::cout << " " << std::endl;
+//        }
+//
+//    }
+    
+//    this->rays_without_patches = rays_without_patches;
+    
+    printf("Total rays assigned initially %i, but %i rays dont have patches \n", this->numOfBauerRays, this->rays_without_patches);
+    
+    //final assertion that the number of surface groups in the room is equal to the initial set number of rays, minus the rays without patches
+    assert(this->total_number_of_surface_groups_in_the_room == (this->numOfBauerRays - this->rays_without_patches));
+    
+    return this->rays_without_patches;
 }
 
 
@@ -594,8 +637,8 @@ void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, V
     
     int delayLineIndex = 0;
     for (int i = 0; i<6; i++){
-        for (int j = 0; j< numOfIntersectionPointsPerWall[i]; j++){
-            Vector3D p = intersectionPointsInRoom[i][j];
+        for (int j = 0; j< numOfSurfaceGroupsInEachWall[i]; j++){
+            Vector3D p = this->surfaceGroups[i][j].midPoint;
             
             float d1 = S.subtract(p).magnitude();
             float d2 = LLE.subtract(p).magnitude();
@@ -612,6 +655,6 @@ void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, V
     }
     
     //ensure that the number of total delay lines is the same as the number of rays
-    assert(delayLineIndex == numOfBauerRays);
+    assert(delayLineIndex == (this->numOfBauerRays - this->rays_without_patches));
     
 }

@@ -503,7 +503,14 @@ void Cuboid::sliceCube(int slices){
         segmentedSides[i] = Plane3D(newSegmentedSides[i].corner, newSegmentedSides[i].S1, newSegmentedSides[i].S2);
     }
     
-    free(newSegmentedSides);
+    ////
+        for (int i = 0; i<(slices); i++){
+            printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
+        }
+    
+    delete [] newSegmentedSides;
+    
+//    free(newSegmentedSides);
     
 ////    
 //    for (int i = 0; i<(slices); i++){

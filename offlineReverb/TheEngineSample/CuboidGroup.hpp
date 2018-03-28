@@ -43,6 +43,8 @@ public:
         this->numOfIntersectionPointsPerWall = new int[6];
         //init surface group number on each wall array
         this->numOfSurfaceGroupsInEachWall = new int[6];
+        //init rays without patches count
+        this->rays_without_patches = 0;
     }
     
     //Destructor
@@ -65,6 +67,8 @@ public:
     
     //to be accessed by FDN.cpp
     void getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz);
+
+    
     
     //variables
     Cuboid cube;
@@ -74,6 +78,8 @@ public:
     int *numOfSurfaceGroupsInEachWall; //6 elements
     int tilesPerWall;
     int numOfBauerRays;
+    int rays_without_patches;
+    int total_number_of_surface_groups_in_the_room;
     
     
 };
