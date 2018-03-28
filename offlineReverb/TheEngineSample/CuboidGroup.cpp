@@ -128,6 +128,8 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
     int prev_iter = 0;
     int numberOfSurfaceGroupsOnThisWall = 0;
     
+    int not_write_state = 0;
+    
     //Iterate through rayIndex_surfaceIndex, sorted by rayIndex
     for (std::set<std::pair<int, int>>::iterator it=rayIndex_surfaceIndex.begin(); it!= rayIndex_surfaceIndex.end(); ++it)
     {
@@ -139,6 +141,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
             surfaces_temp_index++;
+            not_write_state = 1;
             //update prev_iter
             prev_iter = it->first;
         }
@@ -148,6 +151,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
             //add planes to surfaces_temp
             surfaces_temp[surfaces_temp_index] = surfaces[it->second];
             surfaces_temp_index++;
+            not_write_state = 1;
             //update prev_iter
             prev_iter = it->first;
         }
@@ -156,6 +160,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
             //ray has changed
             //create Plane3D group
             this->surfaceGroups[wallIndex][numberOfSurfaceGroupsOnThisWall] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
+            not_write_state = 0;
             //update number of groups of surfaceGroup in this class
             numberOfSurfaceGroupsOnThisWall++;
             //reset the surfaces_temp_index
@@ -174,12 +179,34 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         
     }
     
+    //store the last ray
+    if (not_write_state){
+        this->surfaceGroups[wallIndex][numberOfSurfaceGroupsOnThisWall] = Plane3DGroup(surfaces_temp, surfaces_temp_index, points[prev_iter]);
+        numberOfSurfaceGroupsOnThisWall++;
+    }
+    
+    
     //update the total number of surfaceGroups
     this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
-    printf("\n this is wall %i, number of surface groups here is: %i \n", wallIndex, numberOfSurfaceGroupsOnThisWall);
     
     //free memory
     delete [] surfaces_temp;
+    
+//    //print the surfaces
+//    int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
+//    std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
+//
+//    for (int i = 0; i<totalNumberOfSurfaceGroups; i++){
+//        Plane3DGroup surfaces_group = this->surfaceGroups[wallIndex][i];
+//        for (int j = 0; j<surfaces_group.numberOfPlanes; j++){
+//            printf("{ {%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f} },", surfaces_group.planeGroup[j].corner.x, surfaces_group.planeGroup[j].corner.y, surfaces_group.planeGroup[j].corner.z, surfaces_group.planeGroup[j].S1.x, surfaces_group.planeGroup[j].S1.y, surfaces_group.planeGroup[j].S1.z, surfaces_group.planeGroup[j].S2.x, surfaces_group.planeGroup[j].S2.y, surfaces_group.planeGroup[j].S2.z);
+//        }
+//
+//        std::cout << " " << std::endl;
+//        std::cout << " " << std::endl;
+//    }
+    
+    
     
 }
 
