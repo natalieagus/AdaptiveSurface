@@ -51,7 +51,7 @@ typedef struct Gains{
         this->numberDelays = Room->total_number_of_surface_groups_in_the_room;
         this->totalSurfaceArea = Room->cube.area;
         this->totalInputEnergy = 0.f;
-        this->correctInputEnergy = 4.f * M_PI * powf(dmin, 2) * ENERGYINITIAL;
+        this->correctInputEnergy = 4.f * M_PI * powf(dmin, 2) * ENERGYINITIAL * (float) Room->numOfBauerRays / (float) Room->total_number_of_surface_groups_in_the_room;
         this->feedbackTapGains = feedbackTapGains;
         this->energyReceived = energyReceived;
         
@@ -77,13 +77,13 @@ typedef struct Gains{
      *@param    energyReceived      the amound of energy "visible" to listener
      *
      */
-    Gains(float dmin, int numberDelays, float totalSurfaceArea, float* feedbackTapGains, float RT60, float totalVolume, float energyReceived){
+    Gains(float dmin, int numberDelays, int smoothingDelay, float totalSurfaceArea, float* feedbackTapGains, float RT60, float totalVolume, float energyReceived){
         
         this->dmin = dmin ;
         this->numberDelays = numberDelays;
         this->totalSurfaceArea = totalSurfaceArea;
         this->totalInputEnergy = 0.f;
-        this->correctInputEnergy = 4.f * M_PI * powf(dmin, 2) * ENERGYINITIAL;
+        this->correctInputEnergy = 4.f * M_PI * powf(dmin, 2) * ENERGYINITIAL * (float) (numberDelays+smoothingDelay)/(float) numberDelays;
         this->feedbackTapGains = feedbackTapGains;
         this->energyReceived = energyReceived;
         

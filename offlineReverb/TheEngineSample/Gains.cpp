@@ -126,9 +126,9 @@ float Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D
 float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
     
     //init all the coefficients memory
-    mu = new float[numberDelays];
-    upsilon = new float[numberDelays];
-    beta = new float[numberDelays];
+    mu = new float[Room->numOfBauerRays];
+    upsilon = new float[Room->numOfBauerRays];
+    beta = new float[Room->numOfBauerRays];
     
     //set them all to zero
     memset(mu, 0, numberDelays*sizeof(float));
@@ -204,9 +204,9 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
     //computing correct input energy and total energy
     float sumbeta = 0.0;
     float sumup = 0.0;
-    for (int i = 0; i<numberDelays; i++){
+    for (int i = 0; i<Room->numOfBauerRays; i++){
         //print beta and upsilon
-//        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
+        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
         sumbeta += beta[i];
         sumup += upsilon[i];
     }

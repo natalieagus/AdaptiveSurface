@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
 //
     int numRays = 32;
     int *delayValues = new int[numRays];
+    //set them all to zero
+    memset(delayValues, 0, numRays*sizeof(float));
     int rays_without_patches = CG.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(listener, numRays);
 
     std::cout << " \n Rays without patches: " << rays_without_patches << std::endl;

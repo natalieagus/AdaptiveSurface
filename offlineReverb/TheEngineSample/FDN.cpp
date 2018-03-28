@@ -115,7 +115,7 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     ///*********Setting Input Output Gains*************////
     ///************************************************////
-    GainValues = Gains(DMIN, Room.elements, Room.area, feedbackTapGains, parametersFDN.RT60, Room.volume, parametersFDN.energyReceived);
+    GainValues = Gains(DMIN, Room.elements, SMOOTHDELAY, Room.area, feedbackTapGains, parametersFDN.RT60, Room.volume, parametersFDN.energyReceived);
     float insufficiency = GainValues.calculateGains(Room.segmentedSides, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
     GainValues.getGains(inputGains, outputGains);
     totalEnergyAfterAttenuation = GainValues.totalInputEnergy;
