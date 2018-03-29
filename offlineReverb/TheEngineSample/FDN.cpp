@@ -100,6 +100,8 @@ void FDN::setParameterSafe(Parameter params)
     Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
 //    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc);
     Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+//    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 20, parametersFDN.listenerLoc);
+    
     Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
     printf("Room elements %d \n", Room.elements);
     

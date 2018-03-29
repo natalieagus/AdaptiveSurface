@@ -16,6 +16,7 @@ using namespace std;
  *@param tilesPerSide          = the number of even segmentation per side needed
  *@param slices                = total number of patches required, typically 32, or 64, or 128 if Hadamard FDN is used
  *@param channels              = azimuthal segmentation
+ *@param listener              = listener's location
  */
 void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener){
     //Assert necessary condition about the tilesPerSide, slices, and channels
