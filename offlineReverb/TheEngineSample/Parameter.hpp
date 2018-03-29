@@ -61,7 +61,7 @@ typedef struct Parameter {
         this->roomCeiling = 1.f; //z
         
         this->soundSourceLoc = Vector3D(0.8, 0.5, 0.5);
-        this->listenerLoc = Vector3D(0.2, 0.1, 0.1);
+        this->listenerLoc = Vector3D(0.2, 0.3, 0.1);
         
         this->hsffreq = 4000.f;
         this->hsfRT60 = 1.6f;

@@ -99,8 +99,8 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
 //    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc);
-    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
-//    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 20, parametersFDN.listenerLoc);
+//    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 20, parametersFDN.listenerLoc);
     
     Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
     printf("Room elements %d \n", Room.elements);
@@ -717,7 +717,7 @@ void FDN::resetReadIndices(){
 void FDN::resetTapAttenuation(float rt60){
     for (int i = 0; i < numDelays; i++){
         feedbackTapGains[i] = gain(rt60, delayTimes[i]);// * powf(-1, (float)( rand() % 10));
-        printf("i %d Delay time: %d, gain %f \n", i, delayTimes[i], feedbackTapGains[i]);
+//        printf("i %d Delay time: %d, gain %f \n", i, delayTimes[i], feedbackTapGains[i]);
     }
 }
 

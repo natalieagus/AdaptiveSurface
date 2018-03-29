@@ -21,7 +21,7 @@ float Gains::pointCollectionFunction(Vector3D x, Vector3D L, Vector3D N, float v
     float g = xLnormalized.dotProduct(N) / powf(xL.magnitude(), 2);
     float airabsorption = exp(-absorptionRate * xL.magnitude());
     return visibility * g * airabsorption;
-
+    
 }
 
 
@@ -54,6 +54,7 @@ void Gains::monteCarloUpsilon(Vector3D *points, Vector3D L, Vector3D S, Vector3D
     //Integrate h over the surface patch
     float hInt = 0.0f;
     for (int i = 0; i<numPoints; i++){
+        //                printf("points ups  %f %f %f \n", points[i].x, points[i].y, points[i].z);
         hInt += (area * pointCollectionFunction(points[i], L, N, 1.0f, 0.0f))/(float)numPoints;
     }
     
@@ -66,13 +67,13 @@ void Gains::monteCarloBeta(Vector3D *points, Vector3D L, Vector3D S, Vector3D N,
     //Integrate h * R over the surface patch
     float hRInt = 0.0f;
     for (int i = 0; i<numPoints; i++){
-//        printf("points  %f %f %f \n", points[i].x, points[i].y, points[i].z);
+        //        printf("points  %f %f %f \n", points[i].x, points[i].y, points[i].z);
         float h = pointCollectionFunction(points[i], L, N, 1.0f, ALPHA);
         float R = reflectionKernel(points[i], L, S, N, 1.0f);
         hRInt += (area * h * R)/(float)numPoints * this->energyReceived;
     }
     
-     *beta = sqrtf(dmin*dmin * hRInt);
+    *beta = sqrtf(dmin*dmin * hRInt);
     
 }
 
@@ -89,7 +90,7 @@ float Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vecto
     for (int i = 0; i<NUM_MONTECARLO; i++){
         hInt += (pointCollectionFunction(points[i], L, N, 1.0f, 0.0f));
     }
-
+    
     return hInt;
     
 }
@@ -188,8 +189,8 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
             upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) groupsOfSurfaces.area) / ((float) NUM_MONTECARLO * groupsOfSurfaces.numberOfPlanes));
             
             gain_index ++;
-    
-
+            
+            
         }
         
     }
@@ -248,28 +249,33 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     
     printf("Number delays : %d \n", numberDelays);
     for (int i = 0; i < numberDelays; i++){
-
+        
+//        printf("%i \n" , i);
         Vector3D c = surfaces[i].corner;
         Vector3D s1 = surfaces[i].S1;
         Vector3D s2 = surfaces[i].S2;
-
-        randomPointsOnRectangle(c, s1, s2, points, NUM_MONTECARLO);
-//        printf("\n\n ");
-//        for (int k = 0; k<NUM_MONTECARLO; k++){
-//            printf("{%f, %f, %f},", points[k].x, points[k].y, points[k].z );
-//        }
         
-//                printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
+        
+        //        printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
+        
+        randomPointsOnRectangle(c, s1, s2, points, NUM_MONTECARLO);
+        
+        //        printf("\n\n ");
+        //        for (int k = 0; k<NUM_MONTECARLO; k++){
+        //            printf("{%f, %f, %f},", points[k].x, points[k].y, points[k].z );
+        //        }
+        
+        //                printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
         monteCarloUpsilon(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &upsilon[i], surfaces[i].getArea());
         monteCarloBeta(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &beta[i], surfaces[i].getArea());
-//        printf("i: %d Beta %f \n", i, beta[i]);
+        //        printf("i: %d Beta %f \n", i, beta[i]);
     }
     
-
-
+    
+    
     vDSP_vdiv(upsilon, 1, beta, 1, mu, 1, numberDelays);
     vDSP_vdiv(feedbackTapGains, 1, mu, 1, mu, 1, numberDelays);
-
+    
     float sumbeta = 0.0;
     float sumup = 0.0;
     for (int i = 0; i<numberDelays; i++){
@@ -278,18 +284,18 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     }
     
     printf("Sumbeta: %f sumUp: %f \n", sumbeta, sumup);
-
+    
     for (int i = 0; i< numberDelays; i++){
-//        mu[i] *= powf(-1, rand()%2);
-//        upsilon[i] *=powf(-1, rand()%2);
-//        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
+        //        mu[i] *= powf(-1, rand()%2);
+        //        upsilon[i] *=powf(-1, rand()%2);
+        //        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
         totalInputEnergy += mu[i] * mu[i];
     }
     
     printf("Total Input Energy: %f \n", totalInputEnergy);
     printf("Input energy should be : %f \n", correctInputEnergy);
     printf("We feed too much input energy by a factor of : %f (if < 1 then we put too little, if > 1 then we put too much)\n", totalInputEnergy/correctInputEnergy);
-
+    
     
     return correctInputEnergy - totalInputEnergy;
 }

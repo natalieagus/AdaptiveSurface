@@ -67,15 +67,15 @@ int main(int argc, char* argv[])
     clock_t begin = clock();
     
 //    //Saving IR for JAES2
-//    float impulseLength = 5.0f;
-//
-//    std::ofstream impulseLeft;
-//    std::ofstream impulseRight;
-//    std::ifstream inFile;
-//
-//    saveImpulse(16, FS*impulseLength, &impulseLeft, &impulseRight);
-//
-//    std::cout << "\ndone.\n";
+    float impulseLength = 5.0f;
+
+    std::ofstream impulseLeft;
+    std::ofstream impulseRight;
+    std::ifstream inFile;
+
+    saveImpulse(16, FS*impulseLength, &impulseLeft, &impulseRight);
+
+    std::cout << "\ndone.\n";
 
     Cuboid cube = Cuboid();
     cube.segmentCube(9);
