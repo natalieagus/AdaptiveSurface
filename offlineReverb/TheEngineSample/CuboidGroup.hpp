@@ -28,6 +28,25 @@ class CuboidGroup{
   
 public:
     
+    //Default Constructor
+    CuboidGroup(){
+        this->cube = Cuboid();
+        //Even segmentation
+        cube.segmentCube(4);
+        //store the tilesPerWall
+        this->tilesPerWall = 4;
+        //double pointer, first pointer for walls 1-6, and second pointer is for groups of surfaces in that wall
+        this->surfaceGroups = new Plane3DGroup*[6];
+        //init intersection points vector
+        this->intersectionPointsInRoom = new Vector3D*[6];
+        //init the array to store number of elements in intersection points vector
+        this->numOfIntersectionPointsPerWall = new int[6];
+        //init surface group number on each wall array
+        this->numOfSurfaceGroupsInEachWall = new int[6];
+        //init rays without patches count
+        this->rays_without_patches = 0;
+    }
+    
     //Constructor
     CuboidGroup(float xLength, float yLength, float zLength, int tilesPerWall){
         this->cube = Cuboid(xLength, yLength, zLength);

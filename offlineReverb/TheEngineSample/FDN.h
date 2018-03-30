@@ -126,7 +126,9 @@ protected:
     
     void  setMultiTapDelayChannels();
     Cuboid Room;
+    CuboidGroup RoomGroup;
     Gains GainValues;
+
 
     
     float directAttenuation;

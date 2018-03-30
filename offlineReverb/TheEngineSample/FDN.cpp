@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <random>
 #include "Cuboid.hpp"
+#include "CuboidGroup.hpp"
 #include "Gains.hpp"
 #include <stdlib.h>     /* srand, rand */
 #include <random>
@@ -102,6 +103,9 @@ void FDN::setParameterSafe(Parameter params)
 //    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
     Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 20, parametersFDN.listenerLoc);
     
+    //for 5B
+    //    RoomGroup = CuboidGroup(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling, 15 * 15);
+    
     Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
     printf("Room elements %d \n", Room.elements);
     
@@ -118,7 +122,13 @@ void FDN::setParameterSafe(Parameter params)
     ///*********Setting Input Output Gains*************////
     ///************************************************////
     GainValues = Gains(DMIN, Room.elements, SMOOTHDELAY, Room.area, feedbackTapGains, parametersFDN.RT60, Room.volume, parametersFDN.energyReceived);
+    //For paper 5B
+//    GainValues = Gains(DMIN, feedbackTapGains, parametersFDN.RT60, parametersFDN.energyReceived, &RoomGroup);
+    
     float insufficiency = GainValues.calculateGains(Room.segmentedSides, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
+    //For paper 5B
+//    float insufficiency = GainValues.calculateGainsGroup(&RoomGroup, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
+    
     GainValues.getGains(inputGains, outputGains);
     totalEnergyAfterAttenuation = GainValues.totalInputEnergy;
     insufficiency = GainValues.correctInputEnergy - totalEnergyAfterAttenuation;
