@@ -31,6 +31,7 @@ void FDN::initialise(bool powerSaveMode){
     delayUnits = DELAYUNITSSTD;
     delayBuffers = NULL;
     parametersFDN =  Parameter();
+    this->roomType = parametersFDN.roomType;
     setParameterSafe(parametersFDN);
     
 }
@@ -100,8 +101,8 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
 //    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc);
-//    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
-    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 20, parametersFDN.listenerLoc);
+    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+//    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 35, parametersFDN.listenerLoc);
     
     //for 5B
     //    RoomGroup = CuboidGroup(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling, 15 * 15);

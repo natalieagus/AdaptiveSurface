@@ -22,7 +22,7 @@
 
 
 //change them to make the first order reflections lose energy if you have to.
-#define NUM_MONTECARLO 10
+#define NUM_MONTECARLO 100
 #define KD 1.0f
 #define KS 0.0f
 #define ENERGYINITIAL 1.0f

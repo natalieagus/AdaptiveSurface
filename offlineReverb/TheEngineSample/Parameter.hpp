@@ -55,17 +55,19 @@ typedef struct Parameter {
         
 //WATCH DMIN AND ENERGY DETECTED BY LISTENER
         
-        this->RT60 = 0.5f;
-        this->roomWidth = 1.f; //x
-        this->roomHeight = 1.f; //y
-        this->roomCeiling = 1.f; //z
+        this->roomType = 1;
         
-        this->soundSourceLoc = Vector3D(0.8, 0.5, 0.5);
-        this->listenerLoc = Vector3D(0.2, 0.3, 0.1);
+        this->RT60 = 2.09f;
+        this->roomWidth = 1.95f; //x
+        this->roomHeight = 5.52f; //y
+        this->roomCeiling = 2.9f; //z
+        
+        this->soundSourceLoc = Vector3D(0.15f,2.38f,0.52f);
+        this->listenerLoc = Vector3D(0.08f+0.084f, 0.9f, 0.64f);
         
         this->hsffreq = 4000.f;
-        this->hsfRT60 = 1.6f;
-        this->energyReceived = 1.0f;
+        this->hsfRT60 = 1.4f;
+        this->energyReceived = 0.9f;
         
         
         this->lsffreq = 200.f;
@@ -122,6 +124,8 @@ typedef struct Parameter {
     float bellPeak;
     float bellGain;
     float bellBW;
+    
+    int roomType;
 
     bool roomRayModelOn;
     

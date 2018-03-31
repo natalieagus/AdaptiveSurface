@@ -59,6 +59,7 @@ public:
     
     float directPortionOn = 1.0f;
     float reverbPortionOn = 1.0f;
+    int roomType;
     
     // constructor
 	FDN(void);
@@ -265,6 +266,7 @@ protected:
     void initialise(bool powerSaveMode);
     
     bool reverbOn;
+
 
 
     

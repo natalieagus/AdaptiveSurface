@@ -20,7 +20,7 @@ using namespace std;
  */
 void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener){
     //Assert necessary condition about the tilesPerSide, slices, and channels
-    assert(slices > ( channels + 4) + (tilesPerSide * 6));
+    assert(slices >= ( channels + 4) + (tilesPerSide * 6));
     
     //set the tiles per side for the room, this number has to be able to be square-rooted
 //    int tilesPerSide = 9;
