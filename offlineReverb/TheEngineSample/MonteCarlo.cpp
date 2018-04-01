@@ -17,6 +17,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include <random>
+using namespace std;
 
 
 
@@ -202,26 +204,46 @@ void randomPointsOnTriangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* poin
 
 void randomPointsOnRectangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* points, size_t numPoints){
     
-    // we are going to do this with two triangles.  How many points for each?
-    size_t t1Points = floor(numPoints/2);
-    size_t t2Points = numPoints - t1Points;
+    //Set delay length for delays without output and input tap
+    std::random_device rd;     // only used once to initialise (seed) engine
+    std::mt19937 rng(10);    // random-number engine used (Mersenne-Twister in this case)
+    std::uniform_real_distribution<float> uni_s1(0, s1.magnitude()); // guaranteed unbiased
+    std::uniform_real_distribution<float> uni_s2(0, s2.magnitude()); // guaranteed unbiased
     
-    //  printf("%f %f %f , %f %f %f,  %f %f %f \n", c.x, c.y, c.z, s1.x, s1.y, s1.z, s2.x, s2.y, s2.z);
-    // do the first triangle
-    randomPointsOnTriangle(c, s1, s2, points, t1Points);
+    for (int i = 0; i<numPoints; i++){
+        
+        float scalar_s1 = uni_s1(rng);
+        float scalar_s2 = uni_s2(rng);
+        
+//        std::cout << scalar_s1 << " " << scalar_s2 << std::endl;
+        points[i] = c.add(s1.scalarMult(scalar_s1).add(s2.scalarMult(scalar_s2)));
+        
+//        printf("{%f, %f, %f},", points[i].x, points[i].y, points[i].z);
+        
+    }
     
-    // printf("triangle1  done");
-    // where is the opposite corner of the rectangle?
-    Vector3D c2 = Vector3D(c.x+s1.x+s2.x, c.y+s1.y+s2.y, c.z+s1.z+s2.z);
+//    // we are going to do this with two triangles.  How many points for each?
+//    size_t t1Points = floor(numPoints/2);
+//    size_t t2Points = numPoints - t1Points;
+//
+//    //  printf("%f %f %f , %f %f %f,  %f %f %f \n", c.x, c.y, c.z, s1.x, s1.y, s1.z, s2.x, s2.y, s2.z);
+//    // do the first triangle
+//    randomPointsOnTriangle(c, s1, s2, points, t1Points);
+//
+//    // printf("triangle1  done");
+//    // where is the opposite corner of the rectangle?
+//    Vector3D c2 = Vector3D(c.x+s1.x+s2.x, c.y+s1.y+s2.y, c.z+s1.z+s2.z);
+//
+//    // get vectors pointing in the opposite directions
+//    Vector3D s3 = Vector3D(-s1.x,-s1.y,-s1.z);
+//    Vector3D s4 = Vector3D(-s2.x,-s2.y,-s2.z);
+//
+//    // do the second triangle
+//    randomPointsOnTriangle(c2,s3,s4, points + t1Points, t2Points);
+//
+//    // printf("triangle2  done");
     
-    // get vectors pointing in the opposite directions
-    Vector3D s3 = Vector3D(-s1.x,-s1.y,-s1.z);
-    Vector3D s4 = Vector3D(-s2.x,-s2.y,-s2.z);
     
-    // do the second triangle
-    randomPointsOnTriangle(c2,s3,s4, points + t1Points, t2Points);
-    
-    // printf("triangle2  done");
 }
 
 

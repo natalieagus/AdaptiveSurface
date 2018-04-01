@@ -193,7 +193,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         numberOfSurfaceGroupsOnThisWall++;
     }
     
-    printf("number of surface groups on this wall : %i \n", numberOfSurfaceGroupsOnThisWall);
+//    printf("number of surface groups on this wall : %i \n", numberOfSurfaceGroupsOnThisWall);
     //update the total number of surfaceGroups
     this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
     
@@ -538,7 +538,7 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
         Plane3D wall = cube.sides[i];
         
 //        //print the wall
-        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
+//        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
     
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
@@ -570,7 +570,7 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
         this->rays_without_patches += rays_without_patches_on_this_wall;
         this->total_number_of_surface_groups_in_the_room += this->numOfSurfaceGroupsInEachWall[i];
         
-        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
+//        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
     }
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall
@@ -598,29 +598,30 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     //surfaceGroups : 6 of i arrays, where i is numOfSurfaceGroupsInEachWall[1-6];
     //**surfaceGroups = Plane3D group, correspond to a group of patches that has 1 ray
     //checking and print the surfaces
-    
+//    
 //    for (int wallIndex = 0; wallIndex < 6; wallIndex ++){
 //        int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
-//        std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
-//
+////        std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
 //        for (int i = 0; i<totalNumberOfSurfaceGroups; i++){
 //            Plane3DGroup surfaces_group = this->surfaceGroups[wallIndex][i];
 //            for (int j = 0; j<surfaces_group.numberOfPlanes; j++){
 //                printf("{ {%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f} },", surfaces_group.planeGroup[j].corner.x, surfaces_group.planeGroup[j].corner.y, surfaces_group.planeGroup[j].corner.z, surfaces_group.planeGroup[j].S1.x, surfaces_group.planeGroup[j].S1.y, surfaces_group.planeGroup[j].S1.z, surfaces_group.planeGroup[j].S2.x, surfaces_group.planeGroup[j].S2.y, surfaces_group.planeGroup[j].S2.z);
 //            }
 //
-//            std::cout << " " << std::endl;
-//            std::cout << " " << std::endl;
+////            std::cout << " " << std::endl;
+////            std::cout << " " << std::endl;
 //        }
 //
 //    }
-    
+
 //    this->rays_without_patches = rays_without_patches;
     
     printf("Total rays assigned initially %i, but %i rays dont have patches \n", this->numOfBauerRays, this->rays_without_patches);
     
     //final assertion that the number of surface groups in the room is equal to the initial set number of rays, minus the rays without patches
     assert(this->total_number_of_surface_groups_in_the_room == (this->numOfBauerRays - this->rays_without_patches));
+    
+     printf("\n\n\n END OF CUBOIDGROUP CALCULATION \n\n\n");
     
     return this->rays_without_patches;
 }

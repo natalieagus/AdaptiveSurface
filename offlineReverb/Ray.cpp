@@ -26,7 +26,7 @@ bool Ray::get_intersection(Ray x){
         float intersection_scalar_this = (dy * x.d.x - dx * x.d.y)/D;
         float intersection_scalar_x = (dy * this->d.x - dx * this->d.y)/D;
         
-        //            printf("this ray's scalar %f, other ray scalar %f \n", intersection_scalar_this, intersection_scalar_x);
+//                    printf("this ray's scalar %f, other ray scalar %f \n", intersection_scalar_this, intersection_scalar_x);
         
         if (intersection_scalar_this >= 0 && intersection_scalar_x >= 0 &&
             ((this->wall_length > 0 && intersection_scalar_this <= wall_length) ||

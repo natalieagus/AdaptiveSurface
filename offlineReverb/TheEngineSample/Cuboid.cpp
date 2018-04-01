@@ -20,11 +20,12 @@ using namespace std;
  */
 void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector3D listener){
     //Assert necessary condition about the tilesPerSide, slices, and channels
-    assert(slices >= ( channels + 4) + (tilesPerSide * 6));
+    assert(slices >= ( channels + 4) + (tilesPerSide * 6) + 8);
     
     //set the tiles per side for the room, this number has to be able to be square-rooted
 //    int tilesPerSide = 9;
     segmentCube(tilesPerSide);
+    printf("channels are : %i \n", channels);
     
     //this->segmentedSides will now have tilesPerSide*tilesPerSide*6 surfaces
     int number_of_tiles_after_even_segmentation = 6*tilesPerSide;
@@ -57,21 +58,22 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     //split walls in walls_in into lateral walls and walls_out
     //store the number of walls in walls_out
-    int number_of_walls_out = splitWalls(walls_in, tilesPerSide, walls_out, number_of_non_ceiling_floor_surfaces, lateral_walls, listener, 1, 1);
+    int number_of_walls_out = splitWalls(walls_in, tilesPerSide, walls_out, number_of_non_ceiling_floor_surfaces, lateral_walls, listener, xLength, yLength);
     
     std::cout << "\n Number of surfaces in walls_out: " << number_of_walls_out << " \n";
     
     //printing the rest of the walls, except lateral walls
-//    std::cout << "\nAll walls except lateral walls: \n ";
-//    for (int i = 0; i < number_of_walls_out; i++){
-//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
-//    }
+    std::cout << "\nAll walls except lateral walls: \n ";
+    for (int i = 0; i < number_of_walls_out; i++){
+        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", walls_out[i].corner.x, walls_out[i].corner.y, walls_out[i].corner.z, walls_out[i].S1.x , walls_out[i].S1.y, walls_out[i].S1.z, walls_out[i].S2.x, walls_out[i].S2.y, walls_out[i].S2.z );
+    }
     
     //printing the lateral walls before segmentation
 //    std::cout << "\nLateral walls before segmentation: \n ";
 //        for (int i = 0; i < 4; i ++){
 //                   printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", lateral_walls[i].corner.x, lateral_walls[i].corner.y, lateral_walls[i].corner.z, lateral_walls[i].S1.x , lateral_walls[i].S1.y, lateral_walls[i].S1.z, lateral_walls[i].S2.x, lateral_walls[i].S2.y, lateral_walls[i].S2.z );
 //        }
+//
     
     //create array to store segmented lateral walls
     // the maximum number of segmented walls is channels + 4, which means extra +1 at every corner
@@ -82,12 +84,12 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
     
     std::cout << "\nNumber of lateral walls: " << number_of_lateral_walls << " \n";
     
-//    std::cout << "\nSegmented lateral walls: \n ";
-//    //printing the segmented lateral walls
-//    for (int i = 0; i < number_of_lateral_walls; i ++){
-//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmented_lateral_walls[i].corner.x, segmented_lateral_walls[i].corner.y, segmented_lateral_walls[i].corner.z, segmented_lateral_walls[i].S1.x , segmented_lateral_walls[i].S1.y, segmented_lateral_walls[i].S1.z, segmented_lateral_walls[i].S2.x, segmented_lateral_walls[i].S2.y, segmented_lateral_walls[i].S2.z );
-//    }
-    
+    std::cout << "\nSegmented lateral walls: \n ";
+    //printing the segmented lateral walls
+    for (int i = 0; i < number_of_lateral_walls; i ++){
+        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmented_lateral_walls[i].corner.x, segmented_lateral_walls[i].corner.y, segmented_lateral_walls[i].corner.z, segmented_lateral_walls[i].S1.x , segmented_lateral_walls[i].S1.y, segmented_lateral_walls[i].S1.z, segmented_lateral_walls[i].S2.x, segmented_lateral_walls[i].S2.y, segmented_lateral_walls[i].S2.z );
+    }
+//
     std::cout << "\nTotal walls intended are (including lateral walls), excluding ceiling and floor: " << number_of_walls_out_array_size << "\n";
     
     std::cout << "\nTotal walls now that we have are, excluding ceiling and floor: " << number_of_lateral_walls + number_of_walls_out << "\n";
@@ -128,10 +130,10 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
 
 
 //    //printout all walls
-//    std::cout << "\nAll walls : \n ";
-//    for (int i = 0; i < slices; i++){
-//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
-//    }
+    std::cout << "\nAll walls : \n ";
+    for (int i = 0; i < slices; i++){
+        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
+    }
     
     this->elements = slices;
 
@@ -167,6 +169,9 @@ int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener
     
     for (int i = 0; i<4; i++){
         
+        //print the lateral wall
+//        printf("\n\n {{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}}, \n\n", lateral_walls[i].corner.x, lateral_walls[i].corner.y, lateral_walls[i].corner.z, lateral_walls[i].S1.x, lateral_walls[i].S1.y, lateral_walls[i].S1.z,lateral_walls[i].S2.x, lateral_walls[i].S2.y, lateral_walls[i].S2.z);
+        
         //counting how many intersections per wall
         int temp_ray_points_index = 0;
         //get the ray on the wall
@@ -175,7 +180,7 @@ int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener
         lateral_wall_ray.wall_length = lateral_walls[i].S2.magnitude();
         
         //        std::cout << "\nNEW lateral wall \n" ;
-        //        lateral_wall_ray.print_self_ray();
+        lateral_wall_ray.print_self_ray();
         
         //find all rays that intersect this wall
         for (int j = 0; j<channels ;j++){
@@ -190,8 +195,8 @@ int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener
             
             if (intersect)
             {
-                //                std::cout << "Intersection! at angle ";
-                //                std::cout << azimuth_angle << " and u is " << lateral_wall_ray.u << " \n ";
+//                std::cout << "Intersection! at angle ";
+//                std::cout << azimuth_angle << " and u is " << lateral_wall_ray.u << " \n ";
                 //                listener_ray.print_self_ray();
                 //get the scalar u on the lateral wall ray
                 temp_ray_points[temp_ray_points_index] = lateral_wall_ray.u;
@@ -199,7 +204,7 @@ int Cuboid::segmentWallsBasedOnAzimuth(Plane3D* lateral_walls, Vector3D listener
             }
         }
         
-        //        std::cout << "\n Lateral wall " << i << " has intersections: " << temp_ray_points_index << "\n";
+        std::cout << "\n Lateral wall " << i << " has intersections: " << temp_ray_points_index << "\n";
         //sort the scalar u to get it from left to right
         vDSP_vsort(temp_ray_points, temp_ray_points_index, 1);
         
@@ -298,6 +303,8 @@ int Cuboid::splitWalls(Plane3D* walls_in, int walls_per_side, Plane3D* walls_out
     lateral_walls[1] = Plane3D(Vector3D(walls_in[0+walls_per_side].corner.x  ,walls_in[0+walls_per_side].corner.y, walls_in[0+walls_per_side].corner.z+ listener_height - distance_from_listener_height), new_S1, Vector3D(0, room_length, 0));
     lateral_walls[2] = Plane3D(Vector3D(walls_in[0+walls_per_side*2].corner.x  ,walls_in[0+walls_per_side*2].corner.y, walls_in[0+walls_per_side*2].corner.z+ listener_height - distance_from_listener_height), new_S1, Vector3D(-1.f*room_width, 0, 0));
     lateral_walls[3] = Plane3D(Vector3D(walls_in[0+walls_per_side*3].corner.x,walls_in[0+walls_per_side*3].corner.y, walls_in[0+walls_per_side*3].corner.z  + listener_height - distance_from_listener_height), new_S1, Vector3D(0, -1.f*room_length, 0));
+    
+    printf("\n\n {{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}}, \n\n", lateral_walls[0].corner.x, lateral_walls[0].corner.y, lateral_walls[0].corner.z, lateral_walls[0].S1.x, lateral_walls[0].S1.y, lateral_walls[0].S1.z,lateral_walls[0].S2.x, lateral_walls[0].S2.y, lateral_walls[0].S2.z);
     
     int total_new_walls = 0;
     //cut out original walls
@@ -581,6 +588,7 @@ int Cuboid::segmentCube(int tilesPerSide){
 //    for (int i = 0; i< 6*tilesPerSide ; i++){
 //        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x, segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z);
 //    }
+//
     return index;
     
 }

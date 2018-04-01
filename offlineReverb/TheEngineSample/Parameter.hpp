@@ -18,8 +18,7 @@
 #define RADIUSOFHEAD 0.084f //8cm radius of head
 #define DMIN 0.1f
 
-// If select this then change the smoothdelay into 1 at FDN.h
-//#define ENERGY_BALANCE
+
 
 typedef struct Parameter {
     
@@ -55,24 +54,24 @@ typedef struct Parameter {
         
 //WATCH DMIN AND ENERGY DETECTED BY LISTENER
         
-        this->roomType = 5;
-        this->RT60 = 1.2f;
-        this->roomWidth = 1.42f; //x
-        this->roomHeight = 7.23f; //y
-        this->roomCeiling = 2.61; //z
+        this->roomType = 8;
+        this->RT60 = 2.35f;
         
+        this->roomWidth = 2.68f; //x
+        this->roomHeight = 2.75f; //y
+        this->roomCeiling = 2.98f; //z
         
-        this->soundSourceLoc = Vector3D(0.2f,5.23f,1.3f);
-        this->listenerLoc = Vector3D(0.2f, 2.73f, 1.3f);
+        this->soundSourceLoc = Vector3D(0.2f,2.1f, 0.18f);
+        this->listenerLoc = Vector3D(0.2f, 0.6f, 0.18f);
         
         
         this->hsffreq = 4000.f;
-        this->hsfRT60 = 1.12f;
+        this->hsfRT60 = 1.55;
         this->energyReceived = 1.f;
         
         
         this->lsffreq = 125.f;
-        this->lsfRT60 = 0.77f; //set to rt60 to deactivate
+        this->lsfRT60 = 1.44; //set to rt60 to deactivate
         
         //Usually not changed, this is to compensate ball to real HRTF
         this->lowpass = 9000; // set to 22000.f to deactivate
@@ -90,6 +89,7 @@ typedef struct Parameter {
       //  printf("RT60: %f, room width : %f, room length : %f\n", this->RT60, this->roomWidth, this->roomHeight);
        // printf("Listenerloc : %f %f ssloc : %f %f \n", this->listenerLoc.x, this->listenerLoc.y, this->soundSourceLoc.x, this->soundSourceLoc.y);
         
+        setSmallestAndLargestDim();
         
     }
     
@@ -98,6 +98,7 @@ typedef struct Parameter {
     void setRoomSize(float size);
     void setWidth(float ratio);
     void setLength(float ratio);
+    void setSmallestAndLargestDim();
     
 //    Vector3D listenerXYRatio;
 //    Vector3D soundXYRatio;
@@ -127,6 +128,9 @@ typedef struct Parameter {
     float bellPeak;
     float bellGain;
     float bellBW;
+    
+    float smallestDim;
+    float largestDim;
     
     int roomType;
 

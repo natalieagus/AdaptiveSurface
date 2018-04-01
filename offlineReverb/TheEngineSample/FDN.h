@@ -37,6 +37,19 @@ FDN: a feedback delay network reverberator
 #define NUMDELAYSSTD TOTALDELAYS
 #define SMOOTHDELAY 0
 
+//#define ENERGY_BALANCE
+#ifdef ENERGY_BALANCE
+#define SMOOTHDELAY 1
+#endif
+
+//choose 1 method
+//#define NORMAL_METHOD
+//#define LATERAL_METHOD
+#define SPHERICAL_METHOD
+
+#define WALLS_PER_SIDE_INIT 20
+
+
 #define RADIALTRACE (TOTALDELAYS - 2*D_PER_SIDE*D_PER_SIDE)
 
 //#define CENTIMETRESTOMETRES 0.01f
@@ -130,8 +143,8 @@ protected:
     CuboidGroup RoomGroup;
     Gains GainValues;
     
-    void createNoInputNoOutputDelayLines(int remainder_delays);
-
+    void createNoInputNoOutputDelayLines(int current_delays, int remainder_delays);
+    void setDelayOutputChannelsPatchGroup();
 
     
     float directAttenuation;

@@ -54,10 +54,12 @@ void Gains::monteCarloUpsilon(Vector3D *points, Vector3D L, Vector3D S, Vector3D
     //Integrate h over the surface patch
     float hInt = 0.0f;
     for (int i = 0; i<numPoints; i++){
-        //                printf("points ups  %f %f %f \n", points[i].x, points[i].y, points[i].z);
+//        printf("{%f, %f, %f}, \n", points[i].x, points[i].y, points[i].z);
+//        printf("PCF %f\n", pointCollectionFunction(points[i], L, N, 1.0f, 0.0f));
         hInt += (area * pointCollectionFunction(points[i], L, N, 1.0f, 0.0f))/(float)numPoints;
     }
     
+//    printf("hInt ups %f \n", hInt);
     *up = sqrtf(((float) numberDelays / (M_PI * totalSurfaceArea)) * hInt);
     
 }
@@ -83,7 +85,7 @@ void Gains::monteCarloBeta(Vector3D *points, Vector3D L, Vector3D S, Vector3D N,
  *@param    points      the monte-carlo points in a surface patch
  *@param    L, S, N     listener, source, and normal vector of this patch
  */
-float Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N){
+void Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N, float* patchUpsilon){
     
     //Integrate h over the surface patch
     float hInt = 0.0f;
@@ -91,7 +93,7 @@ float Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vecto
         hInt += (pointCollectionFunction(points[i], L, N, 1.0f, 0.0f));
     }
     
-    return hInt;
+    *patchUpsilon += hInt;
     
 }
 
@@ -100,7 +102,7 @@ float Gains::monteCarloUpsilon_Squared_Group(Vector3D *points, Vector3D L, Vecto
  *@param    points      the monte-carlo points in a surface patch
  *@param    L, S, N     listener, source, and normal vector of this patch
  */
-float Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N){
+void Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D S, Vector3D N, float* patchBeta){
     
     //Integrate h * R over the surface patch
     float hRInt = 0.0f;
@@ -111,7 +113,7 @@ float Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D
         hRInt += (h * R)/ this->energyReceived;
     }
     
-    return dmin*dmin*hRInt;
+    *patchBeta += dmin*dmin*hRInt;
     
 }
 
@@ -156,37 +158,40 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
     //iterate through the walls
     for (int i = 0; i < 6; i++){
         
-        int number_of_groups_in_wall = Room->numOfSurfaceGroupsInEachWall[i];
+//        int number_of_groups_in_wall = Room->numOfSurfaceGroupsInEachWall[i];
+        
         //iterate through each group in each wall
-        for (int j = 0; j < number_of_groups_in_wall; j++){
+        for (int j = 0; j < Room->numOfSurfaceGroupsInEachWall[i]; j++){
             
-            Plane3DGroup groupsOfSurfaces = Room->surfaceGroups[i][j];
-            int number_of_patches_in_group = groupsOfSurfaces.numberOfPlanes;
+//            Plane3DGroup groupsOfSurfaces = Room->surfaceGroups[i][j];
+            int number_of_patches_in_group = Room->surfaceGroups[i][j].numberOfPlanes;
             
             float patch_beta = 0;
             float patch_hInt_upsilon = 0;
             //iterate through each patch in each group
             for (int k = 0; k<number_of_patches_in_group; k++){
-                Vector3D c = groupsOfSurfaces.planeGroup[k].corner;
-                Vector3D s1 = groupsOfSurfaces.planeGroup[k].S1;
-                Vector3D s2 = groupsOfSurfaces.planeGroup[k].S2;
-                Vector3D normal = groupsOfSurfaces.planeGroup[k].normal;
-                float patch_area = groupsOfSurfaces.planeGroup[k].getArea();
+//                Vector3D c = Room->surfaceGroups[i][j].planeGroup[k].corner;
+//                Vector3D s1 = Room->surfaceGroups[i][j].planeGroup[k].S1;
+//                Vector3D s2 = Room->surfaceGroups[i][j].planeGroup[k].S2;
+//                Vector3D normal = Room->surfaceGroups[i][j].planeGroup[k].normal;
+//
+//                float patch_area = Room->surfaceGroups[i][j].planeGroup[k].getArea();
                 
-                randomPointsOnRectangle(c, s1, s2, points, NUM_MONTECARLO);
+                randomPointsOnRectangle(Room->surfaceGroups[i][j].planeGroup[k].corner,
+                                        Room->surfaceGroups[i][j].planeGroup[k].S1,
+                                        Room->surfaceGroups[i][j].planeGroup[k].S2,
+                                        points, NUM_MONTECARLO);
                 
-                monteCarloUpsilon(points, L, S, normal, NUM_MONTECARLO, &upsilon[i], patch_area);
-                monteCarloBeta(points, L, S, normal, NUM_MONTECARLO, &beta[i], patch_area);
+                monteCarloBeta_Squared_Group(points, L, S, Room->surfaceGroups[i][j].planeGroup[k].normal, &patch_beta);
+                monteCarloUpsilon_Squared_Group(points, L, S, Room->surfaceGroups[i][j].planeGroup[k].normal, &patch_hInt_upsilon);
                 
-                patch_beta += monteCarloBeta_Squared_Group(points, L, S, normal);
-                patch_hInt_upsilon += monteCarloUpsilon_Squared_Group(points, L, S, normal);
             }
             
             
             //store beta and upsilon
-            beta[gain_index] = sqrtf((patch_beta * (float) groupsOfSurfaces.area)  / ((float) (NUM_MONTECARLO * groupsOfSurfaces.numberOfPlanes)));
+            beta[gain_index] = sqrtf((patch_beta * (float) Room->surfaceGroups[i][j].area)  / ((float) (NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes)));
             
-            upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) groupsOfSurfaces.area) / ((float) NUM_MONTECARLO * groupsOfSurfaces.numberOfPlanes));
+            upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) Room->surfaceGroups[i][j].area) / ((float) NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes));
             
             gain_index ++;
             
@@ -205,9 +210,9 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
     //computing correct input energy and total energy
     float sumbeta = 0.0;
     float sumup = 0.0;
-    for (int i = 0; i<Room->numOfBauerRays; i++){
+    for (int i = 0; i<numberDelays; i++){
         //print beta and upsilon
-        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
+//        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
         sumbeta += beta[i];
         sumup += upsilon[i];
     }
@@ -250,13 +255,13 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     printf("Number delays : %d \n", numberDelays);
     for (int i = 0; i < numberDelays; i++){
         
-        printf("%i \n" , i);
+//        printf("%i \n" , i);
         Vector3D c = surfaces[i].corner;
         Vector3D s1 = surfaces[i].S1;
         Vector3D s2 = surfaces[i].S2;
         
         
-        //        printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
+//        printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
         
         randomPointsOnRectangle(c, s1, s2, points, NUM_MONTECARLO);
         
@@ -268,7 +273,8 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
         //                printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
         monteCarloUpsilon(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &upsilon[i], surfaces[i].getArea());
         monteCarloBeta(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &beta[i], surfaces[i].getArea());
-        //        printf("i: %d Beta %f \n", i, beta[i]);
+        printf("i: %d Beta %f Up : %f \n", i, beta[i], upsilon[i]);
+        
     }
     
     

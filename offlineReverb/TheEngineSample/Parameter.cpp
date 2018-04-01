@@ -62,3 +62,30 @@ void Parameter::setWidth(float ratio){
 //    setSoundLocation(this->soundXYRatio);
  //   printf("New roomWidth: %f, new roomHeight: %f, room size: %f\n", roomWidth, roomHeight, roomSize);
 }
+
+void Parameter::setSmallestAndLargestDim(){
+    
+    if (roomWidth >= roomCeiling && roomWidth >= roomHeight){
+        largestDim = roomWidth;
+    }
+    
+    else if (roomCeiling >= roomWidth && roomCeiling >= roomHeight){
+        largestDim = roomCeiling;
+    }
+    
+    else if (roomHeight >= roomWidth && roomHeight >= roomCeiling){
+        largestDim = roomHeight;
+    }
+    
+    if (roomWidth <= roomCeiling && roomWidth <= roomHeight){
+        smallestDim = roomWidth;
+    }
+    
+    else if (roomCeiling <= roomWidth && roomCeiling <= roomHeight){
+        smallestDim = roomCeiling;
+    }
+    
+    else if (roomHeight <= roomWidth && roomHeight <= roomCeiling){
+        smallestDim = roomHeight;
+    }
+}
