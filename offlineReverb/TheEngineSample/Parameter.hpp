@@ -55,28 +55,31 @@ typedef struct Parameter {
         
 //WATCH DMIN AND ENERGY DETECTED BY LISTENER
         
-        this->roomType = 1;
+        this->roomType = 5;
+        this->RT60 = 1.2f;
+        this->roomWidth = 1.42f; //x
+        this->roomHeight = 7.23f; //y
+        this->roomCeiling = 2.61; //z
         
-        this->RT60 = 2.09f;
-        this->roomWidth = 1.95f; //x
-        this->roomHeight = 5.52f; //y
-        this->roomCeiling = 2.9f; //z
         
-        this->soundSourceLoc = Vector3D(0.15f,2.38f,0.52f);
-        this->listenerLoc = Vector3D(0.08f+0.084f, 0.9f, 0.64f);
+        this->soundSourceLoc = Vector3D(0.2f,5.23f,1.3f);
+        this->listenerLoc = Vector3D(0.2f, 2.73f, 1.3f);
+        
         
         this->hsffreq = 4000.f;
-        this->hsfRT60 = 1.4f;
-        this->energyReceived = 0.9f;
+        this->hsfRT60 = 1.12f;
+        this->energyReceived = 1.f;
         
         
-        this->lsffreq = 200.f;
-        this->lsfRT60 = RT60; //set to rt60 to deactivate
+        this->lsffreq = 125.f;
+        this->lsfRT60 = 0.77f; //set to rt60 to deactivate
         
+        //Usually not changed, this is to compensate ball to real HRTF
         this->lowpass = 9000; // set to 22000.f to deactivate
         this->bellPeak = 40000;
         this->bellBW = 1500.f;
         this->bellGain = 4.5f; // set to 1.0f to deactivate
+        
         
         this->listenerLocLeftEar = Vector3D(cosf(orientation * M_PI / 180.f)*(- RADIUSOFHEAD) + sinf(orientation * M_PI / 180.f)*0.0f + listenerLoc.x, cosf(orientation * M_PI / 180.f)*0.0f-sinf(orientation * M_PI / 180.f)*(- RADIUSOFHEAD) + listenerLoc.y, listenerLoc.z);
         

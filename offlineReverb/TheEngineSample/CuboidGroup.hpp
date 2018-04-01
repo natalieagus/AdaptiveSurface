@@ -45,6 +45,8 @@ public:
         this->numOfSurfaceGroupsInEachWall = new int[6];
         //init rays without patches count
         this->rays_without_patches = 0;
+        //init total number surface groups in the room
+        this->total_number_of_surface_groups_in_the_room = 0;
     }
     
     //Constructor
@@ -64,6 +66,8 @@ public:
         this->numOfSurfaceGroupsInEachWall = new int[6];
         //init rays without patches count
         this->rays_without_patches = 0;
+        //init total number surface groups in the room
+        this->total_number_of_surface_groups_in_the_room = 0;
     }
     
     //Destructor

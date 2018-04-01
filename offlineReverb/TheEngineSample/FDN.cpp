@@ -99,16 +99,20 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     ///*********Setting Room Segmentations*************////
     ///************************************************////
-    Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
+//    Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
 //    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc);
-    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+//    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
 //    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, 35, parametersFDN.listenerLoc);
+//    Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
     
-    //for 5B
-    //    RoomGroup = CuboidGroup(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling, 15 * 15);
-    
-    Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
-    printf("Room elements %d \n", Room.elements);
+    //For 5B
+        RoomGroup = CuboidGroup(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling, 20 * 20);
+    RoomGroup.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(parametersFDN.listenerLoc, TOTALDELAYS-SMOOTHDELAY);
+    RoomGroup.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
+    //todo
+    void createNoInputNoOutputDelayLines(int remainder_delays);
+
+//    printf("Room elements %d \n", Room.elements);
     
     
     ///************************************************////
@@ -122,13 +126,15 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     ///*********Setting Input Output Gains*************////
     ///************************************************////
-    GainValues = Gains(DMIN, Room.elements, SMOOTHDELAY, Room.area, feedbackTapGains, parametersFDN.RT60, Room.volume, parametersFDN.energyReceived);
-    //For paper 5B
-//    GainValues = Gains(DMIN, feedbackTapGains, parametersFDN.RT60, parametersFDN.energyReceived, &RoomGroup);
+//    GainValues = Gains(DMIN, Room.elements, SMOOTHDELAY, Room.area, feedbackTapGains, parametersFDN.RT60, Room.volume, parametersFDN.energyReceived);
     
-    float insufficiency = GainValues.calculateGains(Room.segmentedSides, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
+    //For 5B
+    GainValues = Gains(DMIN, feedbackTapGains, parametersFDN.RT60, parametersFDN.energyReceived, &RoomGroup);
+    
+//    float insufficiency = GainValues.calculateGains(Room.segmentedSides, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
+    
     //For paper 5B
-//    float insufficiency = GainValues.calculateGainsGroup(&RoomGroup, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
+    float insufficiency = GainValues.calculateGainsGroup(&RoomGroup, parametersFDN.listenerLoc, parametersFDN.soundSourceLoc);
     
     GainValues.getGains(inputGains, outputGains);
     totalEnergyAfterAttenuation = GainValues.totalInputEnergy;

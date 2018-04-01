@@ -193,7 +193,7 @@ void CuboidGroup::groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int nu
         numberOfSurfaceGroupsOnThisWall++;
     }
     
-//    printf("number of surface groups on this wall : %i \n", numberOfSurfaceGroupsOnThisWall);
+    printf("number of surface groups on this wall : %i \n", numberOfSurfaceGroupsOnThisWall);
     //update the total number of surfaceGroups
     this->numOfSurfaceGroupsInEachWall[wallIndex] = numberOfSurfaceGroupsOnThisWall;
     
@@ -538,7 +538,7 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
         Plane3D wall = cube.sides[i];
         
 //        //print the wall
-//        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
+        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
     
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
@@ -570,7 +570,7 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
         this->rays_without_patches += rays_without_patches_on_this_wall;
         this->total_number_of_surface_groups_in_the_room += this->numOfSurfaceGroupsInEachWall[i];
         
-//        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
+        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
     }
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall

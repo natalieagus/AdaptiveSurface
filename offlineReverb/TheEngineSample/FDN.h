@@ -129,6 +129,8 @@ protected:
     Cuboid Room;
     CuboidGroup RoomGroup;
     Gains GainValues;
+    
+    void createNoInputNoOutputDelayLines(int remainder_delays);
 
 
     

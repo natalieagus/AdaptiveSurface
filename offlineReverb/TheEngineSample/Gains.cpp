@@ -250,7 +250,7 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     printf("Number delays : %d \n", numberDelays);
     for (int i = 0; i < numberDelays; i++){
         
-//        printf("%i \n" , i);
+        printf("%i \n" , i);
         Vector3D c = surfaces[i].corner;
         Vector3D s1 = surfaces[i].S1;
         Vector3D s2 = surfaces[i].S2;
