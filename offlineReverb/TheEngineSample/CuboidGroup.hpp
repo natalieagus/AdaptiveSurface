@@ -95,12 +95,14 @@ public:
     
     //to be accessed by FDN.cpp
     void getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz);
-
+    
     
     
     //variables
     Cuboid cube;
     Vector3D **intersectionPointsInRoom;
+    Vector3D *intersectionPointsInRoom_singleArray;
+    
     int *numOfIntersectionPointsPerWall;
     Plane3DGroup **surfaceGroups; //6 for outer pointer, inner pointer to be determined later in groupSurfacesBasedOnNearestNeighbour
     int *numOfSurfaceGroupsInEachWall; //6 elements

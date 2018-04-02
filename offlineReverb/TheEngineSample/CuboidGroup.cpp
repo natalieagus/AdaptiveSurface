@@ -654,6 +654,22 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     //final assertion that the number of surface groups in the room is equal to the initial set number of rays, minus the rays without patches
     assert(this->total_number_of_surface_groups_in_the_room == (this->numOfBauerRays - this->rays_without_patches));
     
+    
+    //same as intersectionPointsInRoom but stored in a single array instead
+    this->intersectionPointsInRoom_singleArray = new Vector3D[total_number_of_surface_groups_in_the_room];
+    int running_index = 0;
+    for (int wallIndex = 0; wallIndex < 6; wallIndex ++){
+        int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
+        //        std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
+        for (int i = 0; i<totalNumberOfSurfaceGroups; i++){
+            Plane3DGroup surfaces_group = this->surfaceGroups[wallIndex][i];
+            this->intersectionPointsInRoom_singleArray[running_index] = surfaces_group.midPoint;
+            running_index++;
+        }
+        
+    }
+    
+    
      printf("\n\n\n END OF CUBOIDGROUP CALCULATION \n\n\n");
     
     return this->rays_without_patches;

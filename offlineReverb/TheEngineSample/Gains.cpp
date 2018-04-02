@@ -110,7 +110,7 @@ void Gains::monteCarloBeta_Squared_Group(Vector3D *points, Vector3D L, Vector3D 
         //        printf("points  %f %f %f \n", points[i].x, points[i].y, points[i].z);
         float h = pointCollectionFunction(points[i], L, N, 1.0f, ALPHA);
         float R = reflectionKernel(points[i], L, S, N, 1.0f);
-        hRInt += (h * R)/ this->energyReceived;
+        hRInt += (h * R) * this->energyReceived;
     }
     
     *patchBeta += dmin*dmin*hRInt;
@@ -192,7 +192,7 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
             beta[gain_index] = sqrtf((patch_beta * (float) Room->surfaceGroups[i][j].area)  / ((float) (NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes)));
             
             upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) Room->surfaceGroups[i][j].area) / ((float) NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes));
-            
+
             gain_index ++;
             
             
@@ -273,7 +273,7 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
         //                printf("Surfaces %f %f %f, %f %f %f, %f %f %f \n", surfaces[i].corner.x, surfaces[i].corner.y, surfaces[i].corner.z, surfaces[i].S1.x, surfaces[i].S1.y, surfaces[i].S1.z, surfaces[i].S2.x,surfaces[i].S2.y, surfaces[i].S2.z  );
         monteCarloUpsilon(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &upsilon[i], surfaces[i].getArea());
         monteCarloBeta(points, L, S, surfaces[i].normal, NUM_MONTECARLO, &beta[i], surfaces[i].getArea());
-        printf("i: %d Beta %f Up : %f \n", i, beta[i], upsilon[i]);
+//        printf("i: %d Beta %f Up : %f \n", i, beta[i], upsilon[i]);
         
     }
     

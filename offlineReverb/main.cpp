@@ -26,10 +26,9 @@ using std::fstream;
 using std::string;
 using namespace std;
 
-void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* ofRight){
+void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* ofRight, int roomType){
     
-    FDN reverb = FDN();
-    int roomType = reverb.roomType;
+    FDN reverb = FDN(roomType);
     
 //    clock_t begin = clock();
     std::string filename = std::to_string(abs(roomType));
@@ -64,15 +63,17 @@ int main(int argc, char* argv[])
     clock_t begin = clock();
     
 //    //Saving IR for JAES2
+    for (int i = 16; i<=16; i ++){
     float impulseLength = 5.0f;
 
     std::ofstream impulseLeft;
     std::ofstream impulseRight;
     std::ifstream inFile;
 
-    saveImpulse(16, FS*impulseLength, &impulseLeft, &impulseRight);
+    saveImpulse(16, FS*impulseLength, &impulseLeft, &impulseRight, i);
 
-    std::cout << "\ndone.\n";
+    std::cout << "\ndone for room type " << i <<".\n";
+    }
 ////
 //    Cuboid cube = Cuboid();
 //    cube.segmentCube(9);

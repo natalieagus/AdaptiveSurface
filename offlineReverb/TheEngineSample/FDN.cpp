@@ -19,22 +19,17 @@ FDN::~FDN(){
     if (delayBuffers) delete[] delayBuffers;
 }
 
-FDN::FDN(void)
+FDN::FDN(int roomType)
 {
     bool powerSaveByDefault = false;
-    initialise(powerSaveByDefault);
-}
-
-void FDN::initialise(bool powerSaveMode){
-
     numDelays = TOTALDELAYS;
     delayUnits = DELAYUNITSSTD;
     delayBuffers = NULL;
-    parametersFDN =  Parameter();
+    parametersFDN =  Parameter(roomType);
     this->roomType = parametersFDN.roomType;
     setParameterSafe(parametersFDN);
-    
 }
+
 
 
 void FDN::impulseResponse(long numSamples, std::ofstream* outputFileLeft, std::ofstream* outputFileRight){
@@ -251,7 +246,18 @@ void FDN::setParameterSafe(Parameter params)
             indicesL[multiTapIndex] = dVal;
             float betaVal = inputGains[indexMaxInGain] * outputGains[indexMaxInGain];
             gainsL[multiTapIndex] = betaVal;
+            
+#ifdef      NORMAL_METHOD
             multiDelayLinePoints[multiTapIndex] = Room.segmentedSides[indexMaxInGain].getMidpoint();
+#endif
+            
+#ifdef      LATERAL_METHOD
+            multiDelayLinePoints[multiTapIndex] = Room.segmentedSides[indexMaxInGain].getMidpoint();
+#endif
+            
+#ifdef      SPHERICAL_METHOD
+            multiDelayLinePoints[multiTapIndex] = RoomGroup.intersectionPointsInRoom_singleArray[indexMaxInGain];
+#endif
             multiTapGains[multiTapIndex] =  gain(parametersFDN.RT60, delayTimes[indexMaxInGain]);
             
             //transform this into no inputGain
@@ -394,7 +400,7 @@ void FDN::setParameterSafe(Parameter params)
     clock_t end = clock();
     
     double elapsed_msecs = double(end - begin) / CLOCKS_PER_SEC * 1000;
-    printf("Time elapsed miliseconds: %f\n", elapsed_msecs);
+    printf("Time elapsed miliseconds for setup and init: %f\n", elapsed_msecs);
 
     printf("\n\n======Setting End=======\n\n");
 }

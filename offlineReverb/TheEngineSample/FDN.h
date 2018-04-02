@@ -75,7 +75,7 @@ public:
     int roomType;
     
     // constructor
-	FDN(void);
+	FDN(int roomType);
 //    FDN(bool powerSaveMode); // call this with powerSaveMode set to true for a more efficient reverb with lower quality sound.
     ~FDN();
     

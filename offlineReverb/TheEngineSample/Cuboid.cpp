@@ -293,7 +293,7 @@ Ray Cuboid::getRayFromWallPatch(Vector3D L, Plane3D wall_patch){
 int Cuboid::splitWalls(Plane3D* walls_in, int walls_per_side, Plane3D* walls_out, int n, Plane3D* lateral_walls, Vector3D listener, float room_width, float room_length){
     
     float listener_height = listener.z;
-    float distance_from_listener_height = 0.1f; //20 cm below and above listener
+    float distance_from_listener_height = 0.18f; //10 cm below and above listener
     //assert that the bottom of the head isn't "below" the floor
     assert(listener.z - distance_from_listener_height >= 0);
     Vector3D new_S1 = Vector3D(0.f,0.f,distance_from_listener_height*2);
@@ -415,7 +415,7 @@ int Cuboid::splitWalls(Plane3D* walls_in, int walls_per_side, Plane3D* walls_out
  */
 int Cuboid::sliceRemainder(int last_index, int remainder, Plane3D* newSegmentedSides){
 
-    printf("Supposed number of surfaces : %i, now have to make %i more. \n", last_index + remainder, remainder);
+    printf("walls out (except lateral and ceil and floor) number of surfaces we have : %i, now have to make %i more. \n", last_index + remainder, remainder);
     
     int original_wall_last_index = last_index;
     int index = last_index; //last index, mutable
