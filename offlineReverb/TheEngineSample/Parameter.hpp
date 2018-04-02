@@ -54,24 +54,23 @@ typedef struct Parameter {
         
 //WATCH DMIN AND ENERGY DETECTED BY LISTENER
         
-        this->roomType = 8;
-        this->RT60 = 2.35f;
+        this->roomType = 6;
+        this->RT60 = 1.13f;
+        this->roomWidth = 1.42f; //x
+        this->roomHeight = 7.23f; //y
+        this->roomCeiling = 2.61; //z
         
-        this->roomWidth = 2.68f; //x
-        this->roomHeight = 2.75f; //y
-        this->roomCeiling = 2.98f; //z
-        
-        this->soundSourceLoc = Vector3D(0.2f,2.1f, 0.18f);
-        this->listenerLoc = Vector3D(0.2f, 0.6f, 0.18f);
+        this->soundSourceLoc = Vector3D(1.22f,5.2f,0.18f);
+        this->listenerLoc = Vector3D(1.22f, 3.2f, 0.18f);
         
         
         this->hsffreq = 4000.f;
-        this->hsfRT60 = 1.55;
+        this->hsfRT60 = 1.1f;
         this->energyReceived = 1.f;
         
         
         this->lsffreq = 125.f;
-        this->lsfRT60 = 1.44; //set to rt60 to deactivate
+        this->lsfRT60 = 0.83f; //set to rt60 to deactivate
         
         //Usually not changed, this is to compensate ball to real HRTF
         this->lowpass = 9000; // set to 22000.f to deactivate

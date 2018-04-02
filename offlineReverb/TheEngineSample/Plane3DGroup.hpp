@@ -38,7 +38,8 @@ public:
         this->numberOfPlanes = numberOfPlanes;
         this->midPoint = Vector3D(midPoint.x, midPoint.y, midPoint.z);
         
-        this->planeGroup = new Plane3D[numberOfPlanes];
+        this->totalCapacity = numberOfPlanes*2;
+        this->planeGroup = new Plane3D[totalCapacity];//get more space
         memcpy(planeGroup, planes, numberOfPlanes * sizeof(Plane3D));
         
         this->area = 0.f;
@@ -57,6 +58,7 @@ public:
     
     //methods
     void updateDivisor(int newDivisor);
+    void addPlaneToGroup(Plane3D newPlane);
     
     //variables
     Plane3D *planeGroup; //list of surfaces in the same group
@@ -65,6 +67,8 @@ public:
     int divisor;
     float area; //area of this group
     Vector3D midPoint;
+    
+    int totalCapacity;
     
     
 };

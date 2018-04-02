@@ -41,8 +41,10 @@ public:
         this->intersectionPointsInRoom = new Vector3D*[6];
         //init the array to store number of elements in intersection points vector
         this->numOfIntersectionPointsPerWall = new int[6];
+        memset(numOfIntersectionPointsPerWall, 0, 6*sizeof(int));
         //init surface group number on each wall array
         this->numOfSurfaceGroupsInEachWall = new int[6];
+        memset(numOfSurfaceGroupsInEachWall, 0, 6*sizeof(int));
         //init rays without patches count
         this->rays_without_patches = 0;
         //init total number surface groups in the room
@@ -62,8 +64,10 @@ public:
         this->intersectionPointsInRoom = new Vector3D*[6];
         //init the array to store number of elements in intersection points vector
         this->numOfIntersectionPointsPerWall = new int[6];
+        memset(numOfIntersectionPointsPerWall, 0, 6*sizeof(int));
         //init surface group number on each wall array
         this->numOfSurfaceGroupsInEachWall = new int[6];
+        memset(numOfSurfaceGroupsInEachWall, 0, 6*sizeof(int));
         //init rays without patches count
         this->rays_without_patches = 0;
         //init total number surface groups in the room
@@ -80,6 +84,7 @@ public:
     void groupSurfacesBasedOnNearestNeighbour(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int *surfaceRayIndex, int wallIndex, int numberOfDistinctRays);
     int assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(Plane3D *surfaces, int numOfSurfaces, Vector3D* points, int numOfPoints, int wallIndex);
     int assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3D listener, int numOfBauerRays);
+    void assignRaylessWall(int wallIndex);
     
     bool isWithinRectangularPlane(Plane3D P, Vector3D M);
     bool rayPlaneIntersection(Plane3D p, Ray r, float* u);

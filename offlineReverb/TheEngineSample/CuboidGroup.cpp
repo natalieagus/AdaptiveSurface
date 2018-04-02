@@ -47,7 +47,7 @@ void CuboidGroup::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener
     
     // transform to shorter ray and shift origin to listener's location
     for (int i = 0; i < n; i++){
-        out[i] = out[i].scalarMult(0.1).add(listener);
+        out[i] = out[i].add(listener);
     }
     
 //    for (int i = 0; i < n; i++){
@@ -400,11 +400,11 @@ bool CuboidGroup::rayPlaneIntersection(Plane3D p, Ray r, float* u){
         return true;
     }
     
-    float denominator = p.getNormal().normalize().dotProduct(r.d);
+    float denominator = p.getNormal().dotProduct(r.d);
     
 //    std::cout << "\ndenominator : " << denominator << " \n";
     if (fabs(denominator) > 0.000001){
-        *u = p.getMidpoint().subtract(r.p).dotProduct(p.getNormal().normalize()) / denominator;
+        *u = p.getMidpoint().subtract(r.p).dotProduct(p.getNormal()) / denominator;
 //        std::cout << "\nu : " << *u << " \n";
         if (*u >= 0){
 //            std::cout << " intersects ";
@@ -451,15 +451,17 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
     
     int numberOfBauerPointsOnWall = 0;
     
+//    printf("\n\n\n");
     //Access rayPlaneIntersection method, and then isWithinRectangularPlane
     for (int i = 0; i<numberOfRays; i++){
         float u = 0.f;
         bool intersect = rayPlaneIntersection(wall, bauerRays[i], &u);
         
-        //print the ray
-//        printf("{center: {%f, %f, %f}, dir: {%f, %f %f}}", bauerRays[i].p.x, bauerRays[i].p.y, bauerRays[i].p.z, bauerRays[i].d.x, bauerRays[i].d.y, bauerRays[i].d.z);
-        
+     
         if (intersect){
+            //print the ray
+//            printf("{{%f, %f, %f},{%f*3, %f*3, %f*3}},", bauerRays[i].p.x, bauerRays[i].p.y, bauerRays[i].p.z, bauerRays[i].d.x, bauerRays[i].d.y, bauerRays[i].d.z);
+            
             
             bool isWithinPlane = isWithinRectangularPlane(wall, bauerRays[i].get_vector(u));
             if (isWithinPlane){
@@ -473,7 +475,7 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
             
         }
     }
-    
+//    printf("\n\n\n");
     //store bauer points on wall in intersectionPoints
     for (int i = 0; i<numberOfBauerPointsOnWall; i++){
         intersectionPoints[i] = bauerRays[indexArray[i]].get_vector(uArray[i]);
@@ -483,6 +485,10 @@ int CuboidGroup::findBauerPointsOnWall (Plane3D wall, Ray* bauerRays, int number
     //clear memory
     delete [] uArray;
     delete [] indexArray;
+    
+//    printf("intersecting rays on this wall : %i \n", numberOfBauerPointsOnWall);
+    
+//    assert(numberOfBauerPointsOnWall > 0);
     
     return numberOfBauerPointsOnWall;
 }
@@ -504,22 +510,30 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     //store the number of rays, this is the number of delay lines in FDN
     this->numOfBauerRays = numOfBauerRays;
     
+//    //print walls
+//    for (int i = 0; i<6; i++){
+//        Plane3D wall = cube.sides[i];
+//        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}}",wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
+//
+//    }
+//    printf("\n\n");
+    
     //STEP 1: create vectors emanating from listener using Bauer's method
     Vector3D *bauerVectors = new Vector3D[numOfBauerRays];
     bauersMethodOnListener(numOfBauerRays, bauerVectors, listener);
     
 //    //print the vectors
 //    for (int i = 0; i<numOfBauerRays; i++){
-//        printf("{%f,%f,%f},", bauerVectors[i].x, bauerVectors[i].y, bauerVectors[i].z);
+//        printf("{{%f,%f,%f},{%f,%f,%f}},", listener.x, listener.y, listener.z,bauerVectors[i].x, bauerVectors[i].y, bauerVectors[i].z);
 //    }
     
     //STEP 2: convert these vectors into rays
     Ray *bauerRays = new Ray[numOfBauerRays];
     createBauersRayOnListener(numOfBauerRays, bauerVectors, listener, bauerRays);
     
-//    //print the rays end
+    //print the rays end
 //    for (int i = 0; i<numOfBauerRays; i++){
-//        printf("{%f,%f,%f},", bauerRays[i].get_vector(5).x, bauerRays[i].get_vector(5).y, bauerRays[i].get_vector(5).z);
+//        printf("{{%f,%f,%f},{%f,%f,%f}},", listener.x, listener.y, listener.z, bauerRays[i].get_vector(5).x, bauerRays[i].get_vector(5).y, bauerRays[i].get_vector(5).z);
 //    }
     
 //    //print the rays direction
@@ -533,51 +547,69 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     int total_numOfIntersectionPointPerWall = 0;
     //create pointer to get back the intersection points on this wall
     Vector3D *intersectionPoints = new Vector3D[numOfBauerRays];
+    //create temp holder to find out which wall doesn't have rays
+    int* noRayWall = new int[6];
     
     for (int i = 0; i<6; i++){
         Plane3D wall = cube.sides[i];
         
-//        //print the wall
+////        //print the wall
 //        printf("{{%f, %f, %f},{%f, %f, %f},{%f, %f, %f}},", wall.corner.x, wall.corner.y, wall.corner.z, wall.S1.x, wall.S1.y, wall.S1.z, wall.S2.x, wall.S2.y, wall.S2.z);
-    
+
         int numberOfIntersectionPointsOnAWall = findBauerPointsOnWall(wall, bauerRays, numOfBauerRays, intersectionPoints);
         
-//        print intersection points on this wall
-//        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
-//            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
-//        }
+        noRayWall[i] = numberOfIntersectionPointsOnAWall;
         
-        //store the intersection points in global variable
-        this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
-        this->numOfIntersectionPointsPerWall[i] = numberOfIntersectionPointsOnAWall;
-        memcpy(intersectionPointsInRoom[i], intersectionPoints, numberOfIntersectionPointsOnAWall * sizeof(Vector3D));
-        total_numOfIntersectionPointPerWall += this->numOfIntersectionPointsPerWall[i];
-        
-//        //ensure the storage is proper, print and check
-//        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
-//            printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
-//        }
-//
-        
-       //Solve nearest neighbour problem for this wall
-        //the method below assigns patches to each ray, and create Plane3DGroups
-        int rays_without_patches_on_this_wall = assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
-                                                                tilesPerWall,
-                                                                intersectionPoints,
-                                                                numberOfIntersectionPointsOnAWall,
-                                                                i);
-        
-        this->rays_without_patches += rays_without_patches_on_this_wall;
-        this->total_number_of_surface_groups_in_the_room += this->numOfSurfaceGroupsInEachWall[i];
-        
-//        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
+        //only group when that wall has at least 1 ray
+        if (numberOfIntersectionPointsOnAWall > 0){
+            //        print intersection points on this wall
+            //        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
+            //            printf("{%f,%f,%f},", intersectionPoints[j].x,  intersectionPoints[j].y,  intersectionPoints[j].z);
+            //        }
+            
+            //store the intersection points in global variable
+            this->intersectionPointsInRoom[i] = new Vector3D[numberOfIntersectionPointsOnAWall];
+            this->numOfIntersectionPointsPerWall[i] = numberOfIntersectionPointsOnAWall;
+            memcpy(intersectionPointsInRoom[i], intersectionPoints, numberOfIntersectionPointsOnAWall * sizeof(Vector3D));
+            total_numOfIntersectionPointPerWall += this->numOfIntersectionPointsPerWall[i];
+            
+            //        //ensure the storage is proper, print and check
+            //        for (int j = 0; j < numberOfIntersectionPointsOnAWall; j++){
+            //            printf("{%f,%f,%f},", intersectionPointsInRoom[i][j].x,  intersectionPointsInRoom[i][j].y,  intersectionPointsInRoom[i][j].z);
+            //        }
+            //
+            
+            //Solve nearest neighbour problem for this wall
+            //the method below assigns patches to each ray, and create Plane3DGroups
+            int rays_without_patches_on_this_wall = assign_and_group_SurfacesBasedOnNearestNeighbour_onWall(&cube.segmentedSides[i*tilesPerWall],
+                                                                                                            tilesPerWall,
+                                                                                                            intersectionPoints,
+                                                                                                            numberOfIntersectionPointsOnAWall,
+                                                                                                            i);
+            
+            this->rays_without_patches += rays_without_patches_on_this_wall;
+            this->total_number_of_surface_groups_in_the_room += this->numOfSurfaceGroupsInEachWall[i];
+            
+            //        printf("In this wall index %i, the number of existing rays is %i, but %i rays don't have patches \n", i, this->numOfIntersectionPointsPerWall[i], rays_without_patches_on_this_wall);
+        }
     }
     
     //make sure the total number of intersection points we get in the room is equivalent to the number of rays, because each ray has to intersect exactly one wall
     assert(total_numOfIntersectionPointPerWall == numOfBauerRays);
     
+    //TODO: handle the case of wall with no ray here
+    
+    for (int i = 0; i<6; i++){
+        if (noRayWall[i] < 1){
+            printf("\nWall %i has no ray\n",i);
+            assignRaylessWall(i);
+            //find the nearest ray (IntersectionPoints) to group to
+        }
+    }
+    
     //free memory
     delete [] intersectionPoints;
+    delete [] noRayWall;
     
     
     //Final checking before returning
@@ -598,7 +630,8 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     //surfaceGroups : 6 of i arrays, where i is numOfSurfaceGroupsInEachWall[1-6];
     //**surfaceGroups = Plane3D group, correspond to a group of patches that has 1 ray
     //checking and print the surfaces
-//    
+    
+//   Printing all walls
 //    for (int wallIndex = 0; wallIndex < 6; wallIndex ++){
 //        int totalNumberOfSurfaceGroups = this->numOfSurfaceGroupsInEachWall[wallIndex];
 ////        std::cout<< "number of surface groups in this wall index  " << wallIndex << " is  " << totalNumberOfSurfaceGroups << std::endl;
@@ -659,3 +692,58 @@ void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, V
     assert(delayLineIndex == (this->numOfBauerRays - this->rays_without_patches));
     
 }
+
+
+/*Group the rayless wall to other nearest rays instead
+ *
+ *@param wallIndex = wall without Ray
+ */
+void CuboidGroup::assignRaylessWall(int wallIndex){
+    
+    //get the nearest ray to this wall "patch"
+    Plane3D* tilesOnThisWall = &cube.segmentedSides[wallIndex*tilesPerWall];
+    
+    int *wallIndex_closest = new int[tilesPerWall];
+    int *pointIndex_inWall_closest = new int[tilesPerWall];
+    
+    for (int k = 0; k<tilesPerWall; k++){
+        Vector3D tile_midpoint = tilesOnThisWall[k].getMidpoint();
+        int closest_wall_index = -1;
+        int closest_point_index_in_the_wall = -1;
+        float nearest = INFINITY;
+        
+        for (int i = 0; i<6; i++){
+            int intersectionPointsOnWall = this->numOfIntersectionPointsPerWall[i];
+            
+            if (intersectionPointsOnWall > 0){
+                
+                for (int j = 0; j<intersectionPointsOnWall; j++){
+                    Vector3D intersectionPointVector = this->intersectionPointsInRoom[i][j];
+                    float distance = intersectionPointVector.distance(tile_midpoint);
+                    if (distance < nearest){
+                        nearest = distance;
+                        closest_wall_index = i;
+                        closest_point_index_in_the_wall = j;
+                    }
+                }
+                
+            }
+            
+        }
+        
+        wallIndex_closest[k] = closest_wall_index;
+        pointIndex_inWall_closest[k] = closest_point_index_in_the_wall;
+        
+        //add plane to relevant group
+        Plane3D tileOnThisWall = tilesOnThisWall[k];
+//        printf("tile %i on wall %i is closest to another wall %i of ray %i", k, wallIndex, closest_wall_index, closest_point_index_in_the_wall);
+        //get the correct surface group and add
+        this->surfaceGroups[closest_wall_index][closest_point_index_in_the_wall].addPlaneToGroup(tileOnThisWall);
+        
+    }
+    
+    
+    
+    
+}
+
