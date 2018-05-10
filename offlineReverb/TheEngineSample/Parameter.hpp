@@ -66,11 +66,12 @@ typedef struct Parameter {
             this->roomCeiling = 2.9f; //z
             
             this->soundSourceLoc = Vector3D(0.975f,3.6f,0.52f);
-            this->listenerLoc = Vector3D(0.975f, 1.91f, 0.64f);
+            this->listenerLoc = Vector3D(0.975f, 2.f, 0.64f);
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.6f;
-            this->energyReceived = 0.9f;
+            //this controls how much late energy is there
+            this->energyReceived = 0.15f;
             
             
             this->lsffreq = 200.f;
@@ -117,7 +118,7 @@ typedef struct Parameter {
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.4f;
-            this->energyReceived = 0.9f;
+            this->energyReceived = 0.3f;
             
             
             this->lsffreq = 200.f;
@@ -136,11 +137,11 @@ typedef struct Parameter {
             this->roomCeiling = 2.9f; //z
             
             this->soundSourceLoc = Vector3D(1.8f,1.13f,0.52f);
-            this->listenerLoc = Vector3D(1.786f, 0.08f, 0.64f);
+            this->listenerLoc = Vector3D(1.8f, 0.08f, 0.64f);
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.4f;
-            this->energyReceived = 0.9f;
+            this->energyReceived = 0.05f;
             
             
             this->lsffreq = 200.f;
@@ -159,8 +160,8 @@ typedef struct Parameter {
             this->roomCeiling = 2.61; //z
             
             
-            this->soundSourceLoc = Vector3D(0.2f,5.23f,1.3f);
-            this->listenerLoc = Vector3D(0.2f, 2.73f, 1.3f);
+            this->soundSourceLoc = Vector3D(0.2f,5.23f,0.18f);
+            this->listenerLoc = Vector3D(0.2f, 2.73f, 0.18f);
             
             
             this->hsffreq = 4000.f;
@@ -184,8 +185,8 @@ typedef struct Parameter {
             this->roomHeight = 7.23f; //y
             this->roomCeiling = 2.61; //z
             
-            this->soundSourceLoc = Vector3D(1.22f,5.2f,0.18f);
-            this->listenerLoc = Vector3D(1.22f, 3.2f, 0.18f);
+            this->soundSourceLoc = Vector3D(1.22f,5.2f,0.2f);
+            this->listenerLoc = Vector3D(1.15f, 3.2f, 0.18f);
             
             
             this->hsffreq = 4000.f;
@@ -208,8 +209,8 @@ typedef struct Parameter {
             this->roomWidth = 1.42f; //x
             this->roomHeight = 7.23f; //y
             this->roomCeiling = 2.61; //z
-            this->soundSourceLoc = Vector3D(0.71f,5.23f,0.18f);
-            this->listenerLoc = Vector3D(0.71f, 3.23f, 0.18f);
+            this->soundSourceLoc = Vector3D(0.72f,4.9f,0.18f);
+            this->listenerLoc = Vector3D(0.7f, 2.9f, 0.18f);
             
             
             this->hsffreq = 4000.f;
@@ -240,7 +241,7 @@ typedef struct Parameter {
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.55;
-            this->energyReceived = 1.f;
+            this->energyReceived = 0.2f;
             
             
             this->lsffreq = 125.f;
@@ -266,7 +267,7 @@ typedef struct Parameter {
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.55;
-            this->energyReceived = 1.f;
+            this->energyReceived = 0.4;
             
             
             this->lsffreq = 62.5f;
@@ -280,19 +281,19 @@ typedef struct Parameter {
         }
         else if (roomType == 10){
             this->roomType = 10;
-            this->RT60 = 2.12f;
+            this->RT60 = 2.05f;
             
             this->roomWidth = 2.75f; //x
             this->roomHeight = 2.68f; //y
             this->roomCeiling = 2.98f; //z
             
             
-            this->soundSourceLoc = Vector3D(1.375f,2.18f,0.18f);
-            this->listenerLoc = Vector3D(1.375f, 0.98f, 0.18f);
+            this->soundSourceLoc = Vector3D(1.375f,2.2f,0.18f);
+            this->listenerLoc = Vector3D(1.375f, 1.02f, 0.18f);
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.55;
-            this->energyReceived = 1.f;
+            this->energyReceived = 0.3;
             
             
             this->lsffreq = 125.f;
@@ -318,7 +319,7 @@ typedef struct Parameter {
             
             this->hsffreq = 4000.f;
             this->hsfRT60 = 1.55;
-            this->energyReceived = 1.f;
+            this->energyReceived = 0.9f;
             
             
             this->lsffreq = 125.f;
@@ -344,7 +345,7 @@ typedef struct Parameter {
             
             this->hsffreq = 8000.f;
             this->hsfRT60 = 0.6f;
-            this->energyReceived = 0.5f;
+            this->energyReceived = 0.25f;
             
             
             this->lsffreq = 200.f;
@@ -364,12 +365,12 @@ typedef struct Parameter {
             this->roomWidth = 8.0f; //x
             this->roomHeight = 5.0f; //y
             this->roomCeiling = 3.1f; //z
-            this->soundSourceLoc = Vector3D(7.0f, 4.f, 1.2f);
-            this->listenerLoc = Vector3D(7.0f, 2.55,1.2f);
+            this->soundSourceLoc = Vector3D(7.0f, 3.45f, 1.2f);
+            this->listenerLoc = Vector3D(7.0f, 2.,1.2f);
             
             this->hsffreq = 8000.f;
             this->hsfRT60 = 0.25f;
-            this->energyReceived = 0.2f;
+            this->energyReceived = 0.135f;
             
             
             this->lsffreq = 200.f;
@@ -387,12 +388,12 @@ typedef struct Parameter {
             this->roomWidth = 5.00f; //x
             this->roomHeight = 6.4f; //y
             this->roomCeiling = 2.9f; //z
-            this->listenerLoc = Vector3D(2.5f, 5.5f,1.2f);
-            this->soundSourceLoc = Vector3D(2.5f, 3.5f,1.2f);
+            this->listenerLoc = Vector3D(2.5f, 4.2,1.2f);
+            this->soundSourceLoc = Vector3D(2.5f, 2.2,1.2f);
             
             this->hsffreq = 8000.f;
             this->hsfRT60 = 0.28f;
-            this->energyReceived = 0.18f;
+            this->energyReceived = 0.175f;
             
             
             this->lsffreq = 125.f;
@@ -401,7 +402,7 @@ typedef struct Parameter {
             this->lowpass = 9000; // set to 22000.f to deactivate
             this->bellPeak = 40000;
             this->bellBW = 1500.f;
-            this->bellGain = 1.f; // set to 1.0f to deactivate
+            this->bellGain = 0.18f; // set to 1.0f to deactivate
             
         }
         else if (roomType == 15){
@@ -412,12 +413,12 @@ typedef struct Parameter {
             this->roomWidth = 5.00f; //x
             this->roomHeight = 6.4f; //y
             this->roomCeiling = 2.9f; //z
-            this->listenerLoc = Vector3D(2.5f, 5.5f,1.2f);
-            this->soundSourceLoc = Vector3D(2.5f, 4.5f,1.2f);
+            this->listenerLoc = Vector3D(2.5f, 3.7f,1.2f);
+            this->soundSourceLoc = Vector3D(2.5f, 2.7,1.2f);
             
             this->hsffreq = 8000.f;
             this->hsfRT60 = 0.28f;
-            this->energyReceived = 0.25f;
+            this->energyReceived = 0.15f;
             
             
             this->lsffreq = 125.f;
@@ -430,6 +431,7 @@ typedef struct Parameter {
         }
         else if (roomType == 16){
             
+            
             //offline Version
             this->roomType = 16;
             
@@ -438,7 +440,7 @@ typedef struct Parameter {
             this->roomHeight = 10.9f; //y
             this->roomCeiling = 3.5f; //z
             this->listenerLoc = Vector3D(5.45f,3.f, 1.2f);
-            this->soundSourceLoc = Vector3D(5.3f, 7.f,1.2f);
+            this->soundSourceLoc = Vector3D(5.45f, 7.f,1.2f);
             
             this->hsffreq = 8000.f;
             this->hsfRT60 = 0.6f;

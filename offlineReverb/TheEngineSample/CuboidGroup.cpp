@@ -34,6 +34,20 @@ void CuboidGroup::bauersMethod(int n, Vector3D* out){
     
 }
 
+/*
+ *Helper function to create rays in the listener's lateral plane for bauersMethodOnListener
+ */
+void createAzimuthalPoints(int n, Vector3D* out){
+    float angle_space = 360.f / (float) n;
+    
+    for (int i = 0; i<n; i++){
+        
+        float theta_azimuth = (angle_space * (float) i) / 180.f * M_PI;
+    
+        Vector3D d = Vector3D(sin(theta_azimuth), cos(theta_azimuth), 0);
+        out[i] = d;
+    }
+}
 
 /*
  * Bauer's method: create (approx) evenly distributed points on a unit sphere with centre on listener
@@ -43,7 +57,23 @@ void CuboidGroup::bauersMethod(int n, Vector3D* out){
  */
 void CuboidGroup::bauersMethodOnListener(int n, Vector3D* out, Vector3D listener){
     
-    bauersMethod(n, out);
+    //setting azimuthal channel
+    int azimuthal_channel = 0;
+//    if (n == 16)
+//     azimuthal_channel = 6;
+//    else if (n == 32)
+         azimuthal_channel = 12;
+//    else if (n == 64)
+//         azimuthal_channel = 24;
+//    else if (n > 64)
+//        azimuthal_channel = 36;
+//    else
+//        azimuthal_channel = 6;
+    
+//    azimuthal_channel = (int) floor(0.15f * (float) n);
+    
+    createAzimuthalPoints(azimuthal_channel, out);
+    bauersMethod(n-azimuthal_channel, out+azimuthal_channel);
     
     // transform to shorter ray and shift origin to listener's location
     for (int i = 0; i < n; i++){
@@ -683,9 +713,10 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
  *@param    S : source location
  *@param    Hz : sampling rate
  */
-void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
+float CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
     
     int delayLineIndex = 0;
+    float mean = 0;
     for (int i = 0; i<6; i++){
         for (int j = 0; j< numOfSurfaceGroupsInEachWall[i]; j++){
             Vector3D p = this->surfaceGroups[i][j].midPoint;
@@ -701,11 +732,13 @@ void CuboidGroup::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, V
             
             delayValues[delayLineIndex] = static_cast<int>((d1+d2)/SOUNDSPEED*Hz);
             delayLineIndex ++;
+            mean += (float)((d1+d2)/SOUNDSPEED*Hz);
         }
     }
     
     //ensure that the number of total delay lines is the same as the number of rays
     assert(delayLineIndex == (this->numOfBauerRays - this->rays_without_patches));
+    return mean/(float)delayLineIndex;
     
 }
 
@@ -729,12 +762,12 @@ void CuboidGroup::assignRaylessWall(int wallIndex){
         float nearest = INFINITY;
         
         for (int i = 0; i<6; i++){
-            int intersectionPointsOnWall = this->numOfIntersectionPointsPerWall[i];
+            int raysOnWall = this->numOfSurfaceGroupsInEachWall[i];
             
-            if (intersectionPointsOnWall > 0){
+            if (raysOnWall > 0){
                 
-                for (int j = 0; j<intersectionPointsOnWall; j++){
-                    Vector3D intersectionPointVector = this->intersectionPointsInRoom[i][j];
+                for (int j = 0; j<raysOnWall; j++){
+                    Vector3D intersectionPointVector = this->surfaceGroups[i][j].midPoint;
                     float distance = intersectionPointVector.distance(tile_midpoint);
                     if (distance < nearest){
                         nearest = distance;
@@ -752,7 +785,7 @@ void CuboidGroup::assignRaylessWall(int wallIndex){
         
         //add plane to relevant group
         Plane3D tileOnThisWall = tilesOnThisWall[k];
-//        printf("tile %i on wall %i is closest to another wall %i of ray %i", k, wallIndex, closest_wall_index, closest_point_index_in_the_wall);
+        printf("tile %i on wall %i is closest to another wall %i of ray %i", k, wallIndex, closest_wall_index, closest_point_index_in_the_wall);
         //get the correct surface group and add
         this->surfaceGroups[closest_wall_index][closest_point_index_in_the_wall].addPlaneToGroup(tileOnThisWall);
         

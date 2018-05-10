@@ -130,10 +130,10 @@ void Cuboid::sliceCubeLateral(int tilesPerSide, int slices, int channels, Vector
 
 
 //    //printout all walls
-    std::cout << "\nAll walls : \n ";
-    for (int i = 0; i < slices; i++){
-        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
-    }
+//    std::cout << "\nAll walls : \n ";
+//    for (int i = 0; i < slices; i++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", this->segmentedSides[i].corner.x, this->segmentedSides[i].corner.y, this->segmentedSides[i].corner.z, this->segmentedSides[i].S1.x , this->segmentedSides[i].S1.y, this->segmentedSides[i].S1.z, this->segmentedSides[i].S2.x, this->segmentedSides[i].S2.y, this->segmentedSides[i].S2.z );
+//    }
     
     this->elements = slices;
 
@@ -471,7 +471,9 @@ void Cuboid::sliceCube(int slices){
             toSlice -= 1;
             break;
         }
-        
+        if (6*toSlice * toSlice == slices){
+            break;
+        }
         }
     
     segmentCube(toSlice*toSlice);
@@ -488,7 +490,7 @@ void Cuboid::sliceCube(int slices){
     int remainder = slices - cubicTiles;
     int index = cubicTiles;
     
-    srand(11);
+    srand(15);
 //            srand(time(NULL));
     
     int randNum = rand()%(cubicTiles-1);
@@ -521,9 +523,11 @@ void Cuboid::sliceCube(int slices){
     }
     
     ////
-        for (int i = 0; i<(slices); i++){
-            printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
-        }
+//        for (int i = 0; i<(slices); i++){
+////            printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
+////            printf("%i {{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},\n",i, segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
+//        
+//        }
     
     delete [] newSegmentedSides;
     
@@ -581,7 +585,7 @@ int Cuboid::segmentCube(int tilesPerSide){
     }
     
 
-    elements = 6*tilesPerSide;
+//    elements = 6*tilesPerSide;
 //    return index;
     
 //    Printing the result
@@ -612,75 +616,271 @@ float Cuboid::segmentCubeOnce(){
     
 }
 
+//helper for segmentCubeBasedOnProjArea
+float getProjectedArea(Vector3D S, Vector3D L, Plane3D surface)
+{
+    return (surface.normal.dotProduct(L.subtract(surface.getMidpoint()).normalize()) * surface.normal.dotProduct(S.subtract(surface.getMidpoint()).normalize())) /
+    (pow(surface.getMidpoint().distance(S),2) * pow(surface.getMidpoint().distance(L),2)) * surface.getArea();
+    
 
-void Cuboid::segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L){
-    segmentedSides = new Plane3D[numDelays];
+//    return (surface.normal.dotProduct(L.subtract(surface.getMidpoint()).normalize())  /
+//    ( pow(surface.getMidpoint().distance(L),2)) * surface.getArea());
+}
 
-    elements = numDelays;
+void Cuboid::segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L, int walls_per_side_proj_area){
+//    segmentedSides = new Plane3D[numDelays];
+
+//    elements = numDelays;
     
 //    int index = segmentCubeOnce();
-    int index = segmentCube(9);
-    int delaysCeilingFloor = 0;
+    int total_even_elements = segmentCube(walls_per_side_proj_area);
+//    printf("segmenting cube into 4 per wall first evenly to have at first %i surface elements", total_even_elements);
+//    int total_even_elements = 4*6;
+//    int delaysCeilingFloor = 0;
     
-    while(index<numDelays){
+    //copy values first because segmentCube modifies global variable
+    Plane3D *walls_temp = new Plane3D[total_even_elements];
+    //copy
+    std::memcpy(walls_temp, this->segmentedSides, total_even_elements * sizeof(Plane3D));
+    //init back global var
+    this->segmentedSides = new Plane3D[numDelays];
+    //copy back
+    std::memcpy(this->segmentedSides,walls_temp, total_even_elements * sizeof(Plane3D));
+    //free
+    delete [] walls_temp;
+    
+    
+//    float *projectedArea = new float[numDelays];
+    std::map<float,int> mymap;
+    std::pair<std::map<float,int>::iterator,bool> ret;
+    std::vector<float> areas;
+    
+    //compute the projected area of all elements
+    for (int i = 0; i<total_even_elements; i++){
+        float projArea = getProjectedArea(S, L, this->segmentedSides[i]);
+//        printf("\nprojected area for surface %i is %f \n", i, projArea);
+        ret = mymap.insert (std::pair<float, int>(projArea, i));
         
-        //get the side with the nearest distance to listener
-        int maxIndex = 0;
-        float maxArea = 100000000;
+        while (ret.second == false){
+            //key already exist, change the area a little bit
+            projArea += 0.000001;
+//            printf("\nin whileloop: projected area for surface %i is %f \n", i, projArea);
+            ret = mymap.insert (std::pair<float, int>(projArea, i));
+        }
         
-        for (int i = delaysCeilingFloor; i<index; i++){
+        areas.push_back(projArea);
+        
+    }
+    
+    // showing map contents:
+//    std::map<float,int>::iterator it;
+//    std::cout << "mymap contains:\n";
+//    for (it = mymap.begin(); it != mymap.end(); ++it)
+//        std::cout << it->first << " => " << it->second << '\n';
+//
+    //print out vectors
+//    std::cout << "vector 'areas' contains:\n";
+//    for (std::vector<float>::const_iterator i = areas.begin(); i != areas.end(); ++i)
+//        std::cout << *i << ' ';
+//    printf("\n");
+//
+    //make heap
+    make_heap(areas.begin(), areas.end());
+    
+    //print out heap
+//     std::cout << "heap 'areas' contains:\n";
+//    for (std::vector<float>::const_iterator i = areas.begin(); i != areas.end(); ++i)
+//        std::cout << *i << ' ';
+//    printf("\n");
+    
+    int wall_remainder = numDelays - total_even_elements;
+    int segmentedSidesIndex = total_even_elements;
 
-            float comparisonValue = segmentedSides[i].getMidpoint().distance(L); //compare with the nearest ear's azimuth
-            // only segment the walls not the floor
-
-            if (comparisonValue < maxArea && segmentedSides[i].subdivided < 4 &&  segmentedSides[i].getMidpoint().z != 0 && segmentedSides[i].getMidpoint().z != zLength){
-                printf("%f %f %f wallmidpt %f %f %f L \n", segmentedSides[i].getMidpoint().x, segmentedSides[i].getMidpoint().y, segmentedSides[i].getMidpoint().z, L.x, L.y, L.z);
-                maxArea = comparisonValue;
-                maxIndex = i;
+//    int printing_counter = 0;
+    while (wall_remainder > 0){
+        //get the maximum area
+        float maxArea = areas.front();
+        //get the index
+        int plane_index_with_maxArea = mymap.find(maxArea)->second;
+        
+//        printf("\n plane %i has the maximum area %f \n", plane_index_with_maxArea, maxArea);
+        
+        //erase this from mymap
+        mymap.erase(mymap.find(maxArea));
+        //print out
+//        std::cout << "mymap now contains, after removal of max area:\n";
+//        for (it = mymap.begin(); it != mymap.end(); ++it)
+//            std::cout << it->first << " => " << it->second << '\n';
+//        printf("number of elements in map : %i\n", mymap.size());
+//
+        //erase this from heap using pop_heap() to delete maximum element
+        pop_heap(areas.begin(), areas.end());
+        areas.pop_back();
+//        //print out vector
+//        std::cout << "vector 'areas' now contains, after pop heap:\n";
+//        for (std::vector<float>::const_iterator i = areas.begin(); i != areas.end(); ++i)
+//            std::cout << *i << ' ';
+//        printf("\n");
+//        printf("number of elements in heap : %i\n", areas.size());
+        
+        //divide this plane
+        int randNum = rand()%100;
+        //apply restriction of area is under 100
+        float area_min = 0.5 * 0.5;
+        float plane_area = segmentedSides[plane_index_with_maxArea].getArea();
+//        int subdivided = segmentedSides[plane_index_with_maxArea].subdivided;
+//        int max_Depth = 5;
+        //divide into two along S1
+        if (randNum %2 == 0 && plane_area > area_min){
+            printf("\n divide along S1 \n");
+            Vector3D newCorner = segmentedSides[plane_index_with_maxArea].corner.add(segmentedSides[plane_index_with_maxArea].S1.scalarMult(0.5f));
+            Vector3D newS1 = segmentedSides[plane_index_with_maxArea].S1.scalarMult(0.5f);
+            int oldSubdivided = segmentedSides[plane_index_with_maxArea].subdivided;
+            //creating new plane
+            segmentedSides[plane_index_with_maxArea] = Plane3D(segmentedSides[plane_index_with_maxArea].corner, newS1, segmentedSides[plane_index_with_maxArea].S2);
+            //updating the subdivided counter
+            segmentedSides[plane_index_with_maxArea].subdivided = oldSubdivided + 1;
+            //creating new plane
+            segmentedSides[segmentedSidesIndex] = Plane3D(newCorner, newS1, segmentedSides[plane_index_with_maxArea].S2);
+            //updating the subdivided counter
+            segmentedSides[segmentedSidesIndex].subdivided = segmentedSides[plane_index_with_maxArea].subdivided;
+            
+            
+            //update map for the previously max area plane
+            float projArea = getProjectedArea(S, L, this->segmentedSides[plane_index_with_maxArea]);
+            ret = mymap.insert (std::pair<float, int>(projArea, plane_index_with_maxArea));
+            //print out
+//            std::cout << "mymap now contains, after insertion:\n";
+//            for (it = mymap.begin(); it != mymap.end(); ++it)
+//                std::cout << it->first << " => " << it->second << '\n';
+//
+            
+//            printf("new projected area is : %f \n", projArea);
+            
+            while (ret.second == false){
+                //key already exist, change the area a little bit
+                projArea += 0.000001;
+//                printf("\nin whileloop: projected area for surface %i is %f \n", plane_index_with_maxArea, projArea);
+                ret = mymap.insert (std::pair<float, int>(projArea, plane_index_with_maxArea));
             }
-//            if (comparisonValue < maxArea && segmentedSides[i].subdivided < 7 && (segmentedSides[i].getMidpoint().y - L.y) > 0 && segmentedSides[i].getMidpoint().z != 0 && segmentedSides[i].getMidpoint().z < 2.9){
-//                printf("%f %f %f wallmidpt %f %f %f L \n", segmentedSides[i].getMidpoint().x, segmentedSides[i].getMidpoint().y, segmentedSides[i].getMidpoint().z, L.x, L.y, L.z);
-//                maxArea = comparisonValue;
-//                maxIndex = i;
-//            }
+            
+            //update heap
+            areas.push_back(projArea);
+            //max-heapify
+            push_heap(areas.begin(), areas.end());
+            
+            //update map for the newly created plane
+            float projAreaNewPlane = getProjectedArea(S, L, this->segmentedSides[segmentedSidesIndex]);
+//            printf("new second projected area is : %f \n", projArea);
+            ret = mymap.insert (std::pair<float, int>(projAreaNewPlane, segmentedSidesIndex));
+            //print out
+//            std::cout << "mymap now contains, after insertion:\n";
+//            for (it = mymap.begin(); it != mymap.end(); ++it)
+//                std::cout << it->first << " => " << it->second << '\n';
+//            
+            
+            while (ret.second == false){
+                //key already exist, change the area a little bit
+                projAreaNewPlane += 0.000001;
+//                printf("\nin whileloop: projected area for surface %i is %f \n", segmentedSidesIndex, projAreaNewPlane);
+                ret = mymap.insert (std::pair<float, int>(projAreaNewPlane, segmentedSidesIndex));
+            }
+            
+            //update heap
+            areas.push_back(projAreaNewPlane);
+            //max-heapify
+            push_heap(areas.begin(), areas.end());
+            
+//            //print out
+//            std::cout << "mymap now contains, after creation of new planes:\n";
+//            for (it = mymap.begin(); it != mymap.end(); ++it)
+//                std::cout << it->first << " => " << it->second << '\n';
+//            //print out heap
+//            std::cout << "heap 'areas' now contains:\n";
+//            for (std::vector<float>::const_iterator i = areas.begin(); i != areas.end(); ++i)
+//                std::cout << *i << ' ';
+//            printf("\n");
+            
+            //update indexes (increase segmented sides counter, decrease wall remainder)
+            segmentedSidesIndex++;
+            wall_remainder--;
+            
+            printf("segmented Sides elements are now %i, wall remainder is %i \n", segmentedSidesIndex, wall_remainder);
+            
+            
+        }
+        //divide into two along S2
+        else if ( plane_area > area_min){
+            printf("\n divide along S2 \n");
+            Vector3D newCorner = segmentedSides[plane_index_with_maxArea].corner.add(segmentedSides[plane_index_with_maxArea].S2.scalarMult(0.5f));
+            Vector3D newS2 = segmentedSides[plane_index_with_maxArea].S2.scalarMult(0.5f);
+            int oldIndexSubdivided = segmentedSides[plane_index_with_maxArea].subdivided;
+            //creating new plane
+            segmentedSides[plane_index_with_maxArea] = Plane3D(segmentedSides[plane_index_with_maxArea].corner,  segmentedSides[plane_index_with_maxArea].S1, newS2);
+            //updating the subdivided
+            segmentedSides[plane_index_with_maxArea].subdivided = oldIndexSubdivided + 1;
+            //creating new plane
+            segmentedSides[segmentedSidesIndex] = Plane3D(newCorner,segmentedSides[plane_index_with_maxArea].S1, newS2);
+            //updating the subdivided counter
+            segmentedSides[segmentedSidesIndex].subdivided = segmentedSides[plane_index_with_maxArea].subdivided;
+            
+            //update map for the previously max area plane
+            float projArea = getProjectedArea(S, L, this->segmentedSides[plane_index_with_maxArea]);
+            ret = mymap.insert (std::pair<float, int>(projArea, plane_index_with_maxArea));
+            
+            while (ret.second == false){
+                //key already exist, change the area a little bit
+                projArea += 0.000001;
+                ret = mymap.insert (std::pair<float, int>(projArea, plane_index_with_maxArea));
+            }
+            
+            //update heap
+            areas.push_back(projArea);
+            //max-heapify
+            push_heap(areas.begin(), areas.end());
+            
+            //update map for the newly created plane
+            float projAreaNewPlane = getProjectedArea(S, L, this->segmentedSides[segmentedSidesIndex]);
+            ret = mymap.insert (std::pair<float, int>(projAreaNewPlane, segmentedSidesIndex));
+            
+            while (ret.second == false){
+                //key already exist, change the area a little bit
+                projAreaNewPlane += 0.000001;
+                ret = mymap.insert (std::pair<float, int>(projAreaNewPlane, segmentedSidesIndex));
+            }
+            
+            //update heap
+            areas.push_back(projAreaNewPlane);
+            //max-heapify
+            push_heap(areas.begin(), areas.end());
+            
+            //print out
+//            std::cout << "mymap now contains, after creation of new planes:\n";
+//            for (it = mymap.begin(); it != mymap.end(); ++it)
+//                std::cout << it->first << " => " << it->second << '\n';
+//            //print out heap
+//            std::cout << "heap 'areas' now contains:\n";
+//            for (std::vector<float>::const_iterator i = areas.begin(); i != areas.end(); ++i)
+//                std::cout << *i << ' ';
+//            printf("\n");
+            
+            //update indexes (increase segmented sides counter, decrease wall remainder)
+            segmentedSidesIndex++;
+            wall_remainder--;
+            
+            printf("segmented Sides elements are now %i, wall remainder is %i \n", segmentedSidesIndex, wall_remainder);
 
         }
         
-        int randNum = rand()%100;
-        //divide some plane into two
-
-            //divide into two along S1
-            if (randNum %2 == 0){
-                Vector3D newCorner = segmentedSides[maxIndex].corner.add(segmentedSides[maxIndex].S1.scalarMult(0.5f));
-                Vector3D newS1 = segmentedSides[maxIndex].S1.scalarMult(0.5f);
-                int oldIndex = segmentedSides[maxIndex].subdivided;
-                segmentedSides[maxIndex] = Plane3D(segmentedSides[maxIndex].corner, newS1, segmentedSides[maxIndex].S2);
-                segmentedSides[maxIndex].subdivided = oldIndex + 1;
-                segmentedSides[index] = Plane3D(newCorner, newS1, segmentedSides[maxIndex].S2);
-                segmentedSides[index].subdivided = segmentedSides[maxIndex].subdivided;
-                index++;
-            }
-            else{
-                Vector3D newCorner = segmentedSides[maxIndex].corner.add(segmentedSides[maxIndex].S2.scalarMult(0.5f));
-                Vector3D newS2 = segmentedSides[maxIndex].S2.scalarMult(0.5f);
-                int oldIndex = segmentedSides[maxIndex].subdivided;
-                segmentedSides[maxIndex] = Plane3D(segmentedSides[maxIndex].corner,  segmentedSides[maxIndex].S1, newS2);
-                segmentedSides[maxIndex].subdivided = oldIndex + 1;
-                segmentedSides[index] = Plane3D(newCorner,segmentedSides[maxIndex].S1, newS2);
-                segmentedSides[index].subdivided = segmentedSides[maxIndex].subdivided;
-                index++;
-            }
-        
-        
-        //split that patch
-        index = dividePlane(segmentedSides[maxIndex], index, maxIndex, S, L);
-        
-        
     }
+                                                                                                                             
     
-    for (int i = 0; i<(index); i++){
-        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
-    }
+    assert(segmentedSidesIndex == numDelays);
+    this->elements = segmentedSidesIndex;
+//    for (int i = 0; i<(segmentedSidesIndex); i++){
+//        printf("{{%f, %f, %f}, {%f, %f, %f}, {%f, %f, %f}},", segmentedSides[i].corner.x, segmentedSides[i].corner.y, segmentedSides[i].corner.z, segmentedSides[i].S1.x , segmentedSides[i].S1.y, segmentedSides[i].S1.z, segmentedSides[i].S2.x, segmentedSides[i].S2.y, segmentedSides[i].S2.z );
+//    }
+
 
 }
 
@@ -750,8 +950,10 @@ int Cuboid::dividePlane(Plane3D divide, int index, int sourceIndex, Vector3D S, 
 //}
 
 
-void Cuboid::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
+float Cuboid::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz){
+    float average = 0;
     for (int i =0; i< elements; i++){
+//        printf("%i elements %i\n", i, elements);
         Vector3D p = segmentedSides[i].getMidpoint();
         float d1 = S.subtract(p).magnitude();
         float d2 = LLE.subtract(p).magnitude();
@@ -763,7 +965,11 @@ void Cuboid::getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector
         }
         
         delayValues[i] = static_cast<int>((d1+d2)/SOUNDSPEED*Hz);
+        average += ((d1+d2)/SOUNDSPEED*Hz);
     }
+    
+    return average / (float) elements;
+//    printf("Delay values done");
 }
 
 

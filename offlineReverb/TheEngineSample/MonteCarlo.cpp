@@ -202,26 +202,8 @@ void randomPointsOnTriangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* poin
 
 
 
-void randomPointsOnRectangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* points, size_t numPoints){
-    
-    //Set delay length for delays without output and input tap
-    std::random_device rd;     // only used once to initialise (seed) engine
-    std::mt19937 rng(10);    // random-number engine used (Mersenne-Twister in this case)
-    std::uniform_real_distribution<float> uni_s1(0, s1.magnitude()); // guaranteed unbiased
-    std::uniform_real_distribution<float> uni_s2(0, s2.magnitude()); // guaranteed unbiased
-    
-    for (int i = 0; i<numPoints; i++){
-        
-        float scalar_s1 = uni_s1(rng);
-        float scalar_s2 = uni_s2(rng);
-        
-//        std::cout << scalar_s1 << " " << scalar_s2 << std::endl;
-        points[i] = c.add(s1.scalarMult(scalar_s1).add(s2.scalarMult(scalar_s2)));
-        
-//        printf("{%f, %f, %f},", points[i].x, points[i].y, points[i].z);
-        
-    }
-    
+//void randomPointsOnRectangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* points, size_t numPoints){
+//
 //    // we are going to do this with two triangles.  How many points for each?
 //    size_t t1Points = floor(numPoints/2);
 //    size_t t2Points = numPoints - t1Points;
@@ -242,8 +224,29 @@ void randomPointsOnRectangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* poi
 //    randomPointsOnTriangle(c2,s3,s4, points + t1Points, t2Points);
 //
 //    // printf("triangle2  done");
-    
-    
+//}
+
+
+void randomPointsOnRectangle(Vector3D c, Vector3D s1, Vector3D s2, Vector3D* points, size_t numPoints){
+
+    //Set delay length for delays without output and input tap
+    std::random_device rd;     // only used once to initialise (seed) engine
+    std::mt19937 rng(10);    // random-number engine used (Mersenne-Twister in this case)
+    std::uniform_real_distribution<float> uni_s1(0, s1.magnitude()); // guaranteed unbiased
+    std::uniform_real_distribution<float> uni_s2(0, s2.magnitude()); // guaranteed unbiased
+
+    for (int i = 0; i<numPoints; i++){
+
+        float scalar_s1 = uni_s1(rng);
+        float scalar_s2 = uni_s2(rng);
+
+//        std::cout << scalar_s1 << " " << scalar_s2 << std::endl;
+        points[i] = c.add(s1.scalarMult(scalar_s1).add(s2.scalarMult(scalar_s2)));
+
+//        printf("{%f, %f, %f},", points[i].x, points[i].y, points[i].z);
+
+    }
+
 }
 
 

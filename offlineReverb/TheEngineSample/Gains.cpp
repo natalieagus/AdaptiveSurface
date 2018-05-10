@@ -192,7 +192,7 @@ float Gains::calculateGainsGroup(CuboidGroup* Room, Vector3D L, Vector3D S){
             beta[gain_index] = sqrtf((patch_beta * (float) Room->surfaceGroups[i][j].area)  / ((float) (NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes)));
             
             upsilon[gain_index] = sqrtf(((float) numberDelays / (M_PI * Room->cube.area)) * (patch_hInt_upsilon * (float) Room->surfaceGroups[i][j].area) / ((float) NUM_MONTECARLO * Room->surfaceGroups[i][j].numberOfPlanes));
-
+            
             gain_index ++;
             
             
@@ -294,7 +294,7 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
     for (int i = 0; i< numberDelays; i++){
         //        mu[i] *= powf(-1, rand()%2);
         //        upsilon[i] *=powf(-1, rand()%2);
-        //        printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
+//                printf("i: %i, beta %f upsilon %f mu %f feedbacktapGains %f\n", i, beta[i], upsilon[i], mu[i], feedbackTapGains[i]);
         totalInputEnergy += mu[i] * mu[i];
     }
     
@@ -309,8 +309,8 @@ float Gains::calculateGains(Plane3D *surfaces, Vector3D L, Vector3D S){
 
 void Gains::getGains(float *inputGains, float *outputGains){
     for (int i = 0; i<numberDelays; i++){
-        inputGains[i] = mu[i];
-        outputGains[i] = upsilon[i];
+        inputGains[i] = sqrtf(mu[i] * mu[i]) ;
+        outputGains[i] = sqrtf(upsilon[i] * upsilon[i]) ;
     }
 }
 

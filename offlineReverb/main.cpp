@@ -60,11 +60,11 @@ void saveImpulse(int type, int samples, std::ofstream* ofLeft, std::ofstream* of
 int main(int argc, char* argv[])
 {
     
-    clock_t begin = clock();
+//    clock_t begin = clock();
     
 //    //Saving IR for JAES2
-    for (int i = 16; i<=16; i ++){
-    float impulseLength = 5.0f;
+    for (int i = 1; i<=1; i ++){
+    float impulseLength = 4.0f;
 
     std::ofstream impulseLeft;
     std::ofstream impulseRight;

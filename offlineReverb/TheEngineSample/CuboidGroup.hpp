@@ -94,7 +94,7 @@ public:
     void createBauersRayOnListener(int n, Vector3D *bauerVectors,  Vector3D listener, Ray* out);
     
     //to be accessed by FDN.cpp
-    void getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz);
+    float getDelayValues(int *delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Hz);
     
     
     

@@ -16,8 +16,9 @@ FDN: a feedback delay network reverberator
 
 
 //#define DELAYUNITSSMALL 3
-#define DELAYSPERUNIT 64
+#define DELAYSPERUNIT 16
 #define DELAYUNITSSTD 1
+
 //#define UNCIRCULATEDTAPSSMALL (2*DELAYUNITSSMALL*DELAYSPERUNIT)
 //#define UNCIRCULATEDTAPSSTD 2*DELAYUNITSSTD*DELAYSPERUNIT
 //#define UNCIRCULATEDTAPSSTD 0
@@ -30,6 +31,8 @@ FDN: a feedback delay network reverberator
 //#define WALLDELAYS (NUMDELAYSSTD - SMOOTHINGDELAYS - FLOORDELAYS)
 //#define TOTALDELAYS (WALLDELAYS + SMOOTHINGDELAYS + FLOORDELAYS)
 #define TOTALDELAYS DELAYSPERUNIT * DELAYUNITSSTD
+#define ACTUALDELAY TOTALDELAYS
+#define GHOSTDELAY TOTALDELAYS - ACTUALDELAY
 #define AUDIOCHANNELS 2
 #define SAMPLINGRATEF 44100.0f
 #define SOUNDSPEED 340.29f
@@ -37,17 +40,27 @@ FDN: a feedback delay network reverberator
 #define NUMDELAYSSTD TOTALDELAYS
 #define SMOOTHDELAY 0
 
+//choose 1 method
+
+#define NORMAL_METHOD
+
+//#define LATERAL_METHOD
+//#define LATERAL_DIVISION (DELAYSPERUNIT - 2*4 - 6*4 - 4)
+//#define LATERAL_DIVISION 12 //36//24 //36
+//#define CUBE_DIVISION 1//9//4 //9
+
+//#define SPHERICAL_METHOD
+
 //#define ENERGY_BALANCE
 #ifdef ENERGY_BALANCE
 #define SMOOTHDELAY 1
+#define LATERAL_DIVISION (DELAYSPERUNIT - 2*4 - 6*4 - 4) - SMOOTHDELAY
 #endif
 
-//choose 1 method
-//#define NORMAL_METHOD
-//#define LATERAL_METHOD
-#define SPHERICAL_METHOD
 
-#define WALLS_PER_SIDE_INIT 20
+
+#define WALLS_PER_SIDE_INIT 25
+#define WALLS_PER_SIDE_PROJ_AREA 1
 
 
 #define RADIALTRACE (TOTALDELAYS - 2*D_PER_SIDE*D_PER_SIDE)
@@ -108,6 +121,7 @@ protected:
     double time_elapsed_msecs = 0.0f;
     
     float gainEyring(int delayTime);
+    float mean_spherical_length;
     
     // forward declarations
     void BMFastHadamard16(const float* input, float* output, float* temp16);

@@ -15,7 +15,8 @@
 #include <iostream>
 #include <cstdlib>
 #import <Accelerate/Accelerate.h>
-
+#include <map>
+#include <vector>
 #include "Plane3D.hpp"
 #include "Ray.hpp"
 
@@ -97,13 +98,13 @@ typedef struct Cuboid{
     float segmentCubeOnce();
     
     //getting delay values in samples given a listener and source location in the room
-    void getDelayValues(int* delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Fs);
+    float getDelayValues(int* delayValues, Vector3D LLE, Vector3D LRE, Vector3D S, int Fs);
     
     /*
      * Heuristic method (currently not used)
      */
     //segment 6-surface rectangular room based on some heuristic
-    void segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L);
+    void segmentCubeBasedOnProjectedArea(int numDelays, Vector3D S, Vector3D L, int walls_per_side_proj_area);
     float projectedAreaOfAPlane(Vector3D S, Vector3D L, Plane3D patch);
     int dividePlane(Plane3D divide, int index, int sourceIndex, Vector3D L, Vector3D S);
     float ProjectedArea_rectangleSubDiv(Plane3D r, Vector3D L, size_t divisions);

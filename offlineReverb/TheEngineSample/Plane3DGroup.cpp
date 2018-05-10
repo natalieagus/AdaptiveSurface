@@ -24,6 +24,7 @@ void Plane3DGroup::updateDivisor(int newDivisor){
  */
 void Plane3DGroup::addPlaneToGroup(Plane3D newPlane){
     
+    printf("total capacity: %d , numberofPlanes %d \n", totalCapacity, numberOfPlanes);
     //if have space, insert
     if (totalCapacity >= (numberOfPlanes + 1)){
         //copy to memory

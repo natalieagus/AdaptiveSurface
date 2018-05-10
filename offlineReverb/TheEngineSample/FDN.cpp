@@ -21,7 +21,7 @@ FDN::~FDN(){
 
 FDN::FDN(int roomType)
 {
-    bool powerSaveByDefault = false;
+//    bool powerSaveByDefault = false;
     numDelays = TOTALDELAYS;
     delayUnits = DELAYUNITSSTD;
     delayBuffers = NULL;
@@ -42,7 +42,8 @@ void FDN::impulseResponse(long numSamples, std::ofstream* outputFileLeft, std::o
     
     float zero = 0.0f;
     float one = 1.0f;
-    float left, right;
+    float left = 0.0f;
+    float right = 0.0f;
     
     
     /*
@@ -103,21 +104,22 @@ void FDN::setParameterSafe(Parameter params)
 #ifdef NORMAL_METHOD
     Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
     
-//    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc);
-    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+//    Room.segmentCubeBasedOnProjectedArea(TOTALDELAYS-SMOOTHDELAY, parametersFDN.soundSourceLoc, parametersFDN.listenerLoc, WALLS_PER_SIDE_PROJ_AREA);
+//    Room.sliceCube(TOTALDELAYS-SMOOTHDELAY);
+    Room.sliceCube(ACTUALDELAY);
 #endif
     
 #ifdef LATERAL_METHOD
     printf("\nlateral method initiated \n\n");
     Room = Cuboid(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling);
-    Room.sliceCubeLateral(4, TOTALDELAYS-SMOOTHDELAY, (int) floor((float)(TOTALDELAYS - SMOOTHDELAY)/2.5), parametersFDN.listenerLoc);
+    Room.sliceCubeLateral(CUBE_DIVISION, TOTALDELAYS-SMOOTHDELAY, LATERAL_DIVISION, parametersFDN.listenerLoc);
 #endif
     
     //For 5B
 #ifdef SPHERICAL_METHOD
     printf("\n spherical method initiated \n\n");
     RoomGroup = CuboidGroup(parametersFDN.roomWidth, parametersFDN.roomHeight, parametersFDN.roomCeiling, WALLS_PER_SIDE_INIT * WALLS_PER_SIDE_INIT);
-    RoomGroup.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(parametersFDN.listenerLoc, TOTALDELAYS-SMOOTHDELAY);
+    RoomGroup.assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(parametersFDN.listenerLoc, ACTUALDELAY);
 #endif
 
     
@@ -125,7 +127,8 @@ void FDN::setParameterSafe(Parameter params)
     ///*********Setting Delay Lines*************////
     ///************************************************////
 #ifdef NORMAL_METHOD
-    Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
+    mean_spherical_length = Room.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
+    createNoInputNoOutputDelayLines(ACTUALDELAY, GHOSTDELAY);
     printf("Room elements %d \n", Room.elements);
 #endif
     
@@ -135,8 +138,8 @@ void FDN::setParameterSafe(Parameter params)
 #endif
 
 #ifdef SPHERICAL_METHOD
-    RoomGroup.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
-    createNoInputNoOutputDelayLines(RoomGroup.total_number_of_surface_groups_in_the_room, RoomGroup.rays_without_patches);
+    mean_spherical_length = RoomGroup.getDelayValues(delayTimes, parametersFDN.listenerLocLeftEar, parametersFDN.listenerLocRightEar, parametersFDN.soundSourceLoc, SAMPLE_RATE_F);
+    createNoInputNoOutputDelayLines(RoomGroup.total_number_of_surface_groups_in_the_room, RoomGroup.rays_without_patches+GHOSTDELAY);
 #endif
     
     ///************************************************////
@@ -169,7 +172,37 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     ///*********Getting Input Output Gains*************////
     ///************************************************////
+    
+#ifdef NORMAL_METHOD
     GainValues.getGains(inputGains, outputGains);
+    if (GHOSTDELAY > 0){
+        //get the last index of nonzero gain
+        int index_of_injection_gain = ACTUALDELAY;
+        float energy_to_add_per_delay_line = (GainValues.totalInputEnergy * ((float)TOTALDELAYS / (float)ACTUALDELAY)  - GainValues.totalInputEnergy) / ((float) GHOSTDELAY);
+        printf("energy to be added %f \n", energy_to_add_per_delay_line );
+        for (int i = 0; i<GHOSTDELAY; i++){
+            //spread energy among delays with no output tap
+            inputGains[i+index_of_injection_gain] = sqrtf(energy_to_add_per_delay_line);
+        }
+    }
+
+#endif
+#ifdef SPHERICAL_METHOD
+    assert(RoomGroup.total_number_of_surface_groups_in_the_room + GHOSTDELAY + RoomGroup.rays_without_patches == TOTALDELAYS);
+    GainValues.getGains(inputGains, outputGains);
+    //handle energy injection
+    if (GHOSTDELAY > 0 || RoomGroup.rays_without_patches > 0){
+        //get the last index of nonzero gain
+        int index_of_injection_gain = RoomGroup.total_number_of_surface_groups_in_the_room;
+        float energy_to_add_per_delay_line = (GainValues.totalInputEnergy * ((float) TOTALDELAYS / (float)RoomGroup.total_number_of_surface_groups_in_the_room) - GainValues. totalInputEnergy ) / ((float)GHOSTDELAY + (float)RoomGroup.rays_without_patches);
+        printf("energy to be added %f \n", energy_to_add_per_delay_line );
+        //spread energy among delays with no output tap
+        for (int i = 0; i<GHOSTDELAY+RoomGroup.rays_without_patches; i++){
+            inputGains[i+index_of_injection_gain] = sqrtf(energy_to_add_per_delay_line);
+        }
+    }
+#endif
+    
     totalEnergyAfterAttenuation = GainValues.totalInputEnergy;
     insufficiency = GainValues.correctInputEnergy - totalEnergyAfterAttenuation;
     printf("New input energy after attenuation before adjustment, %f \n", totalEnergyAfterAttenuation);
@@ -389,12 +422,12 @@ void FDN::setParameterSafe(Parameter params)
 
     //    printf("Printing Parameters: \n");
     //
-    //    for (int i = 0 ; i < numDelays ; i++){
-    //        printf("Index : %d, delay : %d, inputGain : %f, outputGain: %f \n",i, delayTimes[i], inputGains[i], outputGains[i]);
-    //
-    //
-    //
-    //    }
+        for (int i = 0 ; i < numDelays ; i++){
+            printf("Index : %d, delay : %d, inputGain : %f, outputGain: %f, feedbacktapgain: %f \n",i, delayTimes[i], inputGains[i], outputGains[i], feedbackTapGains[i]);
+    
+    
+    
+        }
     
     
     clock_t end = clock();
@@ -488,7 +521,9 @@ inline void FDN::processReverb(float* pInput, float* pOutputL, float* pOutputR)
     
     float outputLeft = directRaysOutput[0] + reverbOut[0];
     float outputRight = directRaysOutput[1] + reverbOut[1];
-    
+//    printf("direct R delay setup %f \n", directRays[1].time);
+//    printf("%f DRI %f DRO \n", directRaysInput[1], directRaysOutput[1]);
+//
     float outputL_lowpass = 0.f;
     float outputR_lowpass = 0.f;
     
@@ -986,6 +1021,7 @@ void FDN::setDirectRayAngles()
 void FDN::setDirectSingleTapDelay(){
     directRays[0].setTimeSafe(directDelayTimes[0]);
     directRays[1].setTimeSafe(directDelayTimes[1]);
+    printf("\n\ndirect delay times left %f direct delay times right %f \n", directDelayTimes[0], directDelayTimes[1]);
 }
 
 
@@ -1094,7 +1130,7 @@ float FDN::channeltoangleNormal(size_t channel){
 ///********Binaural Functions************************////
 ///************************************************////
 void FDN::setDelayOutputChannels(){
-    for (size_t i = 0; i < TOTALDELAYS-SMOOTHDELAY ; i++){
+    for (size_t i = 0; i < ACTUALDELAY ; i++){
         delayTimesChannel[i] = determineChannel(Room.segmentedSides[i].getMidpoint().x, Room.segmentedSides[i].getMidpoint().y, listenerOrientation);
     }
 #ifdef ENERGY_BALANCE
@@ -1331,18 +1367,18 @@ void FDN::createNoInputNoOutputDelayLines(int current_delays, int remainder_dela
     //Set delay length for delays without output and input tap
     std::random_device rd;     // only used once to initialise (seed) engine
     std::mt19937 rng(10);    // random-number engine used (Mersenne-Twister in this case)
-    std::uniform_int_distribution<int> uni(0, parametersFDN.smallestDim * 0.5f / SOUNDSPEED * SAMPLE_RATE_F); // guaranteed unbiased
+    std::uniform_int_distribution<int> uni(0, 100); // guaranteed unbiased
 
-    float mean_free_path = 4 * RoomGroup.cube.volume / RoomGroup.cube.area;
+    float mean_free_path = mean_spherical_length;
     
     for (int i = 0; i<remainder_delays; i++){
         int random_jitter = uni(rng);
 //        printf("random_jitter %i \n", random_jitter);
         
         if (random_jitter % 2 == 0)
-            delayTimes[current_delays + i] = floor(random_jitter + mean_free_path / SOUNDSPEED * SAMPLE_RATE_F);
+            delayTimes[current_delays + i] = floor(random_jitter + mean_free_path );
         else
-            delayTimes[current_delays + i] = floor(mean_free_path / SOUNDSPEED * SAMPLE_RATE_F - random_jitter);
+            delayTimes[current_delays + i] = floor(mean_free_path - random_jitter);
         
 //        if ( i%3 == 0 ){
 //            if (random_jitter % 2 == 0)
