@@ -382,7 +382,7 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     printf("\n{");
     int totalDelayTime = 0;
-    for(int i = 0; i < numDelays-1; i++){
+    for(int i = 0; i < numDelays; i++){
 //        printf("%i,", delayTimes[i]);
         totalDelayTime += delayTimes[i];
         delayTimesSecond[i] = (float) delayTimes[i] / SAMPLE_RATE_F;
