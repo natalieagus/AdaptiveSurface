@@ -16,7 +16,7 @@ FDN: a feedback delay network reverberator
 
 
 //#define DELAYUNITSSMALL 3
-#define DELAYSPERUNIT 16
+#define DELAYSPERUNIT 32
 #define DELAYUNITSSTD 1
 
 //#define UNCIRCULATEDTAPSSMALL (2*DELAYUNITSSMALL*DELAYSPERUNIT)

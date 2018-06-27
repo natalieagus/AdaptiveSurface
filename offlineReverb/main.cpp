@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 //    clock_t begin = clock();
     
 //    //Saving IR for JAES2
-    for (int i = 1; i<=1; i ++){
+    for (int i = 1; i<=15; i ++){
     float impulseLength = 4.0f;
 
     std::ofstream impulseLeft;

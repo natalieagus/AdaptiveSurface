@@ -380,13 +380,20 @@ void FDN::setParameterSafe(Parameter params)
     ///************************************************////
     ///**************Preparing the buffers**************////
     ///************************************************////
+    printf("\n{");
     int totalDelayTime = 0;
-    for(int i = 0; i < numDelays; i++){
-//        printf("delay line %i is %i \n", i, delayTimes[i]);
+    for(int i = 0; i < numDelays-1; i++){
+//        printf("%i,", delayTimes[i]);
         totalDelayTime += delayTimes[i];
         delayTimesSecond[i] = (float) delayTimes[i] / SAMPLE_RATE_F;
         
     };
+//    printf("%i", delayTimes[numDelays-1]);
+//    printf("};\n");
+    
+    //comment this later after thesis is done
+//    exit(1);
+    
     printf("totaldelay  %d \n ", totalDelayTime);
     resetDelay(totalDelayTime);
     resetReadIndices();

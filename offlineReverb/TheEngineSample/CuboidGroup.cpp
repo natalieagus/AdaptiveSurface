@@ -561,6 +561,7 @@ int CuboidGroup::assign_and_group_SurfacesBasedOnNearestNeighbour_inRoom(Vector3
     Ray *bauerRays = new Ray[numOfBauerRays];
     createBauersRayOnListener(numOfBauerRays, bauerVectors, listener, bauerRays);
     
+
     //print the rays end
 //    for (int i = 0; i<numOfBauerRays; i++){
 //        printf("{{%f,%f,%f},{%f,%f,%f}},", listener.x, listener.y, listener.z, bauerRays[i].get_vector(5).x, bauerRays[i].get_vector(5).y, bauerRays[i].get_vector(5).z);
